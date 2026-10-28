@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
-import type { AnalyzeResponse, Tone } from "@/lib/types";
+import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import type { AnalyzeResponse, Look, Tone } from "@/lib/types";
 
 // In-memory session (spec.md > Session Store). A reload sends her back to Welcome.
 type Session = {
@@ -9,9 +9,14 @@ type Session = {
   photo?: string;
   analysis?: AnalyzeResponse;
   tone?: Tone;
+  looks?: Look[];
+  /** The look being followed in the tutorial. */
+  lookId?: string;
+  /** Per look id: index i is the render with steps 0..i applied. */
+  stepImages?: Record<string, (string | undefined)[]>;
 };
 
-type SessionContext = { session: Session; setSession: (next: Session) => void };
+type SessionContext = { session: Session; setSession: Dispatch<SetStateAction<Session>> };
 
 const Ctx = createContext<SessionContext | null>(null);
 

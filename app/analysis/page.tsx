@@ -2,30 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { DropletIcon, SparklesIcon, Sun03Icon, ViewIcon } from "@hugeicons/core-free-icons";
-import type { IconSvgElement } from "@hugeicons/react";
-import { buttonClass } from "@/components/Button";
+import { DropletIcon } from "@hugeicons/core-free-icons";
+import { Button } from "@/components/Button";
 import { ConcernCard } from "@/components/ConcernCard";
+import { CONCERN_LOOK as look } from "@/components/concernLook";
 import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
 import { MaskHighlight } from "@/components/MaskHighlight";
 import { useSession } from "@/lib/session";
-import type { ConcernKey } from "@/lib/types";
-
-const look: Record<ConcernKey, { icon: IconSvgElement; hint: string }> = {
-  acne: { icon: SparklesIcon, hint: "Blemishes to cover" },
-  redness: { icon: Sun03Icon, hint: "Areas to even out" },
-  dark_circle_v2: { icon: ViewIcon, hint: "Under-eye shadows to brighten" },
-  age_spot: { icon: SparklesIcon, hint: "Spots to soften" },
-  oiliness: { icon: DropletIcon, hint: "Shine to control" },
-  eye_bag: { icon: ViewIcon, hint: "Puffiness to lift" },
-};
+import type { ApiErrorBody, ConcernKey, LooksResponse } from "@/lib/types";
 
 export default function SkinAnalysis() {
   const router = useRouter();
-  const { session } = useSession();
+  const { session, setSession } = useSession();
   const [active, setActive] = useState<ConcernKey>();
+  const [designing, setDesigning] = useState(false);
+  const [error, setError] = useState<string>();
   const { photo, analysis, tone } = session;
 
   useEffect(() => {
@@ -34,6 +26,26 @@ export default function SkinAnalysis() {
   if (!analysis || !photo) return null;
 
   const points = analysis.concerns.filter((c) => c.isPoint);
+
+  async function designLooks() {
+    setDesigning(true);
+    setError(undefined);
+    try {
+      const res = await fetch("/api/looks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ concerns: analysis!.concerns, skinType: analysis!.skinType, tone }),
+      });
+      const body = (await res.json()) as LooksResponse | ApiErrorBody;
+      if (!res.ok || "error" in body) throw new Error("error" in body ? body.error.message : undefined);
+      // TODO(slice 3): route to /looks grid instead of jumping into the first look.
+      setSession((s) => ({ ...s, looks: body.looks, lookId: body.looks[0].id, stepImages: {} }));
+      router.push("/tutorial");
+    } catch (e) {
+      setError((e as Error).message || "Something went wrong. Try again.");
+      setDesigning(false);
+    }
+  }
   const activeMask = points.find((c) => c.key === active)?.mask;
 
   return (
@@ -79,9 +91,14 @@ export default function SkinAnalysis() {
           <p className="mt-4 text-ink-muted">Your skin looks great today. Let&apos;s find a look for it.</p>
         )}
 
-        <Link href="/looks" className={buttonClass("primary", "mt-5 w-full shrink-0")}>
-          Continue
-        </Link>
+        {error && (
+          <p className="mt-4 shrink-0 text-sm" role="alert">
+            {error}
+          </p>
+        )}
+        <Button className="mt-5 w-full shrink-0" onClick={designLooks} disabled={designing}>
+          {designing ? "Designing your looks…" : error ? "Retry" : "Continue"}
+        </Button>
       </GlassSheet>
     </div>
   );

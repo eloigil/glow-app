@@ -1,3 +1,4 @@
+// Curated from https://plugins-media.makeupar.com/wcm-saas/patterns/*.json; ids must match catalog labels exactly.
 import patterns from "./patterns.json";
 import type { MakeupCategory, Step } from "@/lib/types";
 
@@ -5,7 +6,7 @@ import type { MakeupCategory, Step } from "@/lib/types";
 // Docs: https://docs.perfectcorp.com/reference/description/ai_makeup_vto.md
 
 type PatternEntry = { id: string; colors: number; look: string };
-export const PATTERNS = patterns as unknown as Partial<Record<MakeupCategory, PatternEntry[]>>;
+export const PATTERNS: Partial<Record<MakeupCategory, PatternEntry[]>> = patterns;
 
 /** Categories that need no pattern from the catalog. */
 export const UNPATTERNED: MakeupCategory[] = ["foundation", "concealer", "lip_color"];

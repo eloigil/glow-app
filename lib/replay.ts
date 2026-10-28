@@ -46,3 +46,12 @@ export async function replayable<T>(name: string, run: () => Promise<T>): Promis
 export async function recordRaw(name: string, value: unknown) {
   if (API_MODE === "record") await save(`raw/${name}`, value);
 }
+
+/** The recorded demo photo, used as the unpainted stand-in when a render isn't recorded yet. */
+export async function recordedPhoto(): Promise<string | undefined> {
+  try {
+    return (JSON.parse(await readFile(path.join(DIR, "analyze.json"), "utf8")) as { photo?: string }).photo;
+  } catch {
+    return undefined;
+  }
+}

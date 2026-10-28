@@ -1,5 +1,4 @@
 {
-  "_source": "Curated from https://plugins-media.makeupar.com/wcm-saas/patterns/*.json (labels must match exactly; colors = colorNum palettes).",
   "blush": [
     { "id": "Round1", "colors": 1, "look": "soft round apples of the cheeks" },
     { "id": "Oblique1", "colors": 1, "look": "lifted diagonal sweep toward the temples" },

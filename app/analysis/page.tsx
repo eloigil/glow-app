@@ -52,7 +52,7 @@ export default function SkinAnalysis() {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-wash py-1 pr-3 pl-1.5 text-xs font-medium">
               <span className="size-4 rounded-full border border-white/70" style={{ background: tone.skinHex }} />
               <span className="text-rose">
-                <Icon icon={DropletIcon} size={20} />
+                <Icon icon={DropletIcon} size={24} />
               </span>
               {tone.label}
             </span>

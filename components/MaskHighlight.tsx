@@ -29,7 +29,7 @@ export function MaskHighlight({ mask }: { mask: string }) {
       className="pointer-events-none absolute inset-0"
       initial={{ opacity: 0 }}
       animate={reduce ? { opacity: 1 } : { opacity: [0, 1, 0.85, 1] }}
-      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      transition={reduce ? { duration: 0 } : { duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="absolute inset-0 bg-[#17141a]/30" />
       <div className="absolute inset-0" style={{ filter: "drop-shadow(0 0 4px #ec94b0) drop-shadow(0 0 10px #ec94b0)" }}>

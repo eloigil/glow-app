@@ -7,7 +7,7 @@ export default function SavedLooks() {
   return (
     <div className="flex flex-1 flex-col px-6 pt-6">
       <Link href="/" aria-label="Back" className="grid size-10 place-items-center rounded-full bg-surface text-ink">
-        <Icon icon={ArrowLeft01Icon} size={20} />
+        <Icon icon={ArrowLeft01Icon} size={24} />
       </Link>
       <h1 className="mt-6 font-display text-2xl font-bold tracking-[-0.02em]">Saved looks</h1>
       <div className="mt-16 flex flex-col items-center text-center">

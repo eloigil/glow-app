@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft01Icon, Camera01Icon, ImageUploadIcon } from "@hugeicons/core-free-icons";
@@ -9,7 +9,7 @@ import { Icon } from "@/components/Icon";
 import { ScanSweep } from "@/components/ScanSweep";
 import { resizePhoto } from "@/lib/image";
 import { useSession } from "@/lib/session";
-import { readTone, writeTone } from "@/lib/tone";
+import { readTone, writeTone } from "@/lib/toneCache";
 import type { AnalyzeResponse, ApiErrorBody } from "@/lib/types";
 
 type State = { kind: "idle" } | { kind: "analyzing"; preview: string } | { kind: "error"; preview: string; message: string };
@@ -20,14 +20,23 @@ export default function AddPhoto() {
   const [state, setState] = useState<State>({ kind: "idle" });
   const cameraInput = useRef<HTMLInputElement>(null);
   const uploadInput = useRef<HTMLInputElement>(null);
+  const previewUrl = useRef<string | null>(null);
+
+  useEffect(() => () => { if (previewUrl.current) URL.revokeObjectURL(previewUrl.current); }, []);
 
   async function analyze(file: File) {
-    const preview = URL.createObjectURL(file);
+    if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
+    const preview = (previewUrl.current = URL.createObjectURL(file));
     setState({ kind: "analyzing", preview });
     try {
       const cached = readTone();
       const form = new FormData();
-      form.append("photo", await resizePhoto(file), "photo.jpg");
+      try {
+        form.append("photo", await resizePhoto(file), "photo.jpg");
+      } catch {
+        setState({ kind: "error", preview, message: "This photo didn't work. Try another." });
+        return;
+      }
       form.append("hasTone", cached ? "1" : "0");
       const res = await fetch("/api/analyze", { method: "POST", body: form });
       const body = (await res.json()) as AnalyzeResponse | ApiErrorBody;
@@ -38,6 +47,7 @@ export default function AddPhoto() {
       }
       if (body.tone) writeTone(body.tone);
       setSession({ photo: body.photo ?? preview, analysis: body, tone: body.tone ?? cached });
+      previewUrl.current = null; // the analysis page still shows this URL
       router.push("/analysis");
     } catch {
       setState({ kind: "error", preview, message: "Something went wrong. Check your connection and try again." });
@@ -53,20 +63,20 @@ export default function AddPhoto() {
   return (
     <div className="flex flex-1 flex-col px-6 pt-6 pb-[max(24px,env(safe-area-inset-bottom))]">
       <Link href="/" aria-label="Back" className="grid size-10 place-items-center rounded-full bg-surface text-ink">
-        <Icon icon={ArrowLeft01Icon} size={20} />
+        <Icon icon={ArrowLeft01Icon} size={24} />
       </Link>
 
       {state.kind === "idle" ? (
         <>
           <h1 className="mt-6 font-display text-[26px] leading-tight font-bold tracking-[-0.02em]">Show us your face today</h1>
-          <p className="mt-2 text-ink-muted">Face the camera in soft, even light. No makeup works best.</p>
+          <p className="mt-2 text-ink-muted">Hold the camera close so your face fills the frame, in soft even light. No makeup works best.</p>
           <div className="face-placeholder mt-8 aspect-[3/4] w-full rounded-[10px]" aria-hidden />
           <div className="mt-auto grid gap-3 pt-8">
             <Button onClick={() => cameraInput.current?.click()}>
-              <Icon icon={Camera01Icon} size={20} /> Take a photo
+              <Icon icon={Camera01Icon} size={28} /> Take a photo
             </Button>
             <Button variant="quiet" onClick={() => uploadInput.current?.click()} className="border-line bg-surface">
-              <Icon icon={ImageUploadIcon} size={20} /> Upload a picture
+              <Icon icon={ImageUploadIcon} size={28} /> Upload a picture
             </Button>
           </div>
         </>

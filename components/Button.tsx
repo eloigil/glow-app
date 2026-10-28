@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes } from "react";
 type Variant = "primary" | "ink" | "quiet";
 
 const base =
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap px-6 py-3.5 text-[15px] font-medium transition-transform duration-200 ease-[cubic-bezier(.16,1,.3,1)] active:translate-y-px active:scale-[.98] disabled:opacity-50 disabled:active:scale-100";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap px-6 py-3.5 text-[15px] font-medium transition-transform duration-200 ease-[cubic-bezier(.16,1,.3,1)] motion-safe:active:translate-y-px motion-safe:active:scale-[.98] disabled:opacity-50 motion-safe:disabled:active:scale-100";
 
 const variants: Record<Variant, string> = {
   // Gradient primary, 8px corners (prd.md > Look and Feel).

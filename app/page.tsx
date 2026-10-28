@@ -14,7 +14,7 @@ export default function Welcome() {
         aria-label="Saved looks"
         className="glass absolute top-4 right-4 z-10 grid size-10 place-items-center rounded-full text-[#17141a]"
       >
-        <Icon icon={Bookmark02Icon} size={20} />
+        <Icon icon={Bookmark02Icon} size={24} />
       </Link>
       <div className="relative mt-auto px-6 pb-[max(32px,env(safe-area-inset-bottom))]">
         <h1 className="font-display text-[34px] leading-[1.08] font-bold tracking-[-0.03em] text-[#17141a]">

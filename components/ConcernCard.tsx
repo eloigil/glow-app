@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
 import { Icon } from "@/components/Icon";
 import type { IconSvgElement } from "@hugeicons/react";
 
@@ -14,13 +17,24 @@ export function ConcernCard({
   active: boolean;
   onClick: () => void;
 }) {
+  const reduce = useReducedMotion();
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`glass flex w-full items-center gap-3 rounded-[10px] px-3.5 py-3 text-left transition-colors ${active ? "ring-2 ring-rose" : ""}`}
+      className={`glass relative flex w-full items-center gap-3 rounded-[10px] px-3.5 py-3 text-left transition-colors ${active ? "ring-2 ring-rose" : ""}`}
     >
+      {active && !reduce && (
+        // One-shot ring pulse when the card becomes active.
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[10px]"
+          initial={{ boxShadow: "0 0 0 0 rgb(236 148 176 / .6)" }}
+          animate={{ boxShadow: "0 0 0 12px rgb(236 148 176 / 0)" }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+        />
+      )}
       <span className="text-rose">
         <Icon icon={icon} />
       </span>

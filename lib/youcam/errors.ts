@@ -7,7 +7,7 @@ const PHOTO: [RegExp, string][] = [
   [/^error_multiple_people$/, "Only one face, please."],
   [/too_small$/, "Move closer so your face fills the frame."],
   [/angle|out_of_bound/, "Face the camera straight on."],
-  [/lighting|insufficient_lighting/, "It's a bit dark. Try softer, brighter light."],
+  [/lighting/, "It's a bit dark. Try softer, brighter light."],
   [/^error_|exceed_max_filesize/, "This photo didn't work. Try another."],
 ];
 
@@ -15,7 +15,8 @@ const CREDITS = "We ran out of credits for the demo. Try later.";
 
 export function toApiError(err: unknown): { status: number; body: ApiErrorBody } {
   const code = err instanceof YouCamError ? err.code : "unknown";
-  for (const [re, message] of PHOTO) {
+  const outage = err instanceof YouCamError && (err.status ?? 0) >= 500;
+  for (const [re, message] of outage ? [] : PHOTO) {
     if (re.test(code)) return { status: 422, body: { error: { kind: "photo", code, message } } };
   }
   if (code !== "unknown") console.error("[youcam]", code, err instanceof Error ? err.message : err);

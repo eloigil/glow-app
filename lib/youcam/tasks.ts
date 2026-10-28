@@ -1,5 +1,5 @@
 import "server-only";
-import { youcam, YouCamError } from "./client";
+import { fetchOrTimeout, youcam, YouCamError } from "./client";
 
 export type TaskKind = "skin-analysis" | "skin-tone-analysis" | "makeup-vto";
 
@@ -14,7 +14,7 @@ export async function uploadImage(bytes: ArrayBuffer, contentType = "image/jpeg"
   );
   const file = data.files[0];
   const req = file.requests[0];
-  const put = await fetch(req.url, {
+  const put = await fetchOrTimeout(req.url, {
     method: "PUT",
     headers: { "Content-Type": contentType, ...req.headers },
     body: bytes,
@@ -43,7 +43,7 @@ export async function runTask<R>(kind: TaskKind, body: Record<string, unknown>):
 
 /** Download a result image (mask, render) and inline it, because YouCam links expire after 2 hours. */
 export async function toDataUrl(url: string): Promise<string> {
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetchOrTimeout(url, { cache: "no-store" });
   if (!res.ok) throw new YouCamError("download_failed", `Download failed with ${res.status}`);
   const buf = Buffer.from(await res.arrayBuffer());
   // YouCam's storage answers with binary/octet-stream, so sniff the real type from the magic bytes.

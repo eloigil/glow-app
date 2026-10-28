@@ -41,7 +41,7 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
   Learner check: Go from photo to the looks grid. Do the five previews feel different enough, does the card grow the way you designed it, and does Start makeup take you into the right tutorial?
   Commit: `Add five-look grid with previews and grow-in-place card`
 
-- [ ] **4. Save a look and replay it later**
+- [x] **4. Save a look and replay it later**
   Becomes usable: After the last step she sees Finish with Save and Finish. Saved looks appear behind the subtle icon on Welcome and replay fully, offline, with no API calls.
   Why now: Depends on a complete tutorial and is the "come back another day" half of the core loop.
   PRD ref: `prd.md > Finish and Saved Looks`, `prd.md > The Core Journey` (steps 8-9)

@@ -28,16 +28,16 @@ export default function Tutorial() {
     (i: number) => setCurrent(Math.max(0, Math.min(i, total - 1))),
     [total],
   );
-  const next = () => (current >= total - 1 ? setFinished(true) : go(current + 1));
+  const next = useCallback(() => (current >= total - 1 ? setFinished(true) : go(current + 1)), [current, total, go]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") go(current + 1);
+      if (e.key === "ArrowRight") next();
       if (e.key === "ArrowLeft") go(current - 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [current, go]);
+  }, [current, go, next]);
 
   // Show this step's render, or while it paints, the latest earlier layer (or her bare photo).
   const ready = images[current];
@@ -80,7 +80,7 @@ export default function Tutorial() {
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.15}
         onDragEnd={(_, info) => {
-          if (info.offset.x < -60) go(current + 1);
+          if (info.offset.x < -60) next();
           else if (info.offset.x > 60) go(current - 1);
         }}
       >

@@ -10,6 +10,8 @@ export type Session = {
   analysis?: AnalyzeResponse;
   tone?: Tone;
   looks?: Look[];
+  /** The photo (fileId) the looks were designed for. */
+  looksFor?: string;
   /** The look being followed in the tutorial. */
   lookId?: string;
   /** Per look id: index i is the render with steps 0..i applied. */

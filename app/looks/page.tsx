@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LayoutGroup } from "motion/react";
@@ -13,6 +13,9 @@ import { useSession } from "@/lib/session";
 import type { LooksResponse } from "@/lib/types";
 import { resetRenders, useLookPreviews } from "@/lib/useStepRenders";
 
+// Survives leaving /looks: one request per photo even if she goes Back and Continues mid-generation.
+const inflight = new Map<string, Promise<void>>();
+
 // spec.md > Your Looks: five previews of her face; the tapped one grows in place.
 export default function Looks() {
   const router = useRouter();
@@ -22,20 +25,30 @@ export default function Looks() {
   const [grownId, setGrownId] = useState<string>();
   const [error, setError] = useState<string>();
   const [attempt, setAttempt] = useState(0);
-  const requesting = useRef(false);
 
   useEffect(() => {
-    if (!analysis) return router.replace("/");
-    if (looks?.length || requesting.current) return;
-    requesting.current = true;
-    postJson<LooksResponse>("/api/looks", { concerns: analysis.concerns, skinType: analysis.skinType, tone })
-      .then((body) => {
-        if (!body.looks?.length) throw new Error("We couldn't design looks this time. Try again.");
-        resetRenders(analysis.fileId);
-        setSession((s) => ({ ...s, looks: body.looks, lookId: undefined, stepImages: {}, stepPlaceholders: {}, stepErrors: {} }));
-      })
-      .catch((e: Error) => setError(e.message))
-      .finally(() => (requesting.current = false));
+    if (!analysis) {
+      router.replace("/");
+      return;
+    }
+    if (looks?.length) return;
+    const { fileId } = analysis;
+    let p = inflight.get(fileId);
+    if (!p) {
+      p = postJson<LooksResponse>("/api/looks", { concerns: analysis.concerns, skinType: analysis.skinType, tone })
+        .then((body) => {
+          if (!body.looks?.length) throw new Error("We couldn't design looks this time. Try again.");
+          resetRenders(fileId);
+          setSession((s) =>
+            s.analysis?.fileId === fileId
+              ? { ...s, looks: body.looks, looksFor: fileId, lookId: undefined, stepImages: {}, stepPlaceholders: {}, stepErrors: {} }
+              : s,
+          );
+        })
+        .finally(() => inflight.delete(fileId));
+      inflight.set(fileId, p);
+    }
+    p.catch((e: Error) => setError(e.message));
   }, [analysis, looks, tone, attempt, router, setSession]);
   if (!analysis) return null;
 

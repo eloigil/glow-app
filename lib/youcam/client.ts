@@ -19,14 +19,28 @@ function key() {
 type Envelope<T> = { status: number; data?: T; error?: string; error_code?: string };
 
 /** Network-level timeouts and aborts surface as a TaskTimeout so they get the calm demo message. */
+function mapTimeout(e: unknown, url: string): unknown {
+  return e instanceof DOMException && (e.name === "TimeoutError" || e.name === "AbortError")
+    ? new YouCamError("TaskTimeout", `Request timed out: ${url.split("?")[0]}`)
+    : e;
+}
+
 export async function fetchOrTimeout(url: string, init: RequestInit, ms = 15_000): Promise<Response> {
   try {
     return await fetch(url, { ...init, signal: AbortSignal.timeout(ms) });
   } catch (e) {
-    if (e instanceof DOMException && (e.name === "TimeoutError" || e.name === "AbortError")) {
-      throw new YouCamError("TaskTimeout", `Request timed out: ${url.split("?")[0]}`);
-    }
-    throw e;
+    throw mapTimeout(e, url);
+  }
+}
+
+/** GET a file's bytes; the timeout covers the body read too, which is the slow part for big images. */
+export async function fetchBytes(url: string, ms: number): Promise<Buffer> {
+  const res = await fetchOrTimeout(url, { cache: "no-store" }, ms);
+  if (!res.ok) throw new YouCamError("download_failed", `Download failed with ${res.status}`);
+  try {
+    return Buffer.from(await res.arrayBuffer());
+  } catch (e) {
+    throw mapTimeout(e, url);
   }
 }
 

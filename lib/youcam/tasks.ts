@@ -1,5 +1,5 @@
 import "server-only";
-import { fetchOrTimeout, youcam, YouCamError } from "./client";
+import { fetchBytes, fetchOrTimeout, youcam, YouCamError } from "./client";
 
 export type TaskKind = "skin-analysis" | "skin-tone-analysis" | "makeup-vto";
 
@@ -44,14 +44,8 @@ export async function runTask<R>(kind: TaskKind, body: Record<string, unknown>):
 /** Download a result image (mask, render) and inline it, because YouCam links expire after 2 hours. */
 export async function toDataUrl(url: string): Promise<string> {
   // Result images are ~2.5MB; under parallel load the body read alone can pass 15s.
-  const res = await fetchOrTimeout(url, { cache: "no-store" }, 45_000);
-  if (!res.ok) throw new YouCamError("download_failed", `Download failed with ${res.status}`);
-  const buf = Buffer.from(
-    await res.arrayBuffer().catch((e: unknown) => {
-      throw e instanceof DOMException ? new YouCamError("TaskTimeout", "Result download timed out") : e;
-    }),
-  );
-  // YouCam's storage answers with binary/octet-stream, so sniff the real type from the magic bytes.
-  const type = buf[0] === 0x89 ? "image/png" : buf[0] === 0xff ? "image/jpeg" : (res.headers.get("content-type") ?? "image/png");
+  const buf = await fetchBytes(url, 25_000);
+  // YouCam's storage answers with binary/octet-stream, so sniff JPEG from the magic bytes (else PNG).
+  const type = buf[0] === 0xff ? "image/jpeg" : "image/png";
   return `data:${type};base64,${buf.toString("base64")}`;
 }

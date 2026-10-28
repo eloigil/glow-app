@@ -62,7 +62,12 @@ export function FinishView({
   return (
     <div className="relative flex-1 overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-[64%]">
-        <BeforeAfter before={photo} after={finished} alt={`Your face with the full ${look.name} look`} />
+        {images[look.steps.length - 1] ? (
+          <BeforeAfter before={photo} after={finished} alt={`Your face with the full ${look.name} look`} />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element -- data/object URL
+          <img src={finished} alt="Your face so far" className="absolute inset-0 size-full object-cover" />
+        )}
       </div>
 
       <GlassSheet>

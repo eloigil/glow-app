@@ -73,7 +73,7 @@ export default function SkinAnalysis() {
         <Button
           className="mt-5 w-full shrink-0"
           onClick={() => {
-            setSession((s) => ({ ...s, looks: undefined, lookId: undefined }));
+            setSession((s) => (s.looks?.length && s.looksFor === analysis.fileId ? s : { ...s, looks: undefined, lookId: undefined }));
             router.push("/looks");
           }}
         >

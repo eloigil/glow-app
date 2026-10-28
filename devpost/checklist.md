@@ -64,11 +64,13 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slice 2 (the layer-by-layer tutorial), while feedback can still shape the grid, saving and polish
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship
+
+Final review outcome: learner tried the full journey and asked for no changes ("Tried it all, nothing to change. Ready to ship."). Agent-side final review (code-review skill on slices 3-5) fixes landed in a06ae7f, 8e0cef6, a145f8c and 8897a6d; fresh clone with no keys replays the full journey with 31/31 real renders.
 
 ## Code Tour and App Map
 

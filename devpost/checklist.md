@@ -51,7 +51,7 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
   Learner check: Finish a tutorial, tap Save, close the tab, come back, open the saved look from the Welcome icon and step through it.
   Commit: `Add saved looks stored on device with offline replay`
 
-- [ ] **5. Graceful failures, motion polish and a README judges can follow**
+- [x] **5. Graceful failures, motion polish and a README judges can follow**
   Becomes usable: Bad photos get a plain message and Retry; credit or YouCam failures show the demo message; reduced-motion and dark mode both look right; the README explains running in replay with no keys, the APIs used, and credits. Stretch: before/after slider on Finish, if time allows.
   Why now: Hardening comes after the journey works end to end, and the README must describe the finished app.
   PRD ref: `prd.md > States and Boundaries`, `prd.md > Look and Feel`, `prd.md > Finish and Saved Looks` (stretch)
@@ -98,3 +98,4 @@ Activity mode:
 - A look's grid preview is its last tutorial step (same full effect list, same fixture), so previews cost no extra units beyond the tutorial and need no separate fixtures. The grown card moves to the top of the grid, matching the approved PRD companion page.
 - Saved looks embed the whole `Look` plus today's concerns (for the step chips) and a schema version, and reuse the last step image as the preview instead of a separate `preview` Blob — the tutorial replays straight from that record.
 - Result-image downloads can exceed the 15s fetch timeout under parallel load (one render timed out mid-download and succeeded on retry); slice 5 gives downloads a longer timeout.
+- Unusable-photo handling is verified against the real API (a no-face photo returns `error_no_face`, mapped to its message, 0 units) plus a mapping check of every error class, instead of a committed bad-photo replay fixture — replay serves one fixed analysis for any upload, so a second analyze fixture could not be selected.

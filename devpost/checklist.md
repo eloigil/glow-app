@@ -31,7 +31,7 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
   Learner check: Upload your photo, continue, and walk the whole tutorial. Do the layers build up the way you pictured, and do the tips read like real advice for your face today?
   Commit: `Add layer-by-layer makeup tutorial from OpenAI look plan`
 
-- [ ] **3. Five looks to choose from**
+- [x] **3. Five looks to choose from**
   Becomes usable: After the skin read, she sees five previews of her own face in a two-column grid with white signal bars. Tapping one grows it in place with its description and Start makeup, which opens that look's tutorial.
   Why now: With the kernel proven, the choice step can wrap it. Previews reuse the render route, so it's mostly UI plus 5 units per session.
   PRD ref: `prd.md > Look Proposals`, `prd.md > The Core Journey` (steps 4-5)
@@ -96,3 +96,5 @@ Activity mode:
 - Step/Look types are inferred from the zod schema: `pattern` and `corrects` are `null` when absent (Structured Outputs requires every field), and the spec's `texture` is `finish` (mapped per category to YouCam textures). Model is `gpt-5.4-mini`, confirmed available on the learner's key.
 - Look plans needed product rules the spec didn't have: a `CORRECTORS` map (only concealer/foundation/highlighter may fix a point), `corrects` became an array so one under-eye concealer can fix dark circles and puffy eyes together, every look must add cheek color and end with lips, and intensities have per-category ranges — the first real plans gamed "corrects" (eyebrows fixing puffy eyes) and rendered layers too faint to see. Renders are re-encoded to JPEG with sharp (2.5MB PNG to about 200KB). Real timings: look plan about 21s, each step render 11-15s.
 - A look's grid preview is its last tutorial step (same full effect list, same fixture), so previews cost no extra units beyond the tutorial and need no separate fixtures. The grown card moves to the top of the grid, matching the approved PRD companion page.
+- Saved looks embed the whole `Look` plus today's concerns (for the step chips) and a schema version, and reuse the last step image as the preview instead of a separate `preview` Blob — the tutorial replays straight from that record.
+- Result-image downloads can exceed the 15s fetch timeout under parallel load (one render timed out mid-download and succeeded on retry); slice 5 gives downloads a longer timeout.

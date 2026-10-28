@@ -21,7 +21,7 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
   Learner check: Run `npm run dev`, open http://localhost:3000 at phone size, tap Start, upload your demo photo, and look at the skin read: does the tone look right, and does tapping a card light up the right area?
   Commit: `Add photo upload and YouCam skin analysis with replay fixtures`
 
-- [ ] **2. A tutorial built layer by layer on her face**
+- [x] **2. A tutorial built layer by layer on her face**
   Becomes usable: From the Skin Analysis screen, tap Continue and get one personalized look, then step through its tutorial. Each step shows her photo with only the layers so far, the step name and an LLM tip, and steps that fix today's points say so. Wizard taps, swipe and Next all work.
   Why now: This is `scope.md > The Unique Kernel`. Building it second, with one look and no grid, proves the whole idea (OpenAI plan to YouCam cumulative renders to tutorial) before anything around it.
   PRD ref: `prd.md > Step-by-Step Tutorial`, `prd.md > The Core Journey` (steps 6-7)
@@ -94,3 +94,4 @@ Activity mode:
 - Looks replay uses one fixed fixture (`fixtures/looks.json`) like analyze, since a request hash would never match a new upload; renders are keyed by a hash of their full effect list, so editing constants in `lib/youcam/effects.ts` invalidates recorded renders (re-record after such changes).
 - Render route takes `steps` (validated with the zod `StepSchema`) and maps them to YouCam effects on the server, instead of the spec's `effects[]` from the browser — keeps the YouCam schema server-side. On a replay miss it returns the unpainted recorded photo with `placeholder: true` rather than "the closest recorded step".
 - Step/Look types are inferred from the zod schema: `pattern` and `corrects` are `null` when absent (Structured Outputs requires every field), and the spec's `texture` is `finish` (mapped per category to YouCam textures). Model is `gpt-5.4-mini`, confirmed available on the learner's key.
+- Look plans needed product rules the spec didn't have: a `CORRECTORS` map (only concealer/foundation/highlighter may fix a point), `corrects` became an array so one under-eye concealer can fix dark circles and puffy eyes together, every look must add cheek color and end with lips, and intensities have per-category ranges — the first real plans gamed "corrects" (eyebrows fixing puffy eyes) and rendered layers too faint to see. Renders are re-encoded to JPEG with sharp (2.5MB PNG to about 200KB). Real timings: look plan about 21s, each step render 11-15s.

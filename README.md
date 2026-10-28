@@ -40,7 +40,7 @@ The OpenAI model is set in `lib/openai/model.ts`.
 Live tips:
 - **Fill the frame.** YouCam Skin Analysis needs the face to be wider than 60% of the photo. Front-facing, soft even light.
 - **It takes a moment.** The skin read takes about 10 seconds, the five looks about 20, and each layer about 12. Step 1 shows first while the rest paint.
-- **Cost per first session:** about 50 YouCam units (12 skin analysis, 20 skin tone, 1 per rendered layer). Your skin tone is cached on the device, so later sessions skip the 20-unit tone call. Failed tasks cost nothing.
+- **Cost per first session:** about 43 YouCam units (12 skin analysis, 20 skin tone, 5 look previews, about 6 tutorial layers). Your skin tone is cached on the device, so later sessions skip the 20-unit tone call. Tasks YouCam rejects (no face, too dark) cost nothing; a render that succeeds but then fails to download has already used its unit, and Retry uses another.
 
 ## How it uses the YouCam API
 

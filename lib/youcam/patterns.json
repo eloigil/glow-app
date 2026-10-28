@@ -1,0 +1,48 @@
+{
+  "_source": "Curated from https://plugins-media.makeupar.com/wcm-saas/patterns/*.json (labels must match exactly; colors = colorNum palettes).",
+  "blush": [
+    { "id": "Round1", "colors": 1, "look": "soft round apples of the cheeks" },
+    { "id": "Oblique1", "colors": 1, "look": "lifted diagonal sweep toward the temples" },
+    { "id": "1color1", "colors": 1, "look": "long oblong wash along the cheekbone" },
+    { "id": "1color6", "colors": 1, "look": "circular 3D flush" },
+    { "id": "1color8", "colors": 1, "look": "heart-shaped flush, playful" },
+    { "id": "2colors1", "colors": 2, "look": "two-tone 3D blush, deeper outer and lighter inner" }
+  ],
+  "bronzer": [{ "id": "Bronzer1", "colors": 1, "look": "warmth on the high points of the face" }],
+  "contour": [
+    { "id": "OvalFace6", "colors": 1, "look": "classic soft contour under cheekbones" },
+    { "id": "HeartFace2", "colors": 1, "look": "softens a wider forehead and narrow chin" },
+    { "id": "RoundFace4", "colors": 1, "look": "slims and lengthens a round face" }
+  ],
+  "highlighter": [
+    { "id": "OvalFace2", "colors": 1, "look": "cheekbones, brow bone and nose bridge" },
+    { "id": "HeartFace4", "colors": 1, "look": "cheekbones and center of the face" },
+    { "id": "RoundFace3", "colors": 1, "look": "vertical highlight that lengthens" }
+  ],
+  "eyebrows": [
+    { "id": "SoftArch1", "colors": 1, "look": "soft natural arch" },
+    { "id": "Straight1", "colors": 1, "look": "straight, youthful brow" },
+    { "id": "HighArch1", "colors": 1, "look": "defined high arch, dramatic" },
+    { "id": "Original2", "colors": 1, "look": "follows her own brow shape" }
+  ],
+  "eye_shadow": [
+    { "id": "1color4", "colors": 1, "look": "single wash on the lid" },
+    { "id": "1color9", "colors": 1, "look": "one-shade smoky whole eye" },
+    { "id": "2colors1", "colors": 2, "look": "fan shape on the upper lid, lid shade + crease shade" },
+    { "id": "2colors4", "colors": 2, "look": "smoky upper lid, light inner + dark outer" },
+    { "id": "2colors167", "colors": 2, "look": "cut crease, lid shade + crease shade" }
+  ],
+  "eye_liner": [
+    { "id": "HalfRim4", "colors": 1, "look": "thin line on the outer half of the lash line" },
+    { "id": "Double4", "colors": 1, "look": "classic upper line" },
+    { "id": "Drama8", "colors": 1, "look": "bold winged liner" },
+    { "id": "FullRim7", "colors": 1, "look": "full rim, upper and lower" }
+  ],
+  "eyelashes": [
+    { "id": "Natural1", "colors": 1, "look": "natural mascara" },
+    { "id": "Upper1", "colors": 1, "look": "defined upper lashes" },
+    { "id": "Wispies1", "colors": 1, "look": "fluttery wispy lashes" },
+    { "id": "Winged1", "colors": 1, "look": "lifted outer corners" },
+    { "id": "UpperDense1", "colors": 1, "look": "dense dramatic upper lashes" }
+  ]
+}

@@ -11,7 +11,7 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
 
 ## Slices
 
-- [ ] **1. Upload a photo and see today's skin read**
+- [x] **1. Upload a photo and see today's skin read**
   Becomes usable: Open the app, tap Start, take or upload a face photo, and see the Skin Analysis screen: skin tone chip and one glass card per point. Tapping a card lights up that area's mask on her photo. Runs fully from recorded fixtures with no keys.
   Why now: YouCam is the riskiest unknown (upload flow, polling, latency, image limits, mask cross-origin). Proving it first, with real responses recorded, means every later slice builds on known data. Scaffold and design tokens come along because this slice needs real screens.
   PRD ref: `prd.md > The Core Journey` (steps 1-3), `prd.md > Welcome and Photo Capture`, `prd.md > Skin Analysis`, `prd.md > Look and Feel`

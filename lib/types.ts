@@ -64,4 +64,8 @@ export type LooksResponse = { looks: Look[] };
 
 /** POST /api/render — paints steps[0..n] cumulatively onto the uploaded photo. */
 export type RenderRequest = { fileId: string; steps: Step[] };
-export type RenderResponse = { image: string };
+export type RenderResponse = {
+  image: string;
+  /** Replay mode only: no recording matched these steps, so this is the unpainted photo. */
+  placeholder?: true;
+};

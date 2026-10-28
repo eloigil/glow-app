@@ -63,7 +63,7 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 2 (the layer-by-layer tutorial), while feedback can still shape the grid, saving and polish
+- [x] Early usable behavior explored — after slice 2 (the layer-by-layer tutorial), while feedback can still shape the grid, saving and polish
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review

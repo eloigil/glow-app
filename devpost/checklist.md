@@ -74,15 +74,15 @@ Final review outcome: learner tried the full journey and asked for no changes ("
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
+- [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: 
-Route and stops: 
-Edit outcome: 
-Reflection: 
-Activity mode: 
+Activity and evidence: brief evidence-based recap (learner asked to ship; no learning goal was set). Connected the "corrects" gaming found in the first real OpenAI plan (eyebrows "fixing" puffy eyes) to the executable criterion `CORRECTORS` + `validate()` + `repair()` in `lib/openai/plan.ts` and the Revisions entry.
+Route and stops: reference-only route in the app map: `lib/useStepRenders.ts` `renderStep` -> `lib/youcam/effects.ts` `toEffects` -> `app/api/render/route.ts` `POST`; not toured live.
+Edit outcome: not applicable (no edit offered; learner confirmed ready to ship).
+Reflection: offered in the wrap-up message; any answer stays in the ignored learner profile.
+Activity mode: recap.
 
 ## Revisions
 

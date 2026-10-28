@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowApp App Map</title>
+<style>
+  :root { --canvas: #F6F3F5; --surface: #FDFCFD; --ink: #17141A; --muted: #5D5662; --line: #EDE4EA; --rose: #EC94B0; --rose-ink: #A8405F; --wash: #FBE8EE; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --muted: #B4AAB3; --line: #2E2830; --rose: #F4B6C9; --rose-ink: #F4B6C9; --wash: #33222B; } }
+  :root[data-theme="dark"] { --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --muted: #B4AAB3; --line: #2E2830; --rose: #F4B6C9; --rose-ink: #F4B6C9; --wash: #33222B; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink); font: 16px/1.6 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 40px 16px 80px; }
+  h1 { font-size: clamp(30px, 6vw, 44px); line-height: 1.1; letter-spacing: -.02em; margin: 0 0 10px; }
+  h2 { font-size: 22px; margin: 48px 0 12px; letter-spacing: -.01em; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  code { font: 14px/1.4 ui-monospace, "SF Mono", Menlo, monospace; background: var(--wash); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+  .card { background: var(--surface); border-radius: 10px; padding: 18px 20px; margin-bottom: 12px; }
+  .pieces { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .pieces .card h3 { margin: 0 0 6px; font-size: 16px; }
+  .pieces .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  svg { width: 100%; height: auto; display: block; }
+  svg .box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  svg .ext { fill: var(--surface); stroke: var(--rose); stroke-dasharray: 5 4; stroke-width: 1.5; }
+  svg text { fill: var(--ink); font: 500 13px ui-sans-serif, system-ui, sans-serif; }
+  svg .small { fill: var(--muted); font-size: 11px; }
+  svg .edge { stroke: var(--rose); stroke-width: 2; fill: none; marker-end: url(#a); }
+  ol.route { padding-left: 22px; }
+  ol.route li { margin-bottom: 14px; }
+  ol.route b { display: block; }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  details { background: var(--surface); border-radius: 10px; padding: 4px 16px; margin-bottom: 10px; }
+  summary { cursor: pointer; padding: 10px 0; font-weight: 600; }
+  .practice { border-left: 3px solid var(--rose); }
+  pre { background: var(--surface); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 14px/1.5 ui-monospace, Menlo, monospace; }
+  a { color: var(--rose-ink); }
+</style>
+</head>
+<body>
+<main>
+  <h1>GlowApp, mapped</h1>
+  <p class="muted">A take-home guide to the finished proof of concept: what the pieces are, how one action flows through the code, and where to start a change. Snapshot of commit <code>7c4542f</code> on <code>main</code>; it can drift as the code changes.</p>
+
+  <h2>What it is</h2>
+  <p>GlowApp reads her skin today with YouCam, asks OpenAI for five looks that fix today's points, and teaches the chosen look step by step: each step is her own photo with only the layers so far, painted by YouCam's Makeup try-on.</p>
+  <div class="pieces">
+    <div class="card"><h3>Screens</h3><p><code>app/</code>: <code>/</code>, <code>/photo</code>, <code>/analysis</code>, <code>/looks</code>, <code>/tutorial</code>, <code>/saved</code>. Session lives in memory in <code>lib/session.tsx</code>.</p></div>
+    <div class="card"><h3>Server routes</h3><p><code>app/api/analyze</code>, <code>app/api/looks</code>, <code>app/api/render</code>. They hold the keys and talk to YouCam and OpenAI.</p></div>
+    <div class="card"><h3>Replay layer</h3><p><code>lib/replay.ts</code>: <code>API_MODE</code> replay (default, from <code>fixtures/</code>), record, or live.</p></div>
+    <div class="card"><h3>On the device</h3><p>Skin tone in localStorage (<code>lib/toneCache.ts</code>), saved looks in IndexedDB (<code>lib/saved.ts</code>).</p></div>
+  </div>
+
+  <h2>One action, end to end: "Start makeup" paints a step</h2>
+  <div class="card">
+    <svg viewBox="0 0 800 230" role="img" aria-label="Start makeup in the Tutorial screen calls useStepRenders, which posts to /api/render; the route maps steps to YouCam effects and calls Makeup VTO (or reads a fixture in replay), and the image comes back to the tutorial layer.">
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#EC94B0"/></marker></defs>
+      <rect class="box" x="10" y="20" width="180" height="70" rx="10"/><text x="26" y="48">Tutorial screen</text><text class="small" x="26" y="68">app/tutorial/page.tsx</text>
+      <rect class="box" x="220" y="20" width="180" height="70" rx="10"/><text x="236" y="48">renderStep()</text><text class="small" x="236" y="68">lib/useStepRenders.ts</text>
+      <rect class="box" x="430" y="20" width="180" height="70" rx="10"/><text x="446" y="48">POST /api/render</text><text class="small" x="446" y="68">toEffects() + replayable()</text>
+      <rect class="ext" x="640" y="20" width="150" height="70" rx="10"/><text x="656" y="48">YouCam</text><text class="small" x="656" y="68">Makeup VTO, 1 unit</text>
+      <rect class="box" x="430" y="140" width="180" height="70" rx="10"/><text x="446" y="168">fixtures/render/</text><text class="small" x="446" y="188">replay answers, 0 units</text>
+      <rect class="box" x="10" y="140" width="380" height="70" rx="10"/><text x="26" y="168">Her face with layers 1..N</text><text class="small" x="26" y="188">image cross-fades in, tip in the sheet below</text>
+      <path class="edge" d="M190 55 H216"/><path class="edge" d="M400 55 H426"/><path class="edge" d="M610 55 H636"/>
+      <path class="edge" d="M520 90 V136"/><path class="edge" d="M430 175 H394"/>
+    </svg>
+  </div>
+
+  <h2>A three-stop route (reference)</h2>
+  <p class="muted">Not toured live; a route to follow next time you want to change how steps paint.</p>
+  <ol class="route">
+    <li><b>Ask for the step image</b><code>lib/useStepRenders.ts</code> → <code>renderStep</code>. Posts <code>steps.slice(0, i + 1)</code> with the photo's <code>fileId</code>, so step N always means "layers 1 to N". Results are cached per photo, look and step, so leaving and returning never pays twice.</li>
+    <li><b>Turn steps into YouCam effects</b><code>lib/youcam/effects.ts</code> → <code>toEffect</code> / <code>toEffects</code>. Maps the planner's simple step (category, pattern, colors, intensity, finish) onto YouCam's per-category schema, plus light constant skin smoothing.</li>
+    <li><b>Paint or replay</b><code>app/api/render/route.ts</code> → <code>POST</code>. Wraps the call in <code>replayable()</code>: replay reads <code>fixtures/render/&lt;hash&gt;.json</code>, live runs the Makeup VTO task, downloads the result and re-encodes it as a JPEG data URL so it never expires.</li>
+  </ol>
+
+  <h2>To change this, start here</h2>
+  <ul>
+    <li><b>What counts as one of today's points:</b> <code>POINT_THRESHOLD</code> in <code>lib/youcam/concerns.ts</code> (currently 85; YouCam scores are 1-100, higher is healthier).</li>
+    <li><b>The kinds of looks and tips the AI writes:</b> the <code>SYSTEM</code> prompt and <code>CORRECTORS</code> in <code>lib/openai/plan.ts</code>; the JSON shape in <code>lib/openai/schema.ts</code>; the model in <code>lib/openai/model.ts</code>.</li>
+    <li><b>Which makeup shapes it may use:</b> <code>lib/youcam/patterns.json</code> (ids must match YouCam's catalog labels). Changing effects invalidates recorded renders; re-record with <code>API_MODE=record</code>.</li>
+    <li><b>Error copy:</b> <code>lib/youcam/errors.ts</code> maps YouCam error codes to the messages she sees.</li>
+    <li><b>Colors, radii, glass:</b> tokens in <code>app/globals.css</code>.</li>
+  </ul>
+
+  <h2>A practice to reuse</h2>
+  <div class="card practice">
+    <p><b>Turn an acceptance criterion into a check that runs on every AI answer.</b></p>
+    <p>The PRD said every look must fix today's points (<code>prd.md</code> &gt; Step-by-Step Tutorial). The first real plan "passed" by labeling eyebrows as fixing puffy eyes and lipstick as fixing spots. Reading the actual output caught it; the fix made the criterion executable: <code>CORRECTORS</code> plus <code>validate()</code> in <code>lib/openai/plan.ts</code> reject those plans and feed the problems back for one retry, and <code>repair()</code> cleans whatever still slips through (recorded under <code>checklist.md</code> &gt; Revisions).</p>
+    <p>On the next project with an LLM in the loop: write the rule the output must satisfy, check it in code before anything reaches the screen, and look at a few real outputs early, because a model can satisfy the letter of a prompt and miss its point.</p>
+  </div>
+
+  <h2>Run it again</h2>
+<pre>npm install
+npm run dev            # replay mode, no keys needed
+npm run dev -- -p 3100 # if port 3000 is taken</pre>
+  <details>
+    <summary>Real APIs and recording</summary>
+    <p>Copy <code>.env.example</code> to <code>.env</code>, add <code>YOUCAM_API_KEY</code> and <code>OPENAI_API_KEY</code>, and set <code>API_MODE=live</code> (nothing saved) or <code>API_MODE=record</code> (saves to <code>fixtures/</code>). Next 16 runs one dev server per folder, so record with <code>npm run build</code> then <code>API_MODE=record npx next start -p 3213</code> while your dev server keeps running.</p>
+  </details>
+</main>
+</body>
+</html>

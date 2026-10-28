@@ -19,9 +19,9 @@ function key() {
 type Envelope<T> = { status: number; data?: T; error?: string; error_code?: string };
 
 /** Network-level timeouts and aborts surface as a TaskTimeout so they get the calm demo message. */
-export async function fetchOrTimeout(url: string, init: RequestInit): Promise<Response> {
+export async function fetchOrTimeout(url: string, init: RequestInit, ms = 15_000): Promise<Response> {
   try {
-    return await fetch(url, { ...init, signal: AbortSignal.timeout(15_000) });
+    return await fetch(url, { ...init, signal: AbortSignal.timeout(ms) });
   } catch (e) {
     if (e instanceof DOMException && (e.name === "TimeoutError" || e.name === "AbortError")) {
       throw new YouCamError("TaskTimeout", `Request timed out: ${url.split("?")[0]}`);

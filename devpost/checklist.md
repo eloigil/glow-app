@@ -90,3 +90,4 @@ Activity mode:
 - YouCam Skin Analysis needs the face wider than 60% of the image, so ordinary selfies may fail with "move closer"; the demo photo is cropped to 67%. Slice 5's error copy covers it and Add Photo should hint at filling the frame.
 - Skin Analysis layout: the photo keeps the top 58% and the sheet overlaps only its bottom edge (with Continue pinned), because a full-bleed photo hid the face and its highlights under the sheet; masks render as a glowing fill over a light scrim since the soft rose tint was invisible on sparse masks.
 
+- Replay returns the one recorded analysis for any upload and shows the recorded demo face, instead of keying by a hash of the photo — a photo hash would never match a new upload, and showing the recorded face keeps the masks aligned. Renders (slice 2+) are keyed by a hash of their effect list as planned.

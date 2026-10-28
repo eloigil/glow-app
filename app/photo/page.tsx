@@ -8,9 +8,10 @@ import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { ScanSweep } from "@/components/ScanSweep";
 import { resizePhoto } from "@/lib/image";
+import { postJson } from "@/lib/postJson";
 import { useSession } from "@/lib/session";
 import { readTone, writeTone } from "@/lib/toneCache";
-import type { AnalyzeResponse, ApiErrorBody } from "@/lib/types";
+import type { AnalyzeResponse } from "@/lib/types";
 
 type State = { kind: "idle" } | { kind: "analyzing"; preview: string } | { kind: "error"; preview: string; message: string };
 
@@ -38,19 +39,13 @@ export default function AddPhoto() {
         return;
       }
       form.append("hasTone", cached ? "1" : "0");
-      const res = await fetch("/api/analyze", { method: "POST", body: form });
-      const body = (await res.json()) as AnalyzeResponse | ApiErrorBody;
-      if (!res.ok || "error" in body) {
-        const message = "error" in body ? body.error.message : "This photo didn't work. Try another.";
-        setState({ kind: "error", preview, message });
-        return;
-      }
+      const body = await postJson<AnalyzeResponse>("/api/analyze", form);
       if (body.tone) writeTone(body.tone);
       setSession({ photo: body.photo ?? preview, analysis: body, tone: body.tone ?? cached });
       previewUrl.current = null; // the analysis page still shows this URL
       router.push("/analysis");
-    } catch {
-      setState({ kind: "error", preview, message: "Something went wrong. Check your connection and try again." });
+    } catch (e) {
+      setState({ kind: "error", preview, message: (e as Error).message });
     }
   }
 

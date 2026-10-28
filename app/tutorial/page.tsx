@@ -14,7 +14,7 @@ export default function Tutorial() {
   const reduce = useReducedMotion();
   const { session } = useSession();
   const look = session.looks?.find((l) => l.id === session.lookId);
-  const { images, errors, placeholder, retry } = useStepRenders(look, session.analysis?.fileId);
+  const { images, placeholders, errors, retry } = useStepRenders(look, session.analysis?.fileId);
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -23,13 +23,11 @@ export default function Tutorial() {
 
   const total = look?.steps.length ?? 0;
   const go = useCallback(
-    (i: number) => {
-      // TODO(slice 4): Finish view with Save instead of returning home.
-      if (i >= total) router.push("/");
-      else setCurrent(Math.max(0, i));
-    },
-    [total, router],
+    (i: number) => setCurrent(Math.max(0, Math.min(i, total - 1))),
+    [total],
   );
+  // TODO(slice 4): Finish view with Save instead of returning home.
+  const next = () => (current >= total - 1 ? router.push("/") : go(current + 1));
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -42,11 +40,13 @@ export default function Tutorial() {
 
   // Show this step's render, or while it paints, the latest earlier layer (or her bare photo).
   const ready = images[current];
-  const shown = ready ?? images.slice(0, current).findLast(Boolean) ?? session.photo;
+  const shownIndex = ready ? current : images.slice(0, current).findLastIndex(Boolean);
+  const shown = (shownIndex >= 0 ? images[shownIndex] : undefined) ?? session.photo;
+  const standIn = shownIndex >= 0 && placeholders[shownIndex];
   // Keep the previous image underneath so the new layer cross-fades in on top of it.
   // (Adjusted during render rather than in an effect, so the fade starts on the same paint.)
   const [layers, setLayers] = useState<string[]>([]);
-  if (shown && layers.at(-1) !== shown) setLayers([layers.at(-1) ?? shown, shown]);
+  if (shown && layers.at(-1) !== shown) setLayers(layers.length ? [layers.at(-1)!, shown] : [shown]);
 
   if (!look || !session.photo) return null;
   const step = look.steps[current];
@@ -68,23 +68,23 @@ export default function Tutorial() {
       >
         {layers.map((src, i) => (
           <motion.img
-            key={src + i}
+            key={src}
             src={src}
-            alt={i === layers.length - 1 ? `Your face after: ${step.title}` : ""}
+            alt={i < layers.length - 1 ? "" : ready ? `Your face after: ${step.title}` : `Your face, painting ${step.title}`}
             draggable={false}
             className="pointer-events-none absolute inset-0 size-full object-cover"
-            initial={i === layers.length - 1 && !reduce ? { opacity: 0 } : false}
+            initial={i === layers.length - 1 && i > 0 && !reduce ? { opacity: 0 } : false}
             animate={{ opacity: 1 }}
             transition={{ duration: reduce ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
           />
         ))}
-        {!ready && (
+        {!ready && !errors[current] && (
           <div className="shimmer absolute inset-0 grid place-items-end justify-center pb-16" role="status">
             <span className="glass rounded-full px-3 py-1 text-xs font-medium">Painting this step</span>
           </div>
         )}
-        {placeholder && (
-          <span className="absolute top-16 right-3 rounded-full bg-[#17141a]/50 px-2 py-0.5 text-[10px] text-[#fdfcfd]">replay</span>
+        {standIn && (
+          <span className="absolute top-16 right-3 rounded-full bg-ink/70 px-2 py-0.5 text-[10px] text-canvas">replay</span>
         )}
       </motion.div>
 
@@ -96,7 +96,7 @@ export default function Tutorial() {
         error={errors[current]}
         onRetry={() => retry(current)}
         onBack={() => go(current - 1)}
-        onNext={() => go(current + 1)}
+        onNext={next}
       />
     </div>
   );

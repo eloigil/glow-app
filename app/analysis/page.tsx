@@ -5,12 +5,13 @@ import { useRouter } from "next/navigation";
 import { DropletIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/Button";
 import { ConcernCard } from "@/components/ConcernCard";
-import { CONCERN_LOOK as look } from "@/components/concernLook";
+import { CONCERN_LOOK } from "@/components/concernLook";
 import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
 import { MaskHighlight } from "@/components/MaskHighlight";
+import { postJson } from "@/lib/postJson";
 import { useSession } from "@/lib/session";
-import type { ApiErrorBody, ConcernKey, LooksResponse } from "@/lib/types";
+import type { ConcernKey, LooksResponse } from "@/lib/types";
 
 export default function SkinAnalysis() {
   const router = useRouter();
@@ -31,18 +32,17 @@ export default function SkinAnalysis() {
     setDesigning(true);
     setError(undefined);
     try {
-      const res = await fetch("/api/looks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ concerns: analysis!.concerns, skinType: analysis!.skinType, tone }),
+      const body = await postJson<LooksResponse>("/api/looks", {
+        concerns: analysis!.concerns,
+        skinType: analysis!.skinType,
+        tone,
       });
-      const body = (await res.json()) as LooksResponse | ApiErrorBody;
-      if (!res.ok || "error" in body) throw new Error("error" in body ? body.error.message : undefined);
+      if (!body.looks?.length) throw new Error("We couldn't design looks this time. Try again.");
       // TODO(slice 3): route to /looks grid instead of jumping into the first look.
-      setSession((s) => ({ ...s, looks: body.looks, lookId: body.looks[0].id, stepImages: {} }));
+      setSession((s) => ({ ...s, looks: body.looks, lookId: body.looks[0].id, stepImages: {}, stepPlaceholders: {}, stepErrors: {} }));
       router.push("/tutorial");
     } catch (e) {
-      setError((e as Error).message || "Something went wrong. Try again.");
+      setError((e as Error).message);
       setDesigning(false);
     }
   }
@@ -78,9 +78,9 @@ export default function SkinAnalysis() {
               {points.map((c) => (
                 <ConcernCard
                   key={c.key}
-                  icon={look[c.key].icon}
+                  icon={CONCERN_LOOK[c.key].icon}
                   label={c.label}
-                  hint={look[c.key].hint}
+                  hint={CONCERN_LOOK[c.key].hint}
                   active={c.key === active}
                   onClick={() => setActive(c.key === active ? undefined : c.key)}
                 />

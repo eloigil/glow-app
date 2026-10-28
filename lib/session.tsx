@@ -14,6 +14,10 @@ type Session = {
   lookId?: string;
   /** Per look id: index i is the render with steps 0..i applied. */
   stepImages?: Record<string, (string | undefined)[]>;
+  /** Per look id: index i is true when stepImages[i] is a replay stand-in, not a real render. */
+  stepPlaceholders?: Record<string, boolean[]>;
+  /** Render failures keyed `${look.id}:${stepIndex}`. */
+  stepErrors?: Record<string, string>;
 };
 
 type SessionContext = { session: Session; setSession: Dispatch<SetStateAction<Session>> };

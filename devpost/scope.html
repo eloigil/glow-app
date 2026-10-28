@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowApp Scope</title>
+<style>
+  :root {
+    --bg: #fbf7f4; --surface: #ffffff; --ink: #2a1f1d; --muted: #7a6a66;
+    --line: #eadfd9; --accent: #c4566e; --accent-soft: #f7e3e7; --gold: #b8863b;
+    --later: #6b7fa8; --later-soft: #e6ebf5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1a1416; --surface: #241c1f; --ink: #f3e9e6; --muted: #b3a29d;
+      --line: #3a2e31; --accent: #e9849a; --accent-soft: #3a2228; --gold: #d9ab62;
+      --later: #9fb1d6; --later-soft: #232a3a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1a1416; --surface: #241c1f; --ink: #f3e9e6; --muted: #b3a29d;
+    --line: #3a2e31; --accent: #e9849a; --accent-soft: #3a2228; --gold: #d9ab62;
+    --later: #9fb1d6; --later-soft: #232a3a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.6 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 48px 16px 80px; }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  h1 { font: 600 clamp(40px, 8vw, 64px)/1 Georgia, "Times New Roman", serif; margin: 8px 0 12px; letter-spacing: -.02em; }
+  h1 span { color: var(--accent); }
+  .lede { font-size: 19px; color: var(--muted); max-width: 640px; margin: 0; }
+  h2 { font: 600 24px/1.2 Georgia, serif; margin: 56px 0 16px; }
+  .kernel { margin-top: 36px; padding: 24px 28px; border-radius: 16px;
+    background: var(--accent-soft); border-left: 4px solid var(--accent); }
+  .kernel strong { display: block; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .kernel p { margin: 0; font-size: 18px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+  .card h3 { margin: 0 0 6px; font-size: 15px; color: var(--muted); font-weight: 600; }
+  .card p { margin: 0; }
+  /* loop diagram */
+  .loop { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .steps { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .step { flex: 1 0 104px; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+    border-radius: 12px; padding: 12px 10px; text-align: left; cursor: pointer; font: inherit; font-size: 14px; position: relative; }
+  .step b { display: block; font-size: 11px; color: var(--muted); letter-spacing: .1em; }
+  .step[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .step.kernel-step { box-shadow: inset 0 0 0 1px var(--gold); }
+  .step.kernel-step::after { content: "kernel"; position: absolute; top: -9px; right: 8px; font-size: 10px;
+    background: var(--gold); color: var(--surface); padding: 0 6px; border-radius: 6px; letter-spacing: .08em; }
+  .return { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+  .return::before { content: "↺ "; color: var(--accent); }
+  .detail { margin-top: 16px; padding: 16px 18px; border-radius: 12px; background: var(--bg); min-height: 84px; }
+  .detail h4 { margin: 0 0 4px; }
+  .detail p { margin: 0; color: var(--muted); }
+  /* layer preview */
+  .layers { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .layers svg { width: 140px; height: 160px; flex: none; }
+  .layers input { width: 100%; accent-color: var(--accent); }
+  .layers .ctl { flex: 1 1 260px; }
+  .layers .note { font-size: 13px; color: var(--muted); }
+  /* boundary */
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 12px; }
+  summary { cursor: pointer; padding: 16px 20px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 10px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; margin-left: auto; color: var(--muted); font-weight: 400; }
+  details[open] summary::after { content: "–"; }
+  .tag { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
+  .tag.now { background: var(--accent-soft); color: var(--accent); }
+  .tag.later { background: var(--later-soft); color: var(--later); }
+  .tag.cut { background: var(--line); color: var(--muted); }
+  details ul { margin: 0; padding: 0 20px 18px 40px; }
+  details li { margin: 6px 0; }
+  details li small { color: var(--muted); }
+  .constraints { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+  .chip b { color: var(--accent); }
+  .phone-wrap { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .phone { width: 180px; height: 360px; flex: none; border: 2px solid var(--ink); border-radius: 28px; padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+  .wiz { display: flex; gap: 4px; }
+  .wiz i { flex: 1; height: 6px; border-radius: 3px; background: var(--line); }
+  .wiz i.done { background: var(--accent); opacity: .5; }
+  .wiz i.cur { background: var(--accent); }
+  .face { flex: 0 0 55%; border-radius: 14px; background: var(--accent-soft); display: flex; align-items: center;
+    justify-content: center; text-align: center; font-size: 12px; color: var(--accent); line-height: 1.4; }
+  .tips { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+  .tips span { height: 6px; border-radius: 3px; background: var(--line); }
+  .tips span.short { width: 60%; }
+  .phone-notes { margin: 0; padding-left: 18px; flex: 1 1 220px; }
+  .phone-notes li { margin: 6px 0; }
+  footer { margin-top: 56px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Scope · approved · YouCam Skin AI track · mobile-first</div>
+  <h1>Glow<span>App</span></h1>
+  <p class="lede">A makeup tutor that reads your skin today and walks you, step by step, through a look rendered on your own face.</p>
+
+  <div class="kernel">
+    <strong>The kernel</strong>
+    <p>Not “here's you, here's the end result.” It's <em>this is you, today; these are the products you need; this is how to apply them</em>, one layer at a time on your own photo, tailored to your skin's current state. The whole look, no need to learn makeup.</p>
+  </div>
+
+  <h2>The core loop</h2>
+  <div class="loop">
+    <div class="steps" role="group" aria-label="Core loop steps">
+      <button class="step" aria-pressed="true" data-i="0"><b>01</b>Upload photo</button>
+      <button class="step" aria-pressed="false" data-i="1"><b>02</b>Skin read</button>
+      <button class="step" aria-pressed="false" data-i="2"><b>03</b>Looks for today</button>
+      <button class="step" aria-pressed="false" data-i="3"><b>04</b>Products</button>
+      <button class="step kernel-step" aria-pressed="false" data-i="4"><b>05</b>Layer-by-layer tutorial</button>
+      <button class="step" aria-pressed="false" data-i="5"><b>06</b>Save favorite</button>
+    </div>
+    <p class="return">She comes back because her skin changes day to day. Saved looks replay without spending more credits.</p>
+    <div class="detail" aria-live="polite"><h4></h4><p></p></div>
+  </div>
+
+  <h2>What a step looks like</h2>
+  <div class="card layers">
+    <svg viewBox="0 0 140 160" aria-label="Face with layers applied so far" role="img">
+      <ellipse cx="70" cy="84" rx="48" ry="62" fill="#e8c4a8" stroke="var(--line)"/>
+      <ellipse id="l-base" cx="70" cy="84" rx="48" ry="62" fill="#f1d3bc" opacity="0"/>
+      <circle cx="92" cy="104" r="3" fill="#c97a6a"/>
+      <circle id="l-conceal" cx="92" cy="104" r="7" fill="#f1d3bc" opacity="0"/>
+      <g id="l-eyes" opacity="0"><path d="M38 72 q14 -8 26 0" stroke="#2a1f1d" stroke-width="2.5" fill="none"/><path d="M76 72 q14 -8 26 0" stroke="#2a1f1d" stroke-width="2.5" fill="none"/></g>
+      <ellipse cx="51" cy="74" rx="6" ry="3" fill="#5b3b2e"/><ellipse cx="89" cy="74" rx="6" ry="3" fill="#5b3b2e"/>
+      <g id="l-cheeks" opacity="0"><ellipse cx="42" cy="100" rx="10" ry="6" fill="#e48a95" opacity=".5"/><ellipse cx="98" cy="100" rx="10" ry="6" fill="#e48a95" opacity=".5"/></g>
+      <path d="M58 122 q12 6 24 0" stroke="#b5776a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path id="l-lips" d="M58 122 q12 8 24 0" stroke="#c4566e" stroke-width="5" fill="none" stroke-linecap="round" opacity="0"/>
+    </svg>
+    <div class="ctl">
+      <label for="layer"><b id="layer-name">Step 0: your photo, untouched</b></label>
+      <input id="layer" type="range" min="0" max="5" value="0">
+      <p class="note">Illustration only. Each tutorial step shows <em>her</em> photo with only the layers applied so far, plus an LLM-written technique tip. Real steps depend on the chosen look; the red dot stands for a concern the skin read found today.</p>
+    </div>
+  </div>
+
+  <h2>Tutorial screen, on mobile</h2>
+  <div class="card phone-wrap">
+    <div class="phone" aria-label="Mobile tutorial layout sketch">
+      <div class="wiz"><i class="done"></i><i class="done"></i><i class="cur"></i><i></i><i></i></div>
+      <div class="face">her face, this step applied<br><small>≥ half the screen</small></div>
+      <div class="tips"><b>Step 3 · Eyeliner</b><span></span><span></span><span class="short"></span></div>
+    </div>
+    <ul class="phone-notes">
+      <li><b>Top:</b> steps as a wizard</li>
+      <li><b>Middle:</b> her face, at least half the screen, “you have to see what to do”</li>
+      <li><b>Below:</b> technique tips</li>
+    </ul>
+  </div>
+
+  <h2>Who it's for</h2>
+  <div class="grid">
+    <div class="card"><h3>The person</h3><p>Women who want good makeup adapted to their skin, without spending time learning technique. For pimple and skin-condition days, and for everyday use.</p></div>
+    <div class="card"><h3>What they do today</h3><p>Guess, or follow generic tutorials made for someone else's face.</p></div>
+  </div>
+
+  <h2>What “working” looks like</h2>
+  <div class="card">
+    <p>Demo with a face photo: upload → a couple of concerns highlighted on her face → personalized looks designed for her → pick one → all its products shown → tutorial, step by step, each step her own face with that layer applied plus technique text → save as a preferred look.</p>
+    <p style="margin-top:10px"><b style="color:var(--accent)">The “oh, that's cool” beat:</b> the tutorial building up layer by layer on <em>her</em> face, adapted to <em>today's</em> skin.</p>
+  </div>
+
+  <h2>Boundary</h2>
+  <details open>
+    <summary><span class="tag now">Now</span> In the proof of concept</summary>
+    <ul>
+      <li>Face photo upload</li>
+      <li>YouCam Skin AI analysis, concerns highlighted on the photo</li>
+      <li>Five looks for today (skin tone + current concerns), labeled <b>easy / medium / difficult</b> <small>(at least one of each, plus two more)</small></li>
+      <li>Product list per look, with plain product links <small>(no affiliate)</small></li>
+      <li>Step-by-step tutorial: per-step render of cumulative layers + LLM technique explanation</li>
+      <li>Save a look as a favorite, replayable without more API credits</li>
+    </ul>
+  </details>
+  <details>
+    <summary><span class="tag later">Later</span> Worth doing, not now</summary>
+    <ul>
+      <li><b>“Use what I own”</b>: list your products, some proposals use them <small>(e.g. 2 of 5). Shape the data model now so it's a small change later.</small></li>
+      <li><b>Brush animation</b> on each step <small>(standalone, easy to add)</small></li>
+      <li>Affiliate links (Amazon referrals, etc.)</li>
+    </ul>
+  </details>
+  <details>
+    <summary><span class="tag cut">Cut</span> Explicitly out</summary>
+    <ul><li>Nothing cut outright.</li></ul>
+  </details>
+
+  <h2>Constraints</h2>
+  <div class="constraints">
+    <span class="chip"><b>~3 days</b> to build</span>
+    <span class="chip"><b>1,000</b> free YouCam API units</span>
+    <span class="chip">Claude spend <b>well under €1,000</b></span>
+    <span class="chip">Budget renders per step <b>(e.g. only the chosen look)</b></span>
+    <span class="chip">Open for spec: <b>preview render for all 5 looks?</b></span>
+    <span class="chip">Demo photo: <b>one you have rights to</b></span>
+  </div>
+
+  <footer>
+    Canonical plan: <code>devpost/scope.md</code>. This page is a review companion.
+    Competition: <a href="https://youcam-api-skin-ai-ecommerce.devpost.com/">YouCam API Skin AI &amp; eCommerce VTO Hackathon</a>.
+  </footer>
+</main>
+<script>
+  const steps = [
+    ["Upload photo", "She uploads a current face photo."],
+    ["Skin read", "YouCam Skin AI analyzes it; a few concerns are highlighted directly on her face."],
+    ["Looks for today", "Five personalized looks, tones matched to her skin and adapted to today's concerns. Always at least one easy, one medium, one difficult."],
+    ["Products", "Selecting a look shows every product it needs, with plain product links."],
+    ["Layer-by-layer tutorial", "Each step: her photo with only the layers so far, plus an LLM-written explanation of the technique, tips and tricks."],
+    ["Save favorite", "Save the look to replay another day without regenerating or spending more credits."]
+  ];
+  const btns = document.querySelectorAll(".step"), h = document.querySelector(".detail h4"), p = document.querySelector(".detail p");
+  function show(i) {
+    btns.forEach((b, j) => b.setAttribute("aria-pressed", String(i === j)));
+    h.textContent = steps[i][0]; p.textContent = steps[i][1];
+  }
+  btns.forEach(b => b.addEventListener("click", () => show(+b.dataset.i)));
+  show(0);
+
+  const layers = [
+    ["Step 0: your photo, untouched", []],
+    ["Step 1: base", ["l-base"]],
+    ["Step 2: + concealer on today's spot", ["l-base", "l-conceal"]],
+    ["Step 3: + eyeliner", ["l-base", "l-conceal", "l-eyes"]],
+    ["Step 4: + blush", ["l-base", "l-conceal", "l-eyes", "l-cheeks"]],
+    ["Step 5: + lips", ["l-base", "l-conceal", "l-eyes", "l-cheeks", "l-lips"]]
+  ];
+  const ids = ["l-base", "l-conceal", "l-eyes", "l-cheeks", "l-lips"];
+  const range = document.getElementById("layer"), name = document.getElementById("layer-name");
+  range.addEventListener("input", () => {
+    const [label, on] = layers[range.value];
+    name.textContent = label;
+    ids.forEach(id => document.getElementById(id).setAttribute("opacity", on.includes(id) ? "1" : "0"));
+  });
+</script>
+</body>
+</html>

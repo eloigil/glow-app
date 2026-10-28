@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowApp Spec</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+<style>
+  :root {
+    --canvas: #F6F3F5; --surface: #FDFCFD; --ink: #17141A; --muted: #5D5662; --line: #EDE4EA;
+    --rose: #EC94B0; --wash: #FBE8EE; --grad: linear-gradient(100deg, #F6C1D2, #FCE3DA);
+    --display: "Unbounded", "Helvetica Neue", Arial, sans-serif; --body: "Geist", system-ui, sans-serif; --mono: "Geist Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --muted: #B4AAB3; --line: #2E2830; --rose: #F4B6C9; --wash: #33222B; } }
+  :root[data-theme="dark"] { --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --muted: #B4AAB3; --line: #2E2830; --rose: #F4B6C9; --wash: #33222B; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink); font: 400 16px/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+  main { max-width: 1080px; margin: 0 auto; padding: 48px 16px 96px; }
+  h1 { font: 700 clamp(40px, 7vw, 72px)/1 var(--display); letter-spacing: -.03em; margin: 16px 0 14px; }
+  h2 { font: 600 clamp(24px, 3.6vw, 32px)/1.2 var(--body); letter-spacing: -.02em; margin: 0 0 8px; }
+  h3 { margin: 0; font: 600 17px var(--body); }
+  section { padding-top: 80px; }
+  .sub { color: var(--muted); max-width: 62ch; margin: 0 0 24px; }
+  .status { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); border-radius: 999px; padding: 5px 12px 5px 8px; background: var(--wash); }
+  iconify-icon { display: inline-flex; font-size: 1.4em; vertical-align: -.3em; color: var(--rose); flex: none; }
+  code, .mono { font-family: var(--mono); font-size: .88em; }
+  .card { background: var(--surface); border-radius: 10px; padding: 22px; }
+
+  /* Plain-language hero */
+  .plain { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 860px) { .plain { grid-template-columns: 1fr; } }
+  .plain p { margin: 0 0 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 12px 5px 8px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; }
+
+  /* Architecture */
+  .arch svg { width: 100%; height: auto; display: block; }
+  .arch .box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  .arch .box.server { fill: var(--wash); }
+  .arch .box.ext { fill: var(--surface); stroke: var(--rose); stroke-dasharray: 5 4; }
+  .arch text { fill: var(--ink); font: 500 13px var(--body); }
+  .arch .small { fill: var(--muted); font-size: 11px; }
+  .arch .title { font: 600 12px var(--body); fill: var(--muted); letter-spacing: .02em; }
+  .arch .edge { stroke: var(--rose); stroke-width: 2; fill: none; marker-end: url(#arrow); }
+  .arch .edge.dim { stroke: var(--line); }
+
+  /* Journey stepper */
+  .journey { display: grid; grid-template-columns: 300px 1fr; gap: 24px; }
+  @media (max-width: 860px) { .journey { grid-template-columns: 1fr; } }
+  .jlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .jlist button { width: 100%; text-align: left; border: 0; border-radius: 8px; padding: 9px 14px; font: 500 14px var(--body); background: transparent; color: var(--muted); cursor: pointer; display: flex; gap: 10px; align-items: center; }
+  .jlist button .n { font-family: var(--mono); font-size: 12px; width: 20px; color: var(--muted); }
+  .jlist button.on { background: var(--surface); color: var(--ink); box-shadow: 0 6px 20px rgb(120 50 80 / .08); }
+  .jd h3 { font: 700 22px var(--display); letter-spacing: -.02em; margin-bottom: 10px; }
+  .jd .what { margin: 0 0 16px; }
+  .meta { display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; font-size: 14px; }
+  .meta dt { color: var(--muted); }
+  .meta dd { margin: 0; }
+  .units { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; background: var(--grad); padding: 2px 10px; font-size: 13px; font-weight: 500; color: #17141A; }
+  .nav { display: flex; gap: 8px; margin-top: 18px; }
+  .btn { border: 0; border-radius: 8px; padding: 10px 18px; font: 500 14px var(--body); cursor: pointer; background: var(--grad); color: #17141A; box-shadow: inset 0 1px 0 rgb(255 255 255 / .8), 0 6px 16px rgb(236 148 176 / .3); }
+  .btn.quiet { background: var(--surface); border: 1px solid var(--line); box-shadow: none; color: var(--ink); }
+  .btn:disabled { opacity: .4; cursor: default; }
+
+  /* Budget */
+  .budget { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  @media (max-width: 860px) { .budget { grid-template-columns: 1fr; } }
+  .stack-bar { display: flex; height: 44px; border-radius: 8px; overflow: hidden; margin: 14px 0 10px; }
+  .stack-bar span { display: grid; place-items: center; font-size: 12px; font-weight: 500; color: #17141A; }
+  .legend { display: grid; gap: 6px; font-size: 14px; }
+  .legend div { display: flex; justify-content: space-between; gap: 12px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: 0; }
+  .big { font: 700 44px/1 var(--display); letter-spacing: -.03em; }
+  .toggle { display: flex; gap: 6px; background: var(--wash); border-radius: 999px; padding: 4px; width: max-content; }
+  .toggle button { border: 0; border-radius: 999px; padding: 6px 14px; font: 500 13px var(--body); background: transparent; color: var(--muted); cursor: pointer; }
+  .toggle button.on { background: var(--surface); color: var(--ink); }
+
+  /* Storage */
+  .store { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 860px) { .store { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .store { grid-template-columns: 1fr; } }
+  .store .card { padding: 18px; }
+  .store h3 { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .store p { margin: 0; color: var(--muted); font-size: 14px; }
+  .store .after { margin-top: 10px; font-size: 13px; color: var(--ink); }
+
+  /* Modes */
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 760px) { .modes { grid-template-columns: 1fr; } }
+  .modes .card.default { background: var(--grad); color: #17141A; }
+  .modes .card.default p { color: #3b3036; }
+  .modes p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
+  /* Files + reveals */
+  pre.tree { background: var(--surface); border-radius: 10px; padding: 20px; overflow-x: auto; font: 13px/1.7 var(--mono); margin: 0; }
+  pre.tree b { color: var(--ink); font-weight: 500; }
+  pre.tree span { color: var(--muted); }
+  details { background: var(--surface); border-radius: 10px; margin-bottom: 10px; }
+  summary { cursor: pointer; list-style: none; padding: 16px 18px; font-weight: 600; display: flex; gap: 10px; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; margin-left: auto; color: var(--muted); font-weight: 400; font-size: 20px; }
+  details[open] summary::after { content: "\2212"; }
+  details .body { padding: 0 18px 18px 50px; color: var(--muted); }
+  details .body p { margin: 0 0 8px; }
+  details .body b { color: var(--ink); font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { text-align: left; padding: 8px 10px 8px 0; vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; }
+  tbody tr + tr td { border-top: 1px solid var(--line); }
+  .fail { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  @media (max-width: 760px) { .fail { grid-template-columns: 1fr; } }
+  .fail > div { padding: 16px 0; border-top: 1px solid var(--line); display: flex; gap: 14px; }
+  .fail iconify-icon { font-size: 30px; }
+  .fail p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+  footer { margin-top: 80px; font-size: 13px; color: var(--muted); }
+  a { color: var(--ink); text-decoration-color: var(--rose); text-underline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <span class="status"><iconify-icon icon="hugeicons:hourglass"></iconify-icon>Spec approved</span>
+  <h1>How GlowApp is built</h1>
+
+  <div class="plain">
+    <div>
+      <p>One <b>Next.js</b> project with two halves. <b>The screens</b> run on her phone and keep the session in memory. <b>Three small server routes</b> run on your machine, hold the YouCam and OpenAI keys, and do all the talking.</p>
+      <p>Her skin tone is remembered in the browser, so the 20-unit tone call happens once. Saved looks keep their real images on the device, because YouCam links expire after 2 hours.</p>
+      <p>While building, everything runs in <b>replay mode</b> from recorded responses: 0 units spent, and judges can run it without keys.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:12px">Stack</h3>
+      <div class="chips">
+        <span class="chip"><iconify-icon icon="hugeicons:source-code"></iconify-icon>Next.js + TypeScript</span>
+        <span class="chip"><iconify-icon icon="hugeicons:paint-board"></iconify-icon>Tailwind v4</span>
+        <span class="chip"><iconify-icon icon="hugeicons:magic-wand-01"></iconify-icon>Motion</span>
+        <span class="chip"><iconify-icon icon="hugeicons:face-id"></iconify-icon>YouCam API</span>
+        <span class="chip"><iconify-icon icon="hugeicons:ai-brain-01"></iconify-icon>OpenAI</span>
+        <span class="chip"><iconify-icon icon="hugeicons:database"></iconify-icon>IndexedDB</span>
+        <span class="chip"><iconify-icon icon="hugeicons:favourite"></iconify-icon>Hugeicons</span>
+      </div>
+      <p style="margin:14px 0 0;color:var(--muted);font-size:14px">Runs locally with <code>npm run dev</code>. No deploy yet; ready for Vercel later.</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>The pieces and how they talk</h2>
+    <p class="sub">Keys never leave the server half. Rose arrows are the calls a normal session makes.</p>
+    <div class="card arch">
+      <svg viewBox="0 0 960 400" role="img" aria-label="Architecture: phone screens talk to three server routes, which talk to YouCam and OpenAI; the phone also stores tone in localStorage and saved looks in IndexedDB; a replay layer sits between routes and external APIs">
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#EC94B0"/></marker></defs>
+        <text class="title" x="20" y="28">HER PHONE (BROWSER)</text>
+        <rect class="box" x="20" y="40" width="250" height="210" rx="10"/>
+        <text x="40" y="74">Screens</text>
+        <text class="small" x="40" y="96">Welcome, Add Photo, Skin Analysis,</text>
+        <text class="small" x="40" y="114">Your Looks, Tutorial, Finish, Saved</text>
+        <rect class="box" x="40" y="132" width="210" height="44" rx="8"/>
+        <text x="56" y="159">Session Store (memory)</text>
+        <rect class="box" x="40" y="190" width="100" height="44" rx="8"/>
+        <text x="52" y="210" font-size="12">localStorage</text>
+        <text class="small" x="52" y="226">tone</text>
+        <rect class="box" x="150" y="190" width="100" height="44" rx="8"/>
+        <text x="162" y="210" font-size="12">IndexedDB</text>
+        <text class="small" x="162" y="226">saved looks</text>
+
+        <text class="title" x="350" y="28">YOUR NEXT.JS SERVER</text>
+        <rect class="box server" x="350" y="40" width="260" height="58" rx="10"/>
+        <text x="370" y="66">/api/analyze</text>
+        <text class="small" x="370" y="85">upload, skin analysis, tone</text>
+        <rect class="box server" x="350" y="116" width="260" height="58" rx="10"/>
+        <text x="370" y="142">/api/looks</text>
+        <text class="small" x="370" y="161">5 looks as strict JSON, validated</text>
+        <rect class="box server" x="350" y="192" width="260" height="58" rx="10"/>
+        <text x="370" y="218">/api/render</text>
+        <text class="small" x="370" y="237">effects on her photo, 1 unit each</text>
+        <rect class="box" x="350" y="290" width="260" height="70" rx="10"/>
+        <text x="370" y="318">Replay layer</text>
+        <text class="small" x="370" y="338">replay (default) · record · live</text>
+
+        <text class="title" x="700" y="28">OUTSIDE</text>
+        <rect class="box ext" x="700" y="40" width="240" height="134" rx="10"/>
+        <text x="720" y="68">YouCam API</text>
+        <text class="small" x="720" y="92">Skin Analysis (12 units)</text>
+        <text class="small" x="720" y="112">Facial Color Tones (20, once)</text>
+        <text class="small" x="720" y="132">Makeup VTO (1 per image)</text>
+        <text class="small" x="720" y="152">errors cost 0</text>
+        <rect class="box ext" x="700" y="192" width="240" height="58" rx="10"/>
+        <text x="720" y="218">OpenAI</text>
+        <text class="small" x="720" y="237">Structured Outputs, 1 call</text>
+        <rect class="box" x="700" y="290" width="240" height="70" rx="10"/>
+        <text x="720" y="318">fixtures/</text>
+        <text class="small" x="720" y="338">recorded responses, committed</text>
+
+        <path class="edge" d="M270 90 C 310 90, 310 69, 346 69"/>
+        <path class="edge" d="M270 140 C 310 140, 310 145, 346 145"/>
+        <path class="edge" d="M270 190 C 310 190, 310 221, 346 221"/>
+        <path class="edge dim" d="M480 250 V 286"/>
+        <path class="edge" d="M610 310 C 660 310, 650 110, 696 110"/>
+        <path class="edge" d="M610 325 C 670 325, 660 221, 696 221"/>
+        <path class="edge dim" d="M610 345 H 696"/>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>One session, through the system</h2>
+    <p class="sub">Step through what happens, which file does it, which PRD behavior it serves, and what it costs.</p>
+    <div class="journey">
+      <ol class="jlist" id="jlist"></ol>
+      <div class="card jd" aria-live="polite">
+        <h3 id="j-title"></h3>
+        <p class="what" id="j-what"></p>
+        <dl class="meta">
+          <dt>Files</dt><dd id="j-files" class="mono"></dd>
+          <dt>PRD</dt><dd id="j-prd"></dd>
+          <dt>Cost</dt><dd id="j-cost"></dd>
+        </dl>
+        <div class="nav"><button class="btn quiet" id="j-prev">Back</button><button class="btn" id="j-next">Next</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The unit budget</h2>
+    <p class="sub">1,000 free YouCam units. Failed tasks are free, and replay mode spends nothing while building.</p>
+    <div class="budget">
+      <div class="card">
+        <div class="toggle" role="tablist" aria-label="Session type">
+          <button class="on" data-s="first">First session</button>
+          <button data-s="later">Later sessions</button>
+        </div>
+        <div class="stack-bar" id="bar"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="card">
+        <div class="big" id="runs"></div>
+        <p style="margin:8px 0 0;color:var(--muted)" id="runs-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where data lives</h2>
+    <div class="store">
+      <div class="card"><h3><iconify-icon icon="hugeicons:flash"></iconify-icon>Memory</h3><p>Photo, analysis, looks, previews, step images.</p><p class="after">After a reload: gone, back to Welcome.</p></div>
+      <div class="card"><h3><iconify-icon icon="hugeicons:droplet"></iconify-icon>localStorage</h3><p>Her skin tone, key <code>glow.tone</code>. Your choice.</p><p class="after">After a reload: reused, tone call skipped.</p></div>
+      <div class="card"><h3><iconify-icon icon="hugeicons:bookmark-02"></iconify-icon>IndexedDB</h3><p>Saved looks with real image blobs.</p><p class="after">After a reload: listed and replayable offline.</p></div>
+      <div class="card"><h3><iconify-icon icon="hugeicons:folder-01"></iconify-icon>fixtures/</h3><p>Recorded API answers, in the repo.</p><p class="after">For anyone: the app runs with no keys.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>One switch: API_MODE</h2>
+    <div class="modes">
+      <div class="card default"><h3>replay (default)</h3><p>Answers from <code>fixtures/</code>. 0 units. Used for almost all building.</p></div>
+      <div class="card"><h3>record</h3><p>Real calls, saved to <code>fixtures/</code>. Run once to capture the demo face.</p></div>
+      <div class="card"><h3>live</h3><p>Real calls, nothing saved. Only for step-by-step tutorial work when replay can't answer, and the demo recording.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Files</h2>
+    <p class="sub">Where everything lives. The build slices along these.</p>
+<pre class="tree"><b>GlowApp/</b>
+├── <b>app/</b>
+│   ├── layout.tsx            <span># fonts, tokens, Session Store</span>
+│   ├── globals.css           <span># Tailwind v4 @theme, glass</span>
+│   ├── page.tsx              <span># Welcome</span>
+│   ├── photo/page.tsx        <span># Add Photo, errors, Retry</span>
+│   ├── analysis/page.tsx     <span># concern cards + masks</span>
+│   ├── looks/page.tsx        <span># grid, card grows in place</span>
+│   ├── tutorial/page.tsx     <span># wizard, layers, tips, Finish</span>
+│   ├── saved/page.tsx        <span># Saved Looks</span>
+│   └── <b>api/</b> analyze · looks · render
+├── <b>components/</b>               <span># Button, GlassSheet, StepWizard, LookCard,</span>
+│                             <span># SignalBars, ConcernCard, MaskHighlight, ...</span>
+├── <b>lib/</b>
+│   ├── youcam/               <span># client, tasks, errors, concerns, patterns.json</span>
+│   ├── openai/               <span># zod schema, plan + validation</span>
+│   ├── replay.ts             <span># API_MODE</span>
+│   ├── session.tsx · saved.ts · image.ts
+├── <b>fixtures/</b>                 <span># recorded responses (committed)</span>
+├── public/welcome-bubbles.jpg
+├── .env.example · README.md
+└── devpost/</pre>
+  </section>
+
+  <section>
+    <h2>When it breaks</h2>
+    <div class="fail">
+      <div><iconify-icon icon="hugeicons:image-not-found-01"></iconify-icon><div><b>Unusable photo</b><p>YouCam's error code becomes a plain message: no face, more than one face, move closer, face the camera, too dark. Retry. Blur has no code, so it gets the generic message.</p></div></div>
+      <div><iconify-icon icon="hugeicons:battery-low"></iconify-icon><div><b>Credits gone or YouCam down</b><p>"We ran out of credits for the demo. Try later."</p></div></div>
+      <div><iconify-icon icon="hugeicons:ai-brain-01"></iconify-icon><div><b>LLM breaks the rules</b><p>One automatic retry with the errors listed, then invalid steps are dropped. Never shows an unrenderable look.</p></div></div>
+      <div><iconify-icon icon="hugeicons:hourglass"></iconify-icon><div><b>Slow tasks</b><p>Latency isn't documented: poll every 2s, 60s timeout, skeletons and the scan sweep meanwhile.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Decisions and what's left</h2>
+    <details open>
+      <summary><iconify-icon icon="hugeicons:checkmark-circle-02"></iconify-icon>Your decisions</summary>
+      <div class="body">
+        <p><b>Stack:</b> accepted the Next.js + TypeScript + Tailwind v4 + Motion recommendation.</p>
+        <p><b>LLM:</b> OpenAI.</p>
+        <p><b>Deploy:</b> not yet, prepared for Vercel. No live URL is required.</p>
+        <p><b>Products:</b> skipped, YouCam has no catalog. PRD updated to match.</p>
+        <p><b>Skin tone:</b> Facial Color Tones, cached in localStorage.</p>
+        <p><b>Replay mode:</b> yes. Live calls only for the step-by-step tutorial, and only if needed.</p>
+        <p><b>Build loop:</b> yours to design.</p>
+      </div>
+    </details>
+    <details>
+      <summary><iconify-icon icon="hugeicons:source-code"></iconify-icon>Details I derived (change any)</summary>
+      <div class="body">
+        <p>Six SD concerns (acne, redness, dark circles, age spots, oiliness, eye bags) at 12 units. A concern is a "point" when its score is under 60. Renders come back as data URLs so they never expire. Saved looks use idb-keyval. One retry on bad LLM output.</p>
+      </div>
+    </details>
+    <details>
+      <summary><iconify-icon icon="hugeicons:help-circle"></iconify-icon>Verify early in the build</summary>
+      <div class="body">
+        <p>Makeup VTO image limits (the docs disagree; test 1600px portrait). Real task latency. Whether mask URLs work in CSS <code>mask-image</code> cross-origin. That LLM pattern and color counts pass YouCam's rules.</p>
+      </div>
+    </details>
+    <details>
+      <summary><iconify-icon icon="hugeicons:sparkles"></iconify-icon>Still open</summary>
+      <div class="body">
+        <p>Name for the "points" cards (default "Today's focus"). The demo face photo must be one you have rights to, and it ends up public in <code>fixtures/</code>.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>Canonical plan: <code>devpost/spec.md</code>. YouCam facts from docs.perfectcorp.com (skin analysis, face tone, makeup VTO, error codes).</footer>
+</main>
+<script>
+  const steps = [
+    { t: "Welcome", w: "She taps Start. Nothing is called.", f: "app/page.tsx", p: "Welcome and Photo Capture", c: "0" },
+    { t: "Add Photo", w: "She takes or picks a photo. The browser shrinks it to 1600px JPEG and sends it to the server.", f: "app/photo/page.tsx · lib/image.ts", p: "Welcome and Photo Capture", c: "0" },
+    { t: "Analyze", w: "Server uploads once to YouCam, runs Skin Analysis and, if no tone is cached, Facial Color Tones, in parallel. Polls until done. Bad photo: mapped error + Retry.", f: "app/api/analyze/route.ts · lib/youcam/*", p: "Skin Analysis · States and Boundaries", c: "12 + 20 first time" },
+    { t: "Skin Analysis", w: "Tone chip and one card per point. Tapping a card overlays that concern's mask on her photo with one ring pulse.", f: "app/analysis/page.tsx · MaskHighlight", p: "Skin Analysis", c: "0" },
+    { t: "Looks plan", w: "Server sends concerns, skin type and tone to OpenAI. Gets five looks back as strict JSON, validates difficulty mix, point coverage and pattern names.", f: "app/api/looks/route.ts · lib/openai/*", p: "Look Proposals · Step-by-Step Tutorial", c: "OpenAI only" },
+    { t: "Your Looks", w: "Five render calls with each look's full effect list. Skeletons until each preview lands. Tapped card grows in place.", f: "app/looks/page.tsx · app/api/render/route.ts", p: "Look Proposals", c: "5" },
+    { t: "Start makeup", w: "One render per step, effects 1..N cumulative. Step 1 first so she can begin while the rest finish.", f: "app/api/render/route.ts", p: "Step-by-Step Tutorial", c: "about 6", k: true },
+    { t: "Tutorial", w: "Wizard on top, her face with layers cross-fading, tips sheet below. Swipe, Next, or tap the wizard.", f: "app/tutorial/page.tsx · StepWizard", p: "Step-by-Step Tutorial", c: "0" },
+    { t: "Finish and Save", w: "Save writes the original, every step image and the tips to IndexedDB.", f: "app/tutorial/page.tsx · lib/saved.ts", p: "Finish and Saved Looks", c: "0" },
+    { t: "Saved Looks", w: "Reads IndexedDB and replays the full tutorial with no network calls.", f: "app/saved/page.tsx", p: "Finish and Saved Looks", c: "0" }
+  ];
+  const jl = document.getElementById("jlist"); let cur = 0;
+  steps.forEach((s, i) => { const li = document.createElement("li"), b = document.createElement("button");
+    b.innerHTML = `<span class="n">${String(i + 1).padStart(2, "0")}</span>${s.t}`; b.onclick = () => show(i); li.appendChild(b); jl.appendChild(li); });
+  function show(i) {
+    cur = i; const s = steps[i];
+    [...jl.querySelectorAll("button")].forEach((b, j) => b.classList.toggle("on", i === j));
+    document.getElementById("j-title").textContent = s.t + (s.k ? "  (the kernel)" : "");
+    document.getElementById("j-what").textContent = s.w;
+    document.getElementById("j-files").textContent = s.f;
+    document.getElementById("j-prd").textContent = s.p;
+    document.getElementById("j-cost").innerHTML = s.c === "0" ? "0 units" : `<span class="units">${s.c}${/^\d|about/.test(s.c) ? " units" : ""}</span>`;
+    document.getElementById("j-prev").disabled = i === 0;
+    document.getElementById("j-next").disabled = i === steps.length - 1;
+  }
+  document.getElementById("j-prev").onclick = () => show(cur - 1);
+  document.getElementById("j-next").onclick = () => show(cur + 1);
+  show(0);
+
+  const budgets = {
+    first: [["Skin Analysis", 12, "#F6C1D2"], ["Facial Color Tones", 20, "#EC94B0"], ["5 previews", 5, "#FCE3DA"], ["~6 steps", 6, "#F9D7C9"]],
+    later: [["Skin Analysis", 12, "#F6C1D2"], ["5 previews", 5, "#FCE3DA"], ["~6 steps", 6, "#F9D7C9"]]
+  };
+  function budget(k) {
+    const b = budgets[k], total = b.reduce((a, x) => a + x[1], 0);
+    document.getElementById("bar").innerHTML = b.map(([n, u, c]) => `<span style="flex:${u};background:${c}">${u}</span>`).join("");
+    document.getElementById("legend").innerHTML = b.map(([n, u, c]) => `<div><span><i style="background:${c}"></i>${n}</span><span>${u}</span></div>`).join("") + `<div style="font-weight:600"><span>Total per session</span><span>${total}</span></div>`;
+    const runs = k === "first" ? 1 + Math.floor((1000 - 43) / 23) : Math.floor(1000 / 23);
+    document.getElementById("runs").textContent = `~${runs} runs`;
+    document.getElementById("runs-note").textContent = k === "first" ? "From 1,000 units: one first session, then later sessions reuse the cached tone." : "If every session reused a cached tone.";
+    document.querySelectorAll(".toggle button").forEach(x => x.classList.toggle("on", x.dataset.s === k));
+  }
+  document.querySelectorAll(".toggle button").forEach(x => x.onclick = () => budget(x.dataset.s));
+  budget("first");
+</script>
+</body>
+</html>

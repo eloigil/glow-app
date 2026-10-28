@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowApp Icon Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+<style>
+  :root { --canvas: #F6F3F5; --surface: #FDFCFD; --ink: #17141A; --muted: #5D5662; --rose: #EC94B0; --rose-ink: #C2577C; --wash: #FBE8EE; --line: #EDE4EA; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --muted: #B4AAB3; --rose-ink: #F4B6C9; --wash: #33222B; --line: #2E2830; } }
+  :root[data-theme="dark"] { --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --muted: #B4AAB3; --rose-ink: #F4B6C9; --wash: #33222B; --line: #2E2830; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink); font: 400 15px/1.55 "Geist", system-ui, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 48px 16px 80px; }
+  h1 { font: 700 clamp(28px, 5vw, 40px)/1.1 "Unbounded", sans-serif; letter-spacing: -.03em; margin: 0 0 10px; }
+  .sub { color: var(--muted); max-width: 62ch; margin: 0 0 36px; }
+  .opt { display: grid; grid-template-columns: 240px 1fr 150px; gap: 20px; align-items: center; background: var(--surface); border-radius: 10px; padding: 20px; margin-bottom: 12px; }
+  @media (max-width: 860px) { .opt { grid-template-columns: 1fr; } }
+  .opt h2 { margin: 0 0 4px; font: 600 17px "Geist", sans-serif; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .opt p { margin: 0; color: var(--muted); font-size: 13px; }
+  .badge { font-size: 11px; font-weight: 500; border-radius: 999px; padding: 2px 8px; background: var(--wash); color: var(--ink); }
+  .icons { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+  @media (max-width: 560px) { .icons { grid-template-columns: repeat(4, 1fr); } }
+  .icons span { aspect-ratio: 1; border-radius: 8px; background: var(--wash); display: grid; place-items: center; color: var(--rose-ink); }
+  .icons span.gap { background: transparent; border: 1px dashed var(--line); color: var(--muted); font-size: 10px; text-align: center; }
+  iconify-icon { font-size: 32px; display: inline-flex; }
+  .ctx { position: relative; height: 96px; border-radius: 10px; overflow: hidden;
+    background: url("https://images.unsplash.com/photo-1595248712807-2bb09673bfe0?w=500&q=70&auto=format&fit=crop") center/cover; display: grid; place-items: center; }
+  .ctx .glass { display: inline-flex; gap: 10px; padding: 10px 14px; border-radius: 999px; color: var(--ink);
+    background: rgb(253 252 253 / .55); border: 1px solid rgb(255 255 255 / .75); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); }
+  .ctx iconify-icon { font-size: 26px; }
+  .note { margin-top: 28px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Cute icon options</h1>
+  <p class="sub">Seven free sets, same eight GlowApp actions in each: camera, skin read, brush, favorite, products, saved, sun, skin tone. The right column shows each set on a glass chip over the welcome photo. Dashed boxes mean the set has no good match.</p>
+  <div id="list"></div>
+  <p class="note">All sets load through Iconify. CC BY 4.0 sets need a one-line credit in the app's README or about screen. Photo: Unsplash, free under the Unsplash License.</p>
+</main>
+<script>
+  const sets = [
+    { k: "A", n: "Solar Bold Duotone", b: "current", s: "Soft two-tone, rounded corners. Calm, polished.", l: "CC BY 4.0",
+      i: ["solar:camera-bold-duotone", "solar:stars-bold-duotone", "solar:magic-stick-3-bold-duotone", "solar:heart-bold-duotone", "solar:bag-heart-bold-duotone", "solar:bookmark-bold-duotone", "solar:sun-bold-duotone", "solar:waterdrop-bold-duotone"] },
+    { k: "B", n: "MingCute Fill", b: "the name says it", s: "Chunky filled shapes, extra-round corners. Friendly and bold.", l: "Apache 2.0",
+      i: ["mingcute:camera-fill", "mingcute:sparkles-fill", "mingcute:brush-fill", "mingcute:heart-fill", "mingcute:shopping-bag-1-fill", "mingcute:bookmark-fill", "mingcute:sun-fill", "mingcute:drop-fill"] },
+    { k: "C", n: "Phosphor Duotone", s: "Duotone with a lighter fill layer. Playful but tidy.", l: "MIT",
+      i: ["ph:camera-duotone", "ph:sparkle-duotone", "ph:paint-brush-duotone", "ph:heart-duotone", "ph:handbag-duotone", "ph:bookmark-simple-duotone", "ph:sun-duotone", "ph:drop-duotone"] },
+    { k: "D", n: "Hugeicons", b: "has a blush brush", s: "Rounded outlines. Lightest feel; includes beauty-specific glyphs.", l: "MIT",
+      i: ["hugeicons:camera-01", "hugeicons:sparkles", "hugeicons:blush-brush-01", "hugeicons:heart", "hugeicons:shopping-bag-01", "hugeicons:bookmark-02", "hugeicons:sun-03", "hugeicons:droplet"] },
+    { k: "E", n: "Pepicons Pop!", s: "Thick hand-drawn outlines with a pop offset. The most playful line set.", l: "CC BY 4.0",
+      i: ["pepicons-pop:camera", "pepicons-pop:star", "pepicons-pop:paint-pallet", "pepicons-pop:heart", "pepicons-pop:cart", "pepicons-pop:bookmark", "pepicons-pop:sun", "pepicons-pop:water-drop"] },
+    { k: "F", n: "Fluent Emoji Flat", b: "full color", s: "Microsoft's flat emoji. Cutest by far, with a lipstick and a smiling sun. Ignores the accent color.", l: "MIT", color: true,
+      i: ["fluent-emoji-flat:camera-with-flash", "fluent-emoji-flat:sparkles", "fluent-emoji-flat:lipstick", "fluent-emoji-flat:pink-heart", "fluent-emoji-flat:shopping-bags", "fluent-emoji-flat:bookmark", "fluent-emoji-flat:sun-with-face", "fluent-emoji-flat:droplet"] },
+    { k: "G", n: "Streamline Plump Color", b: "full color", s: "Puffy, chunky color icons. Very cute, but the free set misses some glyphs.", l: "CC BY 4.0", color: true,
+      i: ["streamline-plump-color:camera-1", "streamline-plump-color:magic-wand-1", null, "streamline-plump-color:user-feedback-heart", "streamline-plump-color:bag", "streamline-plump-color:bookmark", "streamline-plump-color:sun", null] }
+  ];
+  const ic = (x) => x ? `<span><iconify-icon icon="${x}"></iconify-icon></span>` : `<span class="gap">no match</span>`;
+  document.getElementById("list").innerHTML = sets.map(s => `
+    <div class="opt">
+      <div><h2>${s.k}. ${s.n}${s.b ? `<span class="badge">${s.b}</span>` : ""}</h2><p>${s.s}</p><p style="margin-top:6px">License: ${s.l}</p></div>
+      <div class="icons">${s.i.map(ic).join("")}</div>
+      <div class="ctx"><div class="glass">${[s.i[0], s.i[3], s.i[5]].filter(Boolean).map(x => `<iconify-icon icon="${x}"></iconify-icon>`).join("")}</div></div>
+    </div>`).join("");
+</script>
+</body>
+</html>

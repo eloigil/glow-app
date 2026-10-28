@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Tokens from devpost/spec.md > Look and Feel. Light default, dark via prefers-color-scheme. */
+:root {
+  --canvas: #f6f3f5;
+  --surface: #fdfcfd;
+  --ink: #17141a;
+  --ink-muted: #5d5662;
+  --line: #ede4ea;
+  --rose: #ec94b0;
+  --wash: #fbe8ee;
+  --glass: rgb(253 252 253 / 0.55);
+  --glass-edge: rgb(255 255 255 / 0.75);
+  --placeholder: radial-gradient(42% 34% at 50% 42%, #fff1f4, transparent 72%),
+    radial-gradient(80% 70% at 50% 45%, #f9dce5, #f3cad7 85%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #141116;
+    --surface: #1d1920;
+    --ink: #f4eff3;
+    --ink-muted: #b4aab3;
+    --line: #2e2830;
+    --rose: #f4b6c9;
+    --wash: #33222b;
+    --glass: rgb(29 25 32 / 0.5);
+    --glass-edge: rgb(255 255 255 / 0.16);
+  }
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-rose: var(--rose);
+  --color-wash: var(--wash);
+  --font-sans: var(--font-geist);
+  --font-display: var(--font-unbounded);
+  --radius-card: 10px;
+  --radius-sheet: 14px;
+  --radius-thumb: 8px;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+@utility glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
+  box-shadow: inset 0 1px 0 var(--glass-edge), 0 12px 32px rgb(120 50 80 / 0.1);
+  @media (prefers-reduced-transparency: reduce) {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@utility btn-gradient {
+  background: linear-gradient(100deg, #f6c1d2, #fce3da);
+  color: #17141a;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8), 0 8px 20px rgb(236 148 176 / 0.35);
+}
+
+@utility face-placeholder {
+  background: var(--placeholder);
+}

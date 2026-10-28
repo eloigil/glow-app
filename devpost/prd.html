@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowApp PRD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+<style>
+  /* Tokens mirror prd.md > Look and Feel */
+  :root {
+    --canvas: #F6F3F5; --surface: #FDFCFD; --ink: #17141A; --ink-muted: #5D5662;
+    --primary: linear-gradient(100deg, #F6C1D2, #FCE3DA); --on-primary: #17141A;
+    --rose: #EC94B0; --wash: #FBE8EE; --line: #EDE4EA;
+    --blush: #F6D3DE; --peach: #FCE3DA;
+    --glass: rgb(253 252 253 / .55); --glass-edge: rgb(255 255 255 / .75);
+    --shadow: 0 24px 60px rgb(120 50 80 / .14);
+    --display: "Unbounded", "Helvetica Neue", Arial, sans-serif;
+    --body: "Geist", ui-sans-serif, -apple-system, system-ui, sans-serif;
+    --hero-img: url("https://images.unsplash.com/photo-1595248712807-2bb09673bfe0?w=1400&q=80&auto=format&fit=crop");
+    --alt-img: url("https://images.unsplash.com/photo-1558470570-c9a5a5ade867?w=900&q=80&auto=format&fit=crop");
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --ink-muted: #B4AAB3;
+      --primary: linear-gradient(100deg, #F6C1D2, #FCE3DA); --on-primary: #17141A;
+      --rose: #F4B6C9; --wash: #33222B; --line: #2E2830;
+      --glass: rgb(29 25 32 / .5); --glass-edge: rgb(255 255 255 / .16);
+      --shadow: 0 24px 60px rgb(0 0 0 / .45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --canvas: #141116; --surface: #1D1920; --ink: #F4EFF3; --ink-muted: #B4AAB3;
+    --primary: linear-gradient(100deg, #F6C1D2, #FCE3DA); --on-primary: #17141A;
+    --rose: #F4B6C9; --wash: #33222B; --line: #2E2830;
+    --glass: rgb(29 25 32 / .5); --glass-edge: rgb(255 255 255 / .16);
+    --shadow: 0 24px 60px rgb(0 0 0 / .45);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink); font: 400 16px/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+  main { max-width: 1120px; margin: 0 auto; padding: 0 16px 96px; }
+  h1, h2, h3, h4 { margin: 0; }
+  h2 { font: 600 clamp(26px, 4vw, 36px)/1.15 var(--body); letter-spacing: -.02em; margin-bottom: 8px; }
+  .sub { color: var(--ink-muted); max-width: 60ch; margin: 0 0 28px; }
+  section { padding-top: 96px; }
+  iconify-icon { display: inline-flex; font-size: 1.4em; vertical-align: -.3em; flex: none; }
+
+  /* Buttons: ink pill, never pink */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 8px; padding: 14px 26px;
+    font: 500 15px var(--body); cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform .2s cubic-bezier(.16,1,.3,1); }
+  .btn:active { transform: scale(.98) translateY(1px); }
+  .btn.primary { background: var(--primary); color: var(--on-primary); box-shadow: inset 0 1px 0 rgb(255 255 255 / .8), 0 8px 20px rgb(236 148 176 / .35); }
+  .btn.quiet { background: var(--glass); color: var(--ink); border: 1px solid var(--glass-edge); }
+
+  /* Glass */
+  .glass { background: var(--glass); border: 1px solid var(--glass-edge);
+    -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%);
+    box-shadow: inset 0 1px 0 var(--glass-edge), 0 12px 32px rgb(120 50 80 / .10); }
+  @media (prefers-reduced-transparency: reduce) { .glass { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; } }
+
+  /* Difficulty signal: phone-coverage bars */
+  .signal { display: inline-flex; align-items: flex-end; gap: 3px; height: 18px; }
+  .signal i { width: 6px; border-radius: 3px; background: var(--wash); }
+  .signal i:nth-child(1) { height: 7px; } .signal i:nth-child(2) { height: 12px; } .signal i:nth-child(3) { height: 18px; }
+  .signal[data-level="1"] i:nth-child(-n+1), .signal[data-level="2"] i:nth-child(-n+2), .signal[data-level="3"] i { background: var(--rose); }
+  .sig-chip { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 6px 10px; font-size: 11px; font-weight: 500; color: var(--ink); }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding-top: 48px; }
+  @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } }
+  .status { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--ink-muted); border-radius: 999px; padding: 5px 12px 5px 8px; background: var(--wash); }
+  .wordmark { font: 700 clamp(52px, 8.5vw, 100px)/1 var(--display); letter-spacing: -.03em; margin: 20px 0 18px; }
+  .lede { font-size: 19px; color: var(--ink-muted); max-width: 32ch; margin: 0 0 28px; }
+  .hero-visual { position: relative; border-radius: 10px; padding: 36px 0; background: var(--hero-img) center/cover; }
+  .hero-visual::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(180deg, transparent 50%, rgb(246 243 245 / .25)); pointer-events: none; }
+
+  /* Phone */
+  .phone { position: relative; z-index: 1; width: 300px; height: 620px; border-radius: 44px; padding: 9px; background: #17141A; box-shadow: var(--shadow); margin: 0 auto; }
+  .screen { position: relative; height: 100%; border-radius: 38px; overflow: hidden; background: var(--canvas); font-size: 13px; }
+  .photo { position: absolute; inset: 0; display: grid; place-items: center; color: rgb(23 20 26 / .35); font-size: 12px;
+    background: radial-gradient(42% 34% at 50% 42%, #FFF1F4, transparent 72%), radial-gradient(80% 70% at 50% 45%, #F9DCE5, #F3CAD7 85%); }
+  .layer { position: absolute; inset: 0; opacity: 0; transition: opacity .45s ease; }
+  .layer.on { opacity: 1; }
+  .wizard { position: absolute; top: 14px; left: 12px; right: 12px; border-radius: 999px; padding: 6px; display: flex; gap: 4px; z-index: 2; }
+  .wizard button { flex: 1; height: 30px; border: 0; border-radius: 999px; cursor: pointer; font: 500 11px var(--body);
+    background: transparent; color: var(--ink-muted); transition: background .25s, color .25s; }
+  .wizard button.done { color: var(--ink); }
+  .wizard button.cur { background: var(--rose); color: #17141A; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 14px 14px 0 0; padding: 18px 18px 20px; z-index: 2; }
+  .sheet h4 { margin: 0 0 4px; font: 600 16px var(--body); }
+  .sheet p { margin: 0 0 14px; color: var(--ink-muted); line-height: 1.5; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px 4px 6px; font-size: 11px; font-weight: 500; background: var(--wash); color: var(--ink); }
+  .tag iconify-icon { color: var(--rose); font-size: 18px; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .sheet .btn { padding: 11px 16px; font-size: 13px; }
+  .sheet .btn iconify-icon { font-size: 20px; }
+
+  /* Screens strip */
+  .strip { display: grid; grid-template-columns: repeat(3, 300px); gap: 32px; overflow-x: auto; padding: 8px 4px 24px; scroll-snap-type: x mandatory; justify-content: start; }
+  @media (min-width: 1040px) { .strip { justify-content: space-between; } }
+  .strip > figure { margin: 0; scroll-snap-align: start; }
+  figcaption { margin-top: 16px; font-size: 14px; color: var(--ink-muted); text-align: center; max-width: 300px; }
+  figcaption b { color: var(--ink); font-weight: 600; display: block; }
+
+  .welcome-bg { position: absolute; inset: 0; background: var(--hero-img) 40% center/cover; }
+  .welcome-title { position: absolute; left: 22px; right: 22px; bottom: 100px; font: 700 31px/1.08 var(--display); letter-spacing: -.03em; color: #17141A; }
+  .welcome-cta { position: absolute; left: 18px; right: 18px; bottom: 30px; }
+  /* Welcome Start is the one exception: ink pill over the photo */
+  .btn.primary.welcome-cta { background: #17141A; color: #FDFCFD; border-radius: 999px; box-shadow: 0 8px 20px rgb(23 20 26 / .18); }
+  .saved-icon { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center; color: #17141A; z-index: 2; cursor: pointer; }
+  .saved-icon iconify-icon { font-size: 22px; }
+
+  .point { position: absolute; width: 28px; height: 28px; border-radius: 50%; border: 2.5px solid var(--rose); box-shadow: 0 0 0 3px rgb(255 255 255 / .55); }
+  .point.pulse { animation: pulse 1.2s cubic-bezier(.16,1,.3,1) 1; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgb(236 148 176 / .6); } 100% { box-shadow: 0 0 0 18px rgb(236 148 176 / 0); } }
+  .scan { position: absolute; left: 0; right: 0; height: 100px; top: -100px;
+    background: linear-gradient(transparent, rgb(255 255 255 / .6), transparent); animation: scan 2.6s ease-in-out infinite; }
+  @keyframes scan { to { top: 100%; } }
+  .cards { display: flex; flex-direction: column; gap: 8px; }
+  .pcard { border-radius: 8px; padding: 10px 12px; display: flex; gap: 12px; align-items: center; cursor: pointer; }
+  .pcard iconify-icon { color: var(--rose); font-size: 26px; }
+  .pcard small { display: block; color: var(--ink-muted); font-size: 11px; }
+
+  /* Looks grid with a card that grows in place */
+  .looks { position: absolute; inset: 0; padding: 22px 12px 24px; overflow-y: auto; scrollbar-width: none; }
+  .looks h5 { font: 700 18px var(--display); letter-spacing: -.02em; margin: 4px 6px 14px; }
+  .lgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lcard { position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; background: var(--surface); border: 0; padding: 0; font: inherit; color: inherit; text-align: left; }
+  .lcard .face { position: relative; aspect-ratio: 3/4; border-radius: 10px; overflow: hidden; }
+  .lcard .face .photo { font-size: 0; }
+  .lcard .sig-chip { position: absolute; left: 12px; bottom: 12px; z-index: 1; padding: 0; }
+  /* On photos: white bars with a soft shadow, no chip behind them */
+  .on-photo .signal, .lcard .sig-chip .signal { height: 20px; gap: 3px;
+    filter: drop-shadow(0 1px 1.5px rgb(23 20 26 / .28)) drop-shadow(0 3px 8px rgb(120 50 80 / .22)); }
+  .on-photo .signal i, .lcard .sig-chip .signal i { width: 7px; background: transparent; }
+  .lcard .sig-chip .signal i:nth-child(1) { height: 8px; } .lcard .sig-chip .signal i:nth-child(2) { height: 14px; } .lcard .sig-chip .signal i:nth-child(3) { height: 20px; }
+  .on-photo .signal[data-level="1"] i:nth-child(-n+1), .on-photo .signal[data-level="2"] i:nth-child(-n+2), .on-photo .signal[data-level="3"] i,
+  .lcard .sig-chip .signal[data-level="1"] i:nth-child(-n+1), .lcard .sig-chip .signal[data-level="2"] i:nth-child(-n+2), .lcard .sig-chip .signal[data-level="3"] i { background: #FFFFFF; }
+  .lcard .more { display: none; }
+  .lcard.grown { grid-column: 1 / -1; cursor: default; padding: 8px; box-shadow: 0 10px 30px rgb(120 50 80 / .10); }
+  .lcard.grown .top { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lcard.grown .more { display: block; }
+  .lcard.grown .face { border-radius: 8px; }
+  .more h6 { margin: 4px 0 6px; font: 700 14px/1.2 var(--display); letter-spacing: -.02em; }
+  .more p { margin: 0 0 8px; color: var(--ink-muted); line-height: 1.45; font-size: 12px; }
+  .more .lvl { display: inline-flex; gap: 6px; align-items: center; font-size: 11px; color: var(--ink-muted); }
+  .products { display: flex; gap: 8px; margin: 12px 0 10px; overflow-x: auto; scrollbar-width: none; }
+  .products span { flex: none; width: 58px; height: 58px; border-radius: 8px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--rose); }
+  .products iconify-icon { font-size: 26px; }
+  .lcard.grown .btn { width: 100%; padding: 12px; font-size: 13px; }
+  .tint-a { background: radial-gradient(14% 6% at 50% 66%, rgb(196 70 110 / .55), transparent 75%), radial-gradient(14% 9% at 30% 55%, rgb(240 140 160 / .35), transparent 75%), radial-gradient(14% 9% at 70% 55%, rgb(240 140 160 / .35), transparent 75%); }
+  .tint-b { background: radial-gradient(16% 4% at 37% 37%, rgb(60 30 60 / .55), transparent 75%), radial-gradient(16% 4% at 63% 37%, rgb(60 30 60 / .55), transparent 75%), radial-gradient(13% 6% at 50% 66%, rgb(150 40 80 / .55), transparent 75%); }
+  .tint-c { background: radial-gradient(20% 12% at 30% 55%, rgb(250 160 140 / .45), transparent 75%), radial-gradient(20% 12% at 70% 55%, rgb(250 160 140 / .45), transparent 75%); }
+  .tint-d { background: radial-gradient(18% 6% at 37% 36%, rgb(200 150 190 / .55), transparent 75%), radial-gradient(18% 6% at 63% 36%, rgb(200 150 190 / .55), transparent 75%); }
+  .skeleton { border-radius: 10px; aspect-ratio: 3/4; background: linear-gradient(100deg, var(--wash) 30%, var(--surface) 50%, var(--wash) 70%); background-size: 300% 100%; animation: shimmer 1.6s linear infinite; }
+  @keyframes shimmer { to { background-position: -150% 0; } }
+
+  /* Design system bento */
+  .ds { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  @media (max-width: 860px) { .ds { grid-template-columns: 1fr; } .ds > * { grid-column: auto !important; } }
+  .tile { background: var(--surface); border-radius: 10px; padding: 24px; position: relative; overflow: hidden; }
+  .tile h3 { font: 600 15px var(--body); margin-bottom: 16px; }
+  .t-palette { grid-column: span 4; }
+  .t-type { grid-column: span 2; background: var(--ink); color: var(--canvas); }
+  .t-shape, .t-glass, .t-motion { grid-column: span 2; }
+  .t-glass { min-height: 230px; background: var(--alt-img) center/cover; }
+  .t-motion { background: var(--wash); }
+  .t-signal, .t-icons { grid-column: span 3; }
+  .swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  @media (max-width: 560px) { .swatches { grid-template-columns: repeat(3, 1fr); } }
+  .sw span { display: block; aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 8px; }
+  .sw b { display: block; font-size: 13px; font-weight: 500; }
+  .sw code { font-size: 11px; color: var(--ink-muted); }
+  .spec-d { font: 700 40px/1 var(--display); letter-spacing: -.03em; }
+  .spec-b { font-size: 15px; opacity: .75; margin-top: 18px; line-height: 1.5; }
+  .shape-row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+  .shape-row div { background: var(--wash); display: grid; place-items: center; font-size: 11px; color: var(--ink-muted); }
+  .motion-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .motion-list li { display: flex; gap: 10px; align-items: center; }
+  .motion-list iconify-icon { color: var(--rose); font-size: 26px; }
+  .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .levels div { border-radius: 8px; background: radial-gradient(80% 90% at 50% 40%, #F9DCE5, #F3CAD7); color: #17141A; padding: 16px; display: grid; gap: 10px; justify-items: start; }
+  .levels .signal { height: 26px; gap: 4px; } .levels .signal i { width: 8px; background: transparent; }
+  .levels .signal i:nth-child(1) { height: 10px; } .levels .signal i:nth-child(2) { height: 18px; } .levels .signal i:nth-child(3) { height: 26px; }
+  .levels .signal[data-level="1"] i:nth-child(-n+1), .levels .signal[data-level="2"] i:nth-child(-n+2), .levels .signal[data-level="3"] i { background: #FFFFFF; }
+  .icon-set { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .icon-set span { aspect-ratio: 1; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; color: var(--rose); }
+  .icon-set iconify-icon { font-size: 30px; }
+
+  /* Journey */
+  .journey { display: grid; grid-template-columns: 280px 1fr; gap: 32px; }
+  @media (max-width: 860px) { .journey { grid-template-columns: 1fr; } }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .steps button { width: 100%; text-align: left; border: 0; border-radius: 999px; padding: 10px 16px; font: 500 15px var(--body);
+    background: transparent; color: var(--ink-muted); cursor: pointer; display: flex; gap: 12px; align-items: center; }
+  .steps button iconify-icon { font-size: 24px; }
+  .steps button.on { background: var(--surface); color: var(--ink); box-shadow: 0 6px 20px rgb(120 50 80 / .08); }
+  .steps button.on iconify-icon { color: var(--rose); }
+  .detail { background: var(--surface); border-radius: 10px; padding: 28px; }
+  .detail h3 { font: 700 24px var(--display); letter-spacing: -.02em; }
+  .detail .layout { color: var(--ink-muted); margin: 10px 0 20px; max-width: 60ch; }
+  .crit { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .crit li { display: flex; gap: 12px; }
+  .crit iconify-icon { color: var(--rose); font-size: 24px; }
+  .kernel-note { margin-top: 20px; }
+
+  /* What if */
+  .whatif { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
+  @media (max-width: 720px) { .whatif { grid-template-columns: 1fr; } }
+  .whatif > div { display: flex; gap: 16px; padding: 20px 0; border-top: 1px solid var(--line); }
+  .whatif iconify-icon { font-size: 34px; color: var(--rose); }
+  .whatif b { display: block; font-weight: 600; }
+  .whatif span { color: var(--ink-muted); }
+
+  /* Boundary */
+  .bounds { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  @media (max-width: 860px) { .bounds { grid-template-columns: 1fr; } }
+  details { background: var(--surface); border-radius: 10px; padding: 6px 8px; }
+  summary { cursor: pointer; list-style: none; padding: 14px 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  summary iconify-icon { font-size: 24px; color: var(--rose); }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; margin-left: auto; color: var(--ink-muted); font-weight: 400; font-size: 20px; }
+  details[open] summary::after { content: "\2212"; }
+  details ul { margin: 0; padding: 0 20px 16px 42px; color: var(--ink-muted); }
+  details li { margin: 6px 0; }
+  details li b { color: var(--ink); font-weight: 500; }
+  .stack { display: grid; gap: 16px; align-content: start; }
+
+  footer { margin-top: 96px; font-size: 13px; color: var(--ink-muted); }
+  a { color: var(--rose); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scan, .skeleton, .point.pulse { animation: none; }
+    .layer, .btn, .wizard button { transition: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <section class="hero" style="padding-top:48px">
+    <div>
+      <span class="status"><iconify-icon icon="hugeicons:hourglass"></iconify-icon>PRD approved</span>
+      <h1 class="wordmark">GlowApp</h1>
+      <p class="lede">Reads her skin today, proposes five looks, and teaches the one she picks on her own face.</p>
+      <a class="btn primary" href="#journey">Walk the journey <iconify-icon icon="hugeicons:arrow-down-01"></iconify-icon></a>
+    </div>
+    <div class="hero-visual">
+      <div class="phone" aria-label="Live preview of the Tutorial screen">
+        <div class="screen" id="tut">
+          <div class="photo">her photo</div>
+          <div class="layer" data-l="1" style="background: radial-gradient(42% 36% at 50% 44%, rgb(255 238 240 / .9), transparent 75%)"></div>
+          <div class="layer" data-l="2" style="background: radial-gradient(8% 5% at 60% 62%, rgb(255 236 238 / 1), transparent 80%)"></div>
+          <div class="layer" data-l="3" style="background: radial-gradient(15% 3% at 38% 35%, rgb(40 25 40 / .6), transparent 80%), radial-gradient(15% 3% at 62% 35%, rgb(40 25 40 / .6), transparent 80%)"></div>
+          <div class="layer" data-l="4" style="background: radial-gradient(13% 4.5% at 50% 62%, rgb(176 52 96 / .75), transparent 80%)"></div>
+          <div class="wizard glass" role="tablist" aria-label="Tutorial steps"></div>
+          <div class="sheet glass">
+            <div class="row" style="justify-content:space-between;margin-bottom:10px"><span class="tag" id="tut-tag"></span><span style="color:var(--ink-muted);font-size:11px" id="tut-count"></span></div>
+            <h4 id="tut-title"></h4>
+            <p id="tut-tip"></p>
+            <div class="row"><button class="btn quiet" id="tut-prev" aria-label="Previous step"><iconify-icon icon="hugeicons:arrow-left-01"></iconify-icon></button><button class="btn primary" id="tut-next" style="flex:1">Next step</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Three screens, one material</h2>
+    <p class="sub">Her face is always the hero. Glass appears only where the interface floats over a photo. Tap the looks to watch a card grow in place.</p>
+    <div class="strip">
+      <figure>
+        <div class="phone"><div class="screen">
+          <div class="welcome-bg" role="img" aria-label="Soft blush photograph of translucent bubbles"></div>
+          <button class="saved-icon glass" aria-label="Saved looks"><iconify-icon icon="hugeicons:bookmark-02"></iconify-icon></button>
+          <div class="welcome-title">Makeup made for today's skin</div>
+          <a class="btn primary welcome-cta">Start</a>
+        </div></div>
+        <figcaption><b>Welcome</b>Blush bubbles photography, close to EONA. Saved Looks waits quietly top-right.</figcaption>
+      </figure>
+      <figure>
+        <div class="phone"><div class="screen" id="ana">
+          <div class="photo">her photo</div>
+          <div class="scan" aria-hidden="true"></div>
+          <span class="point" data-p="0" style="left:56%;top:57%"></span>
+          <span class="point" data-p="1" style="left:28%;top:48%"></span>
+          <div class="sheet glass" style="padding-bottom:16px">
+            <div class="row" style="justify-content:space-between;margin-bottom:12px"><h4 style="margin:0">Your skin today</h4><span class="tag"><iconify-icon icon="hugeicons:droplet"></iconify-icon>Warm medium</span></div>
+            <div class="cards">
+              <div class="pcard glass" data-p="0"><iconify-icon icon="hugeicons:sparkles"></iconify-icon><div>Blemish<small>Chin, left side</small></div></div>
+              <div class="pcard glass" data-p="1"><iconify-icon icon="hugeicons:sun-03"></iconify-icon><div>Redness<small>Right cheek</small></div></div>
+            </div>
+          </div>
+        </div></div>
+        <figcaption><b>Skin Analysis</b>A light sweep while YouCam works. Tap a card to pulse its spot.</figcaption>
+      </figure>
+      <figure>
+        <div class="phone"><div class="screen"><div class="looks">
+          <h5>Five looks for today</h5>
+          <div class="lgrid" id="lgrid"></div>
+        </div></div></div>
+        <figcaption><b>Your Looks</b>The tapped look grows inside the grid. Still-generating looks shimmer.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>The design system</h2>
+    <p class="sub">Proposed with the taste skill from your EONA reference. Full tokens live in <code>prd.md</code>, under Look and Feel.</p>
+    <div class="ds">
+      <div class="tile t-palette">
+        <h3>Ink buttons, one pastel rose accent</h3>
+        <div class="swatches">
+          <div class="sw"><span style="background:#F6F3F5"></span><b>Canvas</b><code>#F6F3F5</code></div>
+          <div class="sw"><span style="background:#FDFCFD"></span><b>Surface</b><code>#FDFCFD</code></div>
+          <div class="sw"><span style="background:#17141A"></span><b>Ink</b><code>#17141A</code></div>
+          <div class="sw"><span style="background:#EC94B0"></span><b>Pastel rose</b><code>#EC94B0</code></div>
+          <div class="sw"><span style="background:#FBE8EE"></span><b>Blush wash</b><code>#FBE8EE</code></div>
+          <div class="sw"><span style="background:var(--hero-img) center/cover"></span><b>Imagery</b><code>blush bubbles</code></div>
+        </div>
+      </div>
+      <div class="tile t-type">
+        <h3 style="color:inherit;opacity:.7">Type</h3>
+        <div class="spec-d">Unbounded</div>
+        <div class="spec-b">Geist carries the interface and tips. Weight and color set hierarchy, size stays calm.</div>
+      </div>
+      <div class="tile t-shape">
+        <h3>Shape rule</h3>
+        <div class="shape-row">
+          <div style="width:88px;height:36px;border-radius:999px">pill</div>
+          <div style="width:70px;height:92px;border-radius:10px">10</div>
+          <div style="width:54px;height:54px;border-radius:8px">8</div>
+        </div>
+        <p style="margin:14px 0 0;color:var(--ink-muted);font-size:14px">Buttons and chips stay pills. Cards 10px, sheets 14px, thumbnails 8px.</p>
+      </div>
+      <div class="tile t-glass">
+        <div class="glass" style="border-radius:10px;padding:18px;margin-top:80px">
+          <b style="font-weight:600">Glass over photos</b>
+          <p style="margin:4px 0 0;color:var(--ink-muted);font-size:14px">Wizard, tips sheet, point cards, Saved Looks icon.</p>
+        </div>
+      </div>
+      <div class="tile t-motion">
+        <h3>Motion with a reason</h3>
+        <ul class="motion-list">
+          <li><iconify-icon icon="hugeicons:face-id"></iconify-icon>Sweep while analyzing</li>
+          <li><iconify-icon icon="hugeicons:touch-interaction-01"></iconify-icon>Pulse on the tapped spot</li>
+          <li><iconify-icon icon="hugeicons:layers-01"></iconify-icon>Layer fades onto her face</li>
+          <li><iconify-icon icon="hugeicons:arrow-expand-01"></iconify-icon>Look card grows in place</li>
+        </ul>
+      </div>
+      <div class="tile t-signal">
+        <h3>Difficulty reads like signal</h3>
+        <div class="levels">
+          <div class="on-photo"><span class="signal" data-level="1"><i></i><i></i><i></i></span>Low</div>
+          <div class="on-photo"><span class="signal" data-level="2"><i></i><i></i><i></i></span>Medium</div>
+          <div class="on-photo"><span class="signal" data-level="3"><i></i><i></i><i></i></span>High</div>
+        </div>
+      </div>
+      <div class="tile t-icons">
+        <h3>Hugeicons, sized up</h3>
+        <div class="icon-set">
+          <span><iconify-icon icon="hugeicons:camera-01"></iconify-icon></span>
+          <span><iconify-icon icon="hugeicons:blush-brush-01"></iconify-icon></span>
+          <span><iconify-icon icon="hugeicons:favourite"></iconify-icon></span>
+          <span><iconify-icon icon="hugeicons:shopping-bag-favorite"></iconify-icon></span>
+          <span><iconify-icon icon="hugeicons:bookmark-02"></iconify-icon></span>
+          <span><iconify-icon icon="hugeicons:sparkles"></iconify-icon></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="journey">
+    <h2>The journey, screen by screen</h2>
+    <p class="sub">Pick a screen to see what it does and how we'll know it works.</p>
+    <div class="journey">
+      <ol class="steps" id="steps"></ol>
+      <div class="detail" aria-live="polite">
+        <h3 id="d-title"></h3>
+        <p class="layout" id="d-layout"></p>
+        <ul class="crit" id="d-crit"></ul>
+        <span class="tag kernel-note" id="d-kernel" hidden><iconify-icon icon="hugeicons:sparkles"></iconify-icon>The kernel lives here</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>When things go sideways</h2>
+    <div class="whatif">
+      <div><iconify-icon icon="hugeicons:user-love-01"></iconify-icon><p style="margin:0"><b>First use</b><span>Welcome with Start. Saved Looks is empty.</span></p></div>
+      <div><iconify-icon icon="hugeicons:image-not-found-01"></iconify-icon><p style="margin:0"><b>Unusable photo</b><span>No face, blurry, too dark: the reason YouCam reports, plus a Retry button.</span></p></div>
+      <div><iconify-icon icon="hugeicons:smile"></iconify-icon><p style="margin:0"><b>No points found</b><span>No correction steps, still five looks for her skin tone.</span></p></div>
+      <div><iconify-icon icon="hugeicons:battery-low"></iconify-icon><p style="margin:0"><b>YouCam fails or credits run out</b><span>"We ran out of credits for the demo. Try later."</span></p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What's in, what waits</h2>
+    <div class="bounds">
+      <details open>
+        <summary><iconify-icon icon="hugeicons:checkmark-circle-02"></iconify-icon>Building now</summary>
+        <ul>
+          <li>Welcome, photo by camera or upload, skin analysis with tappable highlights</li>
+          <li>Five looks with signal-bar difficulty; tapped look grows in the grid with its description</li>
+          <li>Layer-by-layer tutorial with automatic correction steps and LLM tips; swipe, Next, or tap the wizard</li>
+          <li>Finish with Save, Saved Looks replay stored on the device</li>
+          <li>Stretch: before/after slider on Finish</li>
+        </ul>
+      </details>
+      <div class="stack">
+        <details>
+          <summary><iconify-icon icon="hugeicons:clock-01"></iconify-icon>Deferred</summary>
+          <ul>
+            <li><b>Accounts and sync</b></li>
+            <li><b>Products</b>: carousel, modal, store links (YouCam has no product data)</li>
+            <li><b>Use what I own</b></li>
+            <li>Brush animation, affiliate links</li>
+          </ul>
+        </details>
+        <details>
+          <summary><iconify-icon icon="hugeicons:unavailable"></iconify-icon>Non-goals</summary>
+          <ul>
+            <li>Skincare or medical advice</li>
+            <li>A general makeup course</li>
+            <li>In-app checkout</li>
+          </ul>
+        </details>
+        <details open>
+          <summary><iconify-icon icon="hugeicons:help-circle"></iconify-icon>Still open</summary>
+          <ul>
+            <li><b>Assumption:</b> loading states for analysis and looks</li>
+            <li><b>Assumption:</b> saved looks show preview, name, date</li>
+            <li>Name for the point cards (during build)</li>
+            <li>Five previews vs 1,000 YouCam units (spec)</li>
+            <li>Which YouCam errors mean an unusable photo (spec)</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <footer>Canonical plan: <code>devpost/prd.md</code>. Review companion only. Photos from Unsplash, free under the Unsplash License: <a href="https://unsplash.com/photos/water-droplets-on-red-surface-jbHZ6S8AcaA">blush bubbles</a>, <a href="https://unsplash.com/photos/close-up-photo-of-water-drops-fOXvuWswMDs">water drops</a>. Pink placeholders stand in for her real photo.</footer>
+</main>
+<script>
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const H = {"alt-arrow-down": "arrow-down-01", "alt-arrow-left": "arrow-left-01", "bag-heart": "shopping-bag-favorite", "battery-low": "battery-low", "bookmark": "bookmark-02", "camera": "camera-01", "check-circle": "checkmark-circle-02", "clock-circle": "clock-01", "cursor": "touch-interaction-01", "forbidden-circle": "unavailable", "gallery-remove": "image-not-found-01", "heart": "favourite", "hourglass-line": "hourglass", "layers": "layers-01", "magic-stick-3": "blush-brush-01", "maximize-square-3": "arrow-expand-01", "question-circle": "help-circle", "scanner": "face-id", "smile-circle": "smile", "star-shine": "sparkles", "stars": "sparkles", "sun-2": "sun-03", "user-heart": "user-love-01", "waterdrop": "droplet", "flag": "flag-02", "home-smile": "home-01", "widget": "grid-view", "pen": "pencil", "pipette": "dropper", "eye": "view"};
+  const icon = (n) => `<iconify-icon icon="hugeicons:${H[n] || n}"></iconify-icon>`;
+  const signal = (lvl) => `<span class="signal" data-level="${lvl}" aria-label="Difficulty ${["", "low", "medium", "high"][lvl]}"><i></i><i></i><i></i></span>`;
+
+  // Tutorial preview
+  const tut = [
+    { s: "Base", tag: "Skin tint", ic: "pipette", t: "Even out the base", tip: "Dot a sheer tint on cheeks, forehead and chin, then blend outward with fingertips." },
+    { s: "Spot", tag: "Concealer", ic: "stars", t: "Cover today's blemish", tip: "Today there's a blemish on your chin. Tap concealer just on it and press, don't rub." },
+    { s: "Eyes", tag: "Liner", ic: "pen", t: "Soft upper liner", tip: "Draw short strokes from the middle out, staying close to the lash line." },
+    { s: "Lips", tag: "Berry tint", ic: "heart", t: "Berry lip", tip: "Dab into the center of your lips and blot for a stained finish." }
+  ];
+  const wiz = document.querySelector("#tut .wizard"), layers = document.querySelectorAll("#tut .layer");
+  let cur = 0;
+  tut.forEach((s, i) => { const b = document.createElement("button"); b.textContent = s.s; b.setAttribute("role", "tab"); b.onclick = () => go(i); wiz.appendChild(b); });
+  function go(i) {
+    cur = Math.max(0, Math.min(tut.length - 1, i));
+    [...wiz.children].forEach((b, j) => { b.className = j < cur ? "done" : j === cur ? "cur" : ""; b.setAttribute("aria-selected", j === cur); });
+    layers.forEach(l => l.classList.toggle("on", +l.dataset.l <= cur + 1));
+    const s = tut[cur];
+    document.getElementById("tut-tag").innerHTML = icon(s.ic) + s.tag;
+    document.getElementById("tut-count").textContent = `Step ${cur + 1} of ${tut.length}`;
+    document.getElementById("tut-title").textContent = s.t;
+    document.getElementById("tut-tip").textContent = s.tip;
+    document.getElementById("tut-next").textContent = cur === tut.length - 1 ? "Finish" : "Next step";
+  }
+  document.getElementById("tut-next").onclick = () => go(cur === tut.length - 1 ? 0 : cur + 1);
+  document.getElementById("tut-prev").onclick = () => go(cur - 1);
+  go(0);
+
+  // Analysis preview: tap a card, its spot pulses once
+  document.querySelectorAll("#ana .pcard").forEach(c => c.onclick = () => {
+    const p = document.querySelector(`#ana .point[data-p="${c.dataset.p}"]`);
+    p.classList.remove("pulse"); void p.offsetWidth; if (!reduce) p.classList.add("pulse");
+  });
+
+  // Looks grid: tapped card grows in place
+  const looks = [
+    { n: "Fresh berry", lvl: 1, tint: "a", d: "Sheer base, spot-concealed chin, soft berry lip. About 10 minutes.", p: ["pipette", "stars", "heart"] },
+    { n: "Night liner", lvl: 3, tint: "b", d: "Defined winged liner and a deep berry lip. About 25 minutes.", p: ["pipette", "pen", "eye", "heart"] },
+    { n: "Peach glow", lvl: 2, tint: "c", d: "Dewy skin, peach cheeks, glossy lip. About 15 minutes.", p: ["pipette", "sun-2", "waterdrop"] },
+    { n: "Soft lilac", lvl: 2, tint: "d", d: "Lilac lids with a soft blend and nude lip. About 18 minutes.", p: ["pipette", "eye", "heart"] },
+    null
+  ];
+  const grid = document.getElementById("lgrid");
+  let grown = 0;
+  function renderLooks() {
+    grid.innerHTML = "";
+    const order = [grown, ...looks.map((_, i) => i).filter(i => i !== grown)];
+    order.forEach(i => {
+      const l = looks[i];
+      if (!l) { const s = document.createElement("div"); s.className = "skeleton"; s.setAttribute("aria-label", "Look still generating"); grid.appendChild(s); return; }
+      const c = document.createElement("button"); c.className = "lcard" + (i === grown ? " grown" : "");
+      c.setAttribute("aria-expanded", i === grown);
+      c.innerHTML = `<div class="top"><div class="face"><div class="photo"></div><div class="layer on tint-${l.tint}"></div>${i === grown ? "" : `<span class="sig-chip">${signal(l.lvl)}</span>`}</div>
+        <div class="more"><h6>${l.n}</h6><p>${l.d}</p><span class="lvl">${signal(l.lvl)}${["", "Low", "Medium", "High"][l.lvl]}</span></div></div>
+        <div class="more" style="margin-top:12px"><span class="btn primary">Start makeup ${icon("magic-stick-3")}</span></div>`;
+      c.onclick = () => { if (i !== grown) { grown = i; renderLooks(); grid.closest(".looks").scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); } };
+      grid.appendChild(c);
+    });
+  }
+  renderLooks();
+
+  // Journey
+  const screens = [
+    { i: "home-smile", t: "Welcome", l: "Blush bubbles photography, one Start button, a subtle glass Saved Looks icon top-right.", c: ["Shows the hero, Start, and the Saved Looks icon"] },
+    { i: "camera", t: "Add Photo", l: "Two actions: take a photo or upload one.", c: ["Both paths lead to analysis with the chosen image", "Unusable photo shows the reason and Retry"] },
+    { i: "scanner", t: "Skin Analysis", l: "Her photo, a skin tone summary, and a glass card per point found.", c: ["Skin tone summary shown", "One card per point YouCam returns", "Tapping a card highlights that spot on her photo"] },
+    { i: "widget", t: "Your Looks", l: "Two-column grid of five previews of her face, each with signal-bar difficulty. The tapped look grows in place to span the grid, with description and Start makeup.", c: ["Exactly five looks, each a preview of her own face", "Difficulty as 1, 2 or 3 bars; at least one of each", "Tapping a look grows it in the grid, no new screen"] },
+    { i: "magic-stick-3", t: "Tutorial", k: true, l: "Glass wizard on top, her face filling at least half the screen, glass tips sheet below.", c: ["Each step shows her photo with the layers so far", "LLM technique tips for every step", "Today's points get correction steps whose tips name the point", "Swipe on phone, Next on desktop, tap the wizard to jump"] },
+    { i: "flag", t: "Finish", l: "Save and Finish. Stretch: a before/after slider.", c: ["Save and Finish offered", "Stretch: before/after slider, original vs finished"] },
+    { i: "bookmark", t: "Saved Looks", l: "List of saved looks, opened from the Welcome icon.", c: ["A saved look survives closing and reopening", "Replay makes no new YouCam or LLM calls"] }
+  ];
+  const list = document.getElementById("steps");
+  screens.forEach((s, i) => {
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.innerHTML = icon(s.i) + s.t; b.onclick = () => show(i); li.appendChild(b); list.appendChild(li);
+  });
+  function show(i) {
+    const s = screens[i];
+    [...list.querySelectorAll("button")].forEach((b, j) => b.classList.toggle("on", i === j));
+    document.getElementById("d-title").textContent = s.t;
+    document.getElementById("d-layout").textContent = s.l;
+    document.getElementById("d-crit").innerHTML = s.c.map(x => `<li>${icon("check-circle")}<span>${x}</span></li>`).join("");
+    document.getElementById("d-kernel").hidden = !s.k;
+  }
+  show(4);
+</script>
+</body>
+</html>

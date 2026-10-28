@@ -2,6 +2,7 @@ import { z } from "zod";
 import { StepSchema } from "@/lib/openai/schema";
 import { toEffects } from "@/lib/youcam/effects";
 import { toApiError } from "@/lib/youcam/errors";
+import sharp from "sharp";
 import { runTask, toDataUrl } from "@/lib/youcam/tasks";
 import { fixtureKey, recordedPhoto, replayable, ReplayMiss } from "@/lib/replay";
 import type { RenderRequest, RenderResponse } from "@/lib/types";
@@ -25,7 +26,10 @@ export async function POST(req: Request) {
       const res = await runTask<VtoResults>("makeup-vto", { src_file_id: fileId, effects, version: "1.0" });
       const url = Array.isArray(res) ? res[0]?.download_url : res.url;
       if (!url) throw new Error("Makeup VTO returned no image");
-      return { image: await toDataUrl(url) };
+      // YouCam returns ~2.5MB PNGs; a JPEG keeps fixtures, responses and saved looks small.
+      const png = Buffer.from((await toDataUrl(url)).split(",")[1], "base64");
+      const jpeg = await sharp(png).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+      return { image: `data:image/jpeg;base64,${jpeg.toString("base64")}` };
     });
     return Response.json(result);
   } catch (err) {

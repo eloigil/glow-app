@@ -20,8 +20,8 @@ export const StepSchema = z.object({
   intensity: z.number().int().min(10).max(90),
   finish: z.enum(FINISHES),
   tip: z.string().describe("Two or three sentences of practical technique for her face today, second person"),
-  corrects: z.enum(CONCERN_KEYS).nullable()
-    .describe("The concern this step fixes today, or null"),
+  corrects: z.array(z.enum(CONCERN_KEYS)).max(3)
+    .describe("Today's points this step fixes; empty for color steps"),
 });
 
 export const LookSchema = z.object({

@@ -1,0 +1,452 @@
+[
+  {
+    "name": "Soft Daylight",
+    "description": "An easy polished daytime look with brightening and fresh cheeks in 12 minutes.",
+    "difficulty": 1,
+    "minutes": 12,
+    "steps": [
+      {
+        "title": "Foundation, neutral medium",
+        "category": "foundation",
+        "pattern": null,
+        "colors": [
+          "#b6947a"
+        ],
+        "intensity": 44,
+        "finish": "satin",
+        "tip": "Press a thin layer from the center of your face outward with a damp sponge. Keep it light around the nose and jaw so your skin still looks like skin.",
+        "corrects": [
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Concealer, light beige",
+        "category": "concealer",
+        "pattern": null,
+        "colors": [
+          "#c7a589"
+        ],
+        "intensity": 60,
+        "finish": "satin",
+        "tip": "Tap concealer under the eyes and on the age spots, then blend the edges first. Add a little more right in the darkest inner corner to hide dark circles and puffy eyes.",
+        "corrects": [
+          "dark_circle_v2",
+          "eye_bag",
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Blush, soft peach",
+        "category": "blush",
+        "pattern": "Round1",
+        "colors": [
+          "#d98a6a"
+        ],
+        "intensity": 54,
+        "finish": "sheer",
+        "tip": "Place the blush on the round apples of your cheeks and soften it back toward the ears. Use a fluffy brush and keep the center a touch brighter for a healthy flush.",
+        "corrects": []
+      },
+      {
+        "title": "Highlighter, soft glow",
+        "category": "highlighter",
+        "pattern": "OvalFace2",
+        "colors": [
+          "#f2d3bc"
+        ],
+        "intensity": 52,
+        "finish": "shimmer",
+        "tip": "Sweep a small amount on the tops of your cheekbones and a hint on the nose bridge. This keeps the face bright without emphasizing texture.",
+        "corrects": []
+      },
+      {
+        "title": "Lip color, rosy nude",
+        "category": "lip_color",
+        "pattern": null,
+        "colors": [
+          "#c77e77"
+        ],
+        "intensity": 66,
+        "finish": "satin",
+        "tip": "Outline the lips lightly, then fill them in with a fingertip for a soft blurred edge. Keep the color close to your natural lip tone so the look stays fresh.",
+        "corrects": []
+      }
+    ],
+    "id": "look-1"
+  },
+  {
+    "name": "Polished Balance",
+    "description": "A medium balanced work look with soft definition and lifted cheeks in 18 minutes.",
+    "difficulty": 2,
+    "minutes": 18,
+    "steps": [
+      {
+        "title": "Foundation, warm neutral",
+        "category": "foundation",
+        "pattern": null,
+        "colors": [
+          "#b6947a"
+        ],
+        "intensity": 48,
+        "finish": "satin",
+        "tip": "Buff foundation thinly over the center of the face and where shine appears first. Let the layer stay sheer on the cheeks so your base does not look heavy.",
+        "corrects": [
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Concealer, light sand",
+        "category": "concealer",
+        "pattern": null,
+        "colors": [
+          "#caa88d"
+        ],
+        "intensity": 64,
+        "finish": "satin",
+        "tip": "Use a small concealer brush under the eyes and over the age spots, then tap with a sponge to melt it in. Focus on the hollow and the puffy under-eye area so the shadows fade.",
+        "corrects": [
+          "dark_circle_v2",
+          "eye_bag",
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Contour, soft taupe",
+        "category": "contour",
+        "pattern": "OvalFace6",
+        "colors": [
+          "#9a7a66"
+        ],
+        "intensity": 58,
+        "finish": "matte",
+        "tip": "Trace a soft line just under the cheekbones and blend upward with a small brush. Keep the pressure light so the contour shapes the face without looking harsh.",
+        "corrects": []
+      },
+      {
+        "title": "Blush, lifted coral",
+        "category": "blush",
+        "pattern": "Oblique1",
+        "colors": [
+          "#da8668"
+        ],
+        "intensity": 60,
+        "finish": "satin",
+        "tip": "Sweep the blush on a diagonal from the outer cheek toward the temple. This lift works well with your face today and keeps the cheeks looking sculpted.",
+        "corrects": []
+      },
+      {
+        "title": "Eyebrows, soft arch",
+        "category": "eyebrows",
+        "pattern": "SoftArch1",
+        "colors": [
+          "#3e3834"
+        ],
+        "intensity": 60,
+        "finish": "matte",
+        "tip": "Fill sparse areas with short hairlike strokes, then brush the brow upward and outward. Keep the arch soft so the brow frames the eyes without overpowering them.",
+        "corrects": []
+      },
+      {
+        "title": "Lip color, muted rose",
+        "category": "lip_color",
+        "pattern": null,
+        "colors": [
+          "#b96f70"
+        ],
+        "intensity": 68,
+        "finish": "matte",
+        "tip": "Apply the lip color from the center outward, then blur the edges with a fingertip. This gives a neat finish that still feels relaxed.",
+        "corrects": []
+      }
+    ],
+    "id": "look-2"
+  },
+  {
+    "name": "Evening Glow",
+    "description": "A deeper evening look with smoky eyes and bright cheeks in 25 minutes.",
+    "difficulty": 3,
+    "minutes": 25,
+    "steps": [
+      {
+        "title": "Foundation, medium neutral",
+        "category": "foundation",
+        "pattern": null,
+        "colors": [
+          "#b6947a"
+        ],
+        "intensity": 52,
+        "finish": "satin",
+        "tip": "Blend foundation in thin layers with a dense brush, then press it in with a sponge. Keep coverage even through the cheeks and nose so spots stay hidden.",
+        "corrects": [
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Concealer, bright beige",
+        "category": "concealer",
+        "pattern": null,
+        "colors": [
+          "#c9a889"
+        ],
+        "intensity": 68,
+        "finish": "satin",
+        "tip": "Place concealer under the eyes in a triangle shape and tap it over the age spots. Add a little extra at the inner under-eye corner to brighten dark circles and puffiness.",
+        "corrects": [
+          "dark_circle_v2",
+          "eye_bag",
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Eye shadow, taupe smoke",
+        "category": "eye_shadow",
+        "pattern": "2colors4",
+        "colors": [
+          "#d6c2b0",
+          "#6f5a4e"
+        ],
+        "intensity": 74,
+        "finish": "matte",
+        "tip": "Pack the lighter shade across the lid, then deepen the outer third with the darker shade. Blend the seam with a fluffy brush so the smoke looks soft, not muddy.",
+        "corrects": []
+      },
+      {
+        "title": "Eye liner, deep brown",
+        "category": "eye_liner",
+        "pattern": "Drama8",
+        "colors": [
+          "#4a322a"
+        ],
+        "intensity": 76,
+        "finish": "matte",
+        "tip": "Draw a thin line through the lashes first, then flick the wing slightly upward at the outer corner. Keep the inner line slim so the eyes stay open and lifted.",
+        "corrects": []
+      },
+      {
+        "title": "Eyelashes, wispy black",
+        "category": "eyelashes",
+        "pattern": "Wispies1",
+        "colors": [
+          "#1f1a18"
+        ],
+        "intensity": 78,
+        "finish": "matte",
+        "tip": "Press the lashes into the lash line so they sit close to the eye, then pinch the outer corner upward. This adds lift without hiding the eye shadow.",
+        "corrects": []
+      },
+      {
+        "title": "Blush, rose lift",
+        "category": "blush",
+        "pattern": "1color6",
+        "colors": [
+          "#d27b74"
+        ],
+        "intensity": 66,
+        "finish": "sheer",
+        "tip": "Buff the blush in a soft circular shape over the upper cheek, then fade the edges upward. Keep it airy so the stronger eye makeup still feels balanced.",
+        "corrects": []
+      },
+      {
+        "title": "Lip color, brick rose",
+        "category": "lip_color",
+        "pattern": null,
+        "colors": [
+          "#a85e59"
+        ],
+        "intensity": 74,
+        "finish": "satin",
+        "tip": "Outline the lips carefully, then fill them in with a lip brush for clean edges. Slightly soften the cupid's bow so the mouth feels polished but not severe.",
+        "corrects": []
+      }
+    ],
+    "id": "look-3"
+  },
+  {
+    "name": "Fresh Lift",
+    "description": "A quick brightening look with lifted cheeks and glossy nude lips in 15 minutes.",
+    "difficulty": 1,
+    "minutes": 15,
+    "steps": [
+      {
+        "title": "Foundation, neutral beige",
+        "category": "foundation",
+        "pattern": null,
+        "colors": [
+          "#b6947a"
+        ],
+        "intensity": 42,
+        "finish": "satin",
+        "tip": "Use a small amount of foundation only where you need to even tone. Pat extra over the age spots so the base stays light everywhere else.",
+        "corrects": [
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Concealer, soft sand",
+        "category": "concealer",
+        "pattern": null,
+        "colors": [
+          "#c9a889"
+        ],
+        "intensity": 58,
+        "finish": "satin",
+        "tip": "Tap concealer under the eyes and over any age spots, then blend with the tip of your sponge. Focus on the shadows and puffy areas first so the eyes look rested.",
+        "corrects": [
+          "dark_circle_v2",
+          "eye_bag",
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Bronzer, warm beige",
+        "category": "bronzer",
+        "pattern": "Bronzer1",
+        "colors": [
+          "#b88762"
+        ],
+        "intensity": 54,
+        "finish": "satin",
+        "tip": "Sweep bronzer lightly over the high points where the sun would naturally hit. Keep it sheer so the warmth looks believable on your medium skin.",
+        "corrects": []
+      },
+      {
+        "title": "Blush, peach coral",
+        "category": "blush",
+        "pattern": "1color8",
+        "colors": [
+          "#dc8a6d"
+        ],
+        "intensity": 56,
+        "finish": "sheer",
+        "tip": "Place the blush high on the cheeks in a playful heart shape, then soften the lower edge. This gives a fresh lift without dragging the face downward.",
+        "corrects": []
+      },
+      {
+        "title": "Lip color, glossy rose nude",
+        "category": "lip_color",
+        "pattern": null,
+        "colors": [
+          "#c8847c"
+        ],
+        "intensity": 66,
+        "finish": "gloss",
+        "tip": "Swipe the color across the full lip, then press a little extra onto the center of the lower lip. The gloss will make the lips look fuller and brighter instantly.",
+        "corrects": []
+      }
+    ],
+    "id": "look-4"
+  },
+  {
+    "name": "Defined Soft Glam",
+    "description": "A detailed soft glam with structured cheeks and a fuller lip in 30 minutes.",
+    "difficulty": 3,
+    "minutes": 30,
+    "steps": [
+      {
+        "title": "Foundation, medium warm neutral",
+        "category": "foundation",
+        "pattern": null,
+        "colors": [
+          "#b6947a"
+        ],
+        "intensity": 54,
+        "finish": "satin",
+        "tip": "Apply foundation with a flat brush in thin layers, then press it in with a sponge for a seamless finish. Build a touch more where age spots show through so the base stays even.",
+        "corrects": [
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Concealer, bright neutral beige",
+        "category": "concealer",
+        "pattern": null,
+        "colors": [
+          "#ccab90"
+        ],
+        "intensity": 70,
+        "finish": "satin",
+        "tip": "Use a small concealer brush to place product under the eyes and directly on the age spots. Blend upward toward the inner corner to brighten dark circles and settle the puffy area softly.",
+        "corrects": [
+          "dark_circle_v2",
+          "eye_bag",
+          "age_spot"
+        ]
+      },
+      {
+        "title": "Eyebrows, defined arch",
+        "category": "eyebrows",
+        "pattern": "HighArch1",
+        "colors": [
+          "#3e3834"
+        ],
+        "intensity": 68,
+        "finish": "matte",
+        "tip": "Sketch the lower edge first, then feather the front of the brow with tiny strokes. Keep the tail a touch sharper to frame the eyes for a glam finish.",
+        "corrects": []
+      },
+      {
+        "title": "Eye shadow, warm taupe duo",
+        "category": "eye_shadow",
+        "pattern": "2colors167",
+        "colors": [
+          "#dcc7b2",
+          "#8a6a59"
+        ],
+        "intensity": 78,
+        "finish": "shimmer",
+        "tip": "Pack the lighter shade on the lid and place the deeper shade into the crease with a tapered brush. Cut the crease softly only in the center so the eyes look larger, not harsh.",
+        "corrects": []
+      },
+      {
+        "title": "Eye liner, black brown wing",
+        "category": "eye_liner",
+        "pattern": "Double4",
+        "colors": [
+          "#3a2620"
+        ],
+        "intensity": 80,
+        "finish": "matte",
+        "tip": "Draw the liner close to the lash roots and extend a short, clean wing just past the outer corner. Keep both eyes matched by checking the angle at the tail before setting the line thicker.",
+        "corrects": []
+      },
+      {
+        "title": "Highlighter, luminous lift",
+        "category": "highlighter",
+        "pattern": "HeartFace4",
+        "colors": [
+          "#f3d7bf"
+        ],
+        "intensity": 68,
+        "finish": "shimmer",
+        "tip": "Place highlighter on the high cheekbones and a small amount at the center of the face. Use a light hand so the glow lifts the skin without highlighting texture.",
+        "corrects": []
+      },
+      {
+        "title": "Blush, rose berry",
+        "category": "blush",
+        "pattern": "2colors1",
+        "colors": [
+          "#c76f67",
+          "#e39b8a"
+        ],
+        "intensity": 70,
+        "finish": "satin",
+        "tip": "Layer the deeper shade slightly lower and the lighter shade higher on the cheek for a dimensional flush. Blend the two together with a soft brush so the color looks naturally diffused.",
+        "corrects": []
+      },
+      {
+        "title": "Lip color, warm berry nude",
+        "category": "lip_color",
+        "pattern": null,
+        "colors": [
+          "#ad625c"
+        ],
+        "intensity": 76,
+        "finish": "satin",
+        "tip": "Apply the lipstick from the center outward, then smooth the edges with a lip brush for precision. Leave the center slightly fuller so the mouth looks balanced with the stronger eyes.",
+        "corrects": []
+      }
+    ],
+    "id": "look-5"
+  }
+]

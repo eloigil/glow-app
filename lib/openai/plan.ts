@@ -5,7 +5,17 @@ import { OPENAI_MODEL } from "./model";
 import { LookPlanSchema, type LookPlan } from "./schema";
 import { PATTERNS, UNPATTERNED, patternFor } from "@/lib/youcam/effects";
 import { POINT_THRESHOLD } from "@/lib/youcam/concerns";
-import type { Difficulty, Look, LooksRequest } from "@/lib/types";
+import type { ConcernKey, Difficulty, Look, LooksRequest, MakeupCategory } from "@/lib/types";
+
+/** Which products can honestly fix which concern. The model gamed "corrects" without this. */
+const CORRECTORS: Record<ConcernKey, MakeupCategory[]> = {
+  acne: ["concealer"],
+  redness: ["foundation", "concealer"],
+  dark_circle_v2: ["concealer"],
+  age_spot: ["concealer", "foundation"],
+  oiliness: ["foundation"],
+  eye_bag: ["concealer", "highlighter"],
+};
 
 // spec.md > Looks Route: one OpenAI call (plus one retry with the problems listed), then validation.
 
@@ -18,11 +28,18 @@ and break each look into the ordered steps she will follow on her own face. Each
 
 Rules:
 - Exactly 5 looks. Difficulty: at least one 1 (easy), one 2 (medium), one 3 (difficult); the other two any level.
-- Easy looks: 3-4 steps. Medium: 4-6. Difficult: 6-8. Order steps the way a makeup artist applies them (base first, lips last).
-- Every look must correct each of today's points with at least one step whose "corrects" names that point
-  (e.g. concealer for dark_circle_v2 or acne, color-correcting base for redness, mattifying finish for oiliness).
-  Its tip must mention the point by its plain name. Only use concern keys that are in today's points.
+- Easy looks: 4-5 steps. Medium: 5-6. Difficult: 7-8. Order steps the way a makeup artist applies them (base first, lips last).
+- Every look is a real look, not just a base: after the correcting steps it must have at least one cheek step (blush, bronzer,
+  contour or highlighter) and end with lip_color. Medium and difficult looks also work the eyes (eye_shadow, eye_liner, eyelashes, eyebrows).
+  Vary the five looks: different blush shapes, lip colors and finishes.
+- Every look must correct each of today's points: some step's "corrects" array includes it.
+  Only these categories may correct a point: ${Object.entries(CORRECTORS).map(([k, v]) => `${k} -> ${v.join(" or ")}`).join("; ")}.
+  Keep it to at most two correcting steps right after (or as) the base: one step may fix several points
+  (e.g. one under-eye concealer for dark_circle_v2 and eye_bag). Those steps' tips must name each point in plain words
+  (spots, dark circles, puffy eyes...). Every other step has corrects [].
 - Shades must suit her skin tone: foundation and concealer close to her skin hex (concealer slightly lighter for under-eyes).
+- Every step must be visible in its own rendered layer. Intensity: foundation 40-55, concealer 50-70,
+  blush/bronzer/contour/highlighter 50-75, eyes and brows 55-85, lips 60-85. Easy looks sit at the low end, difficult at the high end.
 - Use only these categories and pattern ids. foundation, concealer and lip_color take pattern null.
   Give exactly as many colors as the pattern has color slots.
 ${catalog}
@@ -49,8 +66,16 @@ export function validate(plan: LookPlan, req: LooksRequest): string[] {
   const points = pointsOf(req).map((c) => c.key);
   plan.looks.forEach((look, i) => {
     for (const p of points) {
-      if (!look.steps.some((s) => s.corrects === p)) problems.push(`Look ${i + 1} "${look.name}" has no step correcting ${p}.`);
+      if (!look.steps.some((s) => s.corrects.includes(p))) problems.push(`Look ${i + 1} "${look.name}" has no step correcting ${p}.`);
     }
+    for (const s of look.steps) {
+      for (const c of s.corrects) {
+        if (!CORRECTORS[c].includes(s.category)) {
+          problems.push(`Look ${i + 1}: a ${s.category} step can't correct ${c}; use ${CORRECTORS[c].join(" or ")}.`);
+        }
+      }
+    }
+    if (look.steps.at(-1)?.category !== "lip_color") problems.push(`Look ${i + 1} "${look.name}" must end with lip_color.`);
     look.steps.forEach((s, j) => {
       const where = `Look ${i + 1} step ${j + 1} (${s.category})`;
       if (UNPATTERNED.includes(s.category)) return;

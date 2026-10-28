@@ -50,7 +50,7 @@ export default function Tutorial() {
 
   if (!look || !session.photo) return null;
   const step = look.steps[current];
-  const concern = session.analysis?.concerns.find((c) => c.key === step.corrects);
+  const fixes = session.analysis?.concerns.filter((c) => step.corrects.includes(c.key)) ?? [];
 
   return (
     <div className="relative flex-1 overflow-hidden">
@@ -92,7 +92,7 @@ export default function Tutorial() {
         step={step}
         index={current}
         total={total}
-        concern={concern}
+        concerns={fixes}
         error={errors[current]}
         onRetry={() => retry(current)}
         onBack={() => go(current - 1)}

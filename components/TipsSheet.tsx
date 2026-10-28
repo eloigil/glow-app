@@ -10,7 +10,7 @@ export function TipsSheet({
   step,
   index,
   total,
-  concern,
+  concerns,
   error,
   onRetry,
   onBack,
@@ -19,7 +19,7 @@ export function TipsSheet({
   step: Step;
   index: number;
   total: number;
-  concern?: Concern;
+  concerns: Concern[];
   error?: string;
   onRetry: () => void;
   onBack: () => void;
@@ -29,12 +29,12 @@ export function TipsSheet({
   return (
     <GlassSheet className="flex max-h-[46%] flex-col">
       <div className="flex shrink-0 items-center justify-between gap-3">
-        {concern ? (
+        {concerns.length ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-wash py-1 pr-3 pl-1.5 text-xs font-medium">
             <span className="text-rose">
-              <Icon icon={CONCERN_LOOK[concern.key].icon} />
+              <Icon icon={CONCERN_LOOK[concerns[0].key].icon} />
             </span>
-            For your {concern.label.toLowerCase()} today
+            For your {new Intl.ListFormat("en", { type: "conjunction" }).format(concerns.map((c) => c.label.toLowerCase()))} today
           </span>
         ) : (
           <span />

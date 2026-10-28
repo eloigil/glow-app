@@ -38,9 +38,8 @@ export default function SkinAnalysis() {
         tone,
       });
       if (!body.looks?.length) throw new Error("We couldn't design looks this time. Try again.");
-      // TODO(slice 3): route to /looks grid instead of jumping into the first look.
-      setSession((s) => ({ ...s, looks: body.looks, lookId: body.looks[0].id, stepImages: {}, stepPlaceholders: {}, stepErrors: {} }));
-      router.push("/tutorial");
+      setSession((s) => ({ ...s, looks: body.looks, lookId: undefined, stepImages: {}, stepPlaceholders: {}, stepErrors: {} }));
+      router.push("/looks");
     } catch (e) {
       setError((e as Error).message);
       setDesigning(false);

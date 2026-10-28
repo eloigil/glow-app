@@ -4,7 +4,7 @@ import { createContext, useContext, useState, type Dispatch, type ReactNode, typ
 import type { AnalyzeResponse, Look, Tone } from "@/lib/types";
 
 // In-memory session (spec.md > Session Store). A reload sends her back to Welcome.
-type Session = {
+export type Session = {
   /** Object URL or data URL of the photo being shown. */
   photo?: string;
   analysis?: AnalyzeResponse;

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { BookmarkAdd02Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { BeforeAfter } from "@/components/BeforeAfter";
 import { Button } from "@/components/Button";
 import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
@@ -61,8 +62,7 @@ export function FinishView({
   return (
     <div className="relative flex-1 overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-[64%]">
-        {/* eslint-disable-next-line @next/next/no-img-element -- data/object URL */}
-        <img src={finished} alt={`Your face with the full ${look.name} look`} className="absolute inset-0 size-full object-cover" />
+        <BeforeAfter before={photo} after={finished} alt={`Your face with the full ${look.name} look`} />
       </div>
 
       <GlassSheet>

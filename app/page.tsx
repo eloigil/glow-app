@@ -12,7 +12,7 @@ export default function Welcome() {
       <Link
         href="/saved"
         aria-label="Saved looks"
-        className="glass absolute top-4 right-4 z-10 grid size-10 place-items-center rounded-full text-[#17141a]"
+        className="glass absolute top-4 right-4 z-10 grid size-10 place-items-center rounded-full text-ink"
       >
         <Icon icon={Bookmark02Icon} size={24} />
       </Link>

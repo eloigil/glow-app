@@ -95,7 +95,7 @@ export default function SavedLooks() {
             </span>
             <p className="mt-4 font-medium">No saved looks yet</p>
             <p className="mt-1 max-w-[30ch] text-sm text-ink-muted">Finish a tutorial and tap Save to keep it here.</p>
-            <Link href="/photo" className="mt-4 text-sm font-medium text-rose underline underline-offset-4">
+            <Link href="/photo" className="mt-4 text-sm font-medium text-ink underline decoration-rose decoration-2 underline-offset-4">
               Start a look
             </Link>
           </div>

@@ -16,7 +16,7 @@ export type Session = {
   stepImages?: Record<string, (string | undefined)[]>;
   /** Per look id: index i is true when stepImages[i] is a replay stand-in, not a real render. */
   stepPlaceholders?: Record<string, boolean[]>;
-  /** Render failures keyed `${look.id}:${stepIndex}`. */
+  /** Render failures keyed `${fileId}:${look.id}:${stepIndex}`. */
   stepErrors?: Record<string, string>;
   /** Set when the tutorial is replaying a look saved on the device: every image is local, nothing is fetched. */
   savedId?: string;

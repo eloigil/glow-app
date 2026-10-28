@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Unbounded } from "next/font/google";
+import { MotionProvider } from "@/components/MotionProvider";
 import { SessionProvider } from "@/lib/session";
 import "./globals.css";
 
@@ -22,9 +23,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geist.variable} ${unbounded.variable} h-full antialiased`}>
       <body className="min-h-full bg-canvas font-sans text-ink">
-        <SessionProvider>
-          <main className="relative mx-auto flex min-h-dvh w-full max-w-[430px] flex-col">{children}</main>
-        </SessionProvider>
+        <MotionProvider>
+          <SessionProvider>
+            <main className="relative mx-auto flex min-h-dvh w-full max-w-[430px] flex-col">{children}</main>
+          </SessionProvider>
+        </MotionProvider>
       </body>
     </html>
   );

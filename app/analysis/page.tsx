@@ -9,16 +9,13 @@ import { CONCERN_LOOK } from "@/components/concernLook";
 import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
 import { MaskHighlight } from "@/components/MaskHighlight";
-import { postJson } from "@/lib/postJson";
 import { useSession } from "@/lib/session";
-import type { ConcernKey, LooksResponse } from "@/lib/types";
+import type { ConcernKey } from "@/lib/types";
 
 export default function SkinAnalysis() {
   const router = useRouter();
   const { session, setSession } = useSession();
   const [active, setActive] = useState<ConcernKey>();
-  const [designing, setDesigning] = useState(false);
-  const [error, setError] = useState<string>();
   const { photo, analysis, tone } = session;
 
   useEffect(() => {
@@ -28,23 +25,6 @@ export default function SkinAnalysis() {
 
   const points = analysis.concerns.filter((c) => c.isPoint);
 
-  async function designLooks() {
-    setDesigning(true);
-    setError(undefined);
-    try {
-      const body = await postJson<LooksResponse>("/api/looks", {
-        concerns: analysis!.concerns,
-        skinType: analysis!.skinType,
-        tone,
-      });
-      if (!body.looks?.length) throw new Error("We couldn't design looks this time. Try again.");
-      setSession((s) => ({ ...s, looks: body.looks, lookId: undefined, stepImages: {}, stepPlaceholders: {}, stepErrors: {} }));
-      router.push("/looks");
-    } catch (e) {
-      setError((e as Error).message);
-      setDesigning(false);
-    }
-  }
   const activeMask = points.find((c) => c.key === active)?.mask;
 
   return (
@@ -90,13 +70,14 @@ export default function SkinAnalysis() {
           <p className="mt-4 text-ink-muted">Your skin looks great today. Let&apos;s find a look for it.</p>
         )}
 
-        {error && (
-          <p className="mt-4 shrink-0 text-sm" role="alert">
-            {error}
-          </p>
-        )}
-        <Button className="mt-5 w-full shrink-0" onClick={designLooks} disabled={designing}>
-          {designing ? "Designing your looks…" : error ? "Retry" : "Continue"}
+        <Button
+          className="mt-5 w-full shrink-0"
+          onClick={() => {
+            setSession((s) => ({ ...s, looks: undefined, lookId: undefined }));
+            router.push("/looks");
+          }}
+        >
+          Continue
         </Button>
       </GlassSheet>
     </div>

@@ -60,6 +60,10 @@ export default function Tutorial() {
         saveId={session.savedId ?? `${session.analysis?.fileId}:${look.id}`}
         photo={session.photo}
         images={images}
+        placeholders={placeholders}
+        errors={errors}
+        onRetry={retry}
+        onBack={() => setFinished(false)}
         concerns={session.analysis?.concerns ?? []}
         onFinish={() => router.push(session.savedId ? "/saved" : "/")}
       />

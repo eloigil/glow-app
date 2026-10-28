@@ -20,14 +20,19 @@ export default function SavedLooks() {
 
   useEffect(() => {
     let urls: string[] = [];
+    let cancelled = false;
     listSaved()
       .then((saved) => {
+        if (cancelled) return;
         const list = saved.map((s) => ({ ...s, thumb: URL.createObjectURL(s.steps.at(-1) ?? s.original) }));
         urls = list.map((i) => i.thumb);
         setItems(list);
       })
-      .catch(() => setFailed(true));
-    return () => urls.forEach(URL.revokeObjectURL);
+      .catch(() => !cancelled && setFailed(true));
+    return () => {
+      cancelled = true;
+      urls.forEach(URL.revokeObjectURL);
+    };
   }, []);
 
   function open(s: SavedLook) {
@@ -35,6 +40,7 @@ export default function SavedLooks() {
     const toUrl = (b: Blob) => URL.createObjectURL(b);
     setSession({
       photo: toUrl(s.original),
+      // fileId "" + savedId: lib/useStepRenders.ts must never fetch when savedId is set.
       analysis: { fileId: "", concerns: s.concerns },
       looks: [s.look],
       lookId: s.look.id,

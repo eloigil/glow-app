@@ -17,6 +17,10 @@ export function FinishView({
   saveId,
   photo,
   images,
+  placeholders,
+  errors,
+  onRetry,
+  onBack,
   concerns,
   onFinish,
 }: {
@@ -25,11 +29,19 @@ export function FinishView({
   saveId: string;
   photo: string;
   images: (string | undefined)[];
+  /** Per step: the image is a replay stand-in, not a real render. */
+  placeholders: boolean[];
+  errors: (string | undefined)[];
+  onRetry: (step: number) => void;
+  /** Back to the last step (clears the finished state). */
+  onBack: () => void;
   concerns: Concern[];
   onFinish: () => void;
 }) {
   const [state, setState] = useState<State>("idle");
   const complete = look.steps.every((_, i) => images[i]);
+  const failed = look.steps.map((_, i) => i).filter((i) => errors[i] && !images[i]);
+  const standIn = look.steps.some((_, i) => placeholders[i]);
   const finished = images[look.steps.length - 1] ?? images.findLast(Boolean) ?? photo;
 
   useEffect(() => {
@@ -59,13 +71,23 @@ export function FinishView({
           <p className="font-medium">{look.name}</p>
           <SignalBars level={look.difficulty} label />
         </div>
+        <p className="sr-only" role="status">
+          {state === "saved" ? "Look saved" : state === "error" ? "We couldn't save this on your device. Try again." : ""}
+        </p>
         {state === "error" && (
-          <p className="mt-3 rounded-[8px] bg-wash px-3 py-2 text-sm" role="alert">
-            We couldn&apos;t save this on your device. Try again.
-          </p>
+          <p className="mt-3 rounded-[8px] bg-wash px-3 py-2 text-sm">We couldn&apos;t save this on your device. Try again.</p>
         )}
+        {failed.length > 0 && (
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-[8px] bg-wash px-3 py-2 text-sm">
+            <p>One layer didn&apos;t finish.</p>
+            <Button variant="quiet" onClick={() => failed.forEach(onRetry)}>
+              Retry
+            </Button>
+          </div>
+        )}
+        {complete && standIn && <p className="mt-3 text-sm text-ink-muted">Some layers are replay previews.</p>}
         <div className="mt-5 grid gap-2">
-          <Button onClick={save} disabled={!complete || state === "saving" || state === "saved"} aria-live="polite">
+          <Button onClick={save} disabled={!complete || state === "saving" || state === "saved"}>
             {state === "saved" ? (
               <>
                 <Icon icon={CheckmarkCircle02Icon} size={28} /> Saved
@@ -74,9 +96,12 @@ export function FinishView({
               "Finishing your layers"
             ) : (
               <>
-                <Icon icon={BookmarkAdd02Icon} size={28} /> {state === "saving" ? "Saving" : "Save look"}
+                <Icon icon={BookmarkAdd02Icon} size={28} /> {state === "saving" ? "Saving" : standIn ? "Save preview" : "Save look"}
               </>
             )}
+          </Button>
+          <Button variant="quiet" onClick={onBack}>
+            Back to steps
           </Button>
           <Button variant="quiet" onClick={onFinish}>
             Finish

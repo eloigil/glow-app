@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
+import { FinishView } from "@/components/FinishView";
 import { StepWizard } from "@/components/StepWizard";
 import { TipsSheet } from "@/components/TipsSheet";
 import { useSession } from "@/lib/session";
@@ -16,6 +17,7 @@ export default function Tutorial() {
   const look = session.looks?.find((l) => l.id === session.lookId);
   const { images, placeholders, errors, retry } = useStepRenders(look, session.analysis?.fileId);
   const [current, setCurrent] = useState(0);
+  const [finished, setFinished] = useState(false);
 
   useEffect(() => {
     if (!look || !session.photo) router.replace("/");
@@ -26,8 +28,7 @@ export default function Tutorial() {
     (i: number) => setCurrent(Math.max(0, Math.min(i, total - 1))),
     [total],
   );
-  // TODO(slice 4): Finish view with Save instead of returning home.
-  const next = () => (current >= total - 1 ? router.push("/") : go(current + 1));
+  const next = () => (current >= total - 1 ? setFinished(true) : go(current + 1));
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -51,6 +52,19 @@ export default function Tutorial() {
   if (!look || !session.photo) return null;
   const step = look.steps[current];
   const fixes = session.analysis?.concerns.filter((c) => step.corrects.includes(c.key)) ?? [];
+
+  if (finished) {
+    return (
+      <FinishView
+        look={look}
+        saveId={session.savedId ?? `${session.analysis?.fileId}:${look.id}`}
+        photo={session.photo}
+        images={images}
+        concerns={session.analysis?.concerns ?? []}
+        onFinish={() => router.push(session.savedId ? "/saved" : "/")}
+      />
+    );
+  }
 
   return (
     <div className="relative flex-1 overflow-hidden">

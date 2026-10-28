@@ -18,6 +18,8 @@ export type Session = {
   stepPlaceholders?: Record<string, boolean[]>;
   /** Render failures keyed `${look.id}:${stepIndex}`. */
   stepErrors?: Record<string, string>;
+  /** Set when the tutorial is replaying a look saved on the device: every image is local, nothing is fetched. */
+  savedId?: string;
 };
 
 type SessionContext = { session: Session; setSession: Dispatch<SetStateAction<Session>> };

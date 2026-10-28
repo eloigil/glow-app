@@ -35,7 +35,7 @@ Rules:
 - Every look must correct each of today's points: some step's "corrects" array includes it.
   Only these categories may correct a point: ${Object.entries(CORRECTORS).map(([k, v]) => `${k} -> ${v.join(" or ")}`).join("; ")}.
   Keep it to at most two correcting steps right after (or as) the base: one step may fix several points
-  (e.g. one under-eye concealer for dark_circle_v2 and eye_bag). Those steps' tips must name each point in plain words
+  (e.g. one under-eye concealer for dark_circle_v2 and eye_bag). Only use today's points listed below. Those steps' tips must name each point in plain words
   (spots, dark circles, puffy eyes...). Every other step has corrects [].
 - Shades must suit her skin tone: foundation and concealer close to her skin hex (concealer slightly lighter for under-eyes).
 - Every step must be visible in its own rendered layer. Intensity: foundation 40-55, concealer 50-70,
@@ -70,6 +70,7 @@ export function validate(plan: LookPlan, req: LooksRequest): string[] {
     }
     for (const s of look.steps) {
       for (const c of s.corrects) {
+        if (!points.includes(c)) problems.push(`Look ${i + 1}: ${c} is not one of today's points; only use ${points.join(", ") || "none"}.`);
         if (!CORRECTORS[c].includes(s.category)) {
           problems.push(`Look ${i + 1}: a ${s.category} step can't correct ${c}; use ${CORRECTORS[c].join(" or ")}.`);
         }
@@ -89,8 +90,14 @@ export function validate(plan: LookPlan, req: LooksRequest): string[] {
 
 /** Last resort after the retry: drop steps YouCam can't paint, then fill any missing difficulty
  * by relabeling looks in order of step count (fewest = easy, most = difficult). */
-function repair(plan: LookPlan): LookPlan {
-  const looks = plan.looks.map((l) => ({ ...l, steps: l.steps.filter((s) => UNPATTERNED.includes(s.category) || patternFor(s)) }));
+function repair(plan: LookPlan, req: LooksRequest): LookPlan {
+  const points = pointsOf(req).map((c) => c.key);
+  const looks = plan.looks.map((l) => ({
+    ...l,
+    steps: l.steps
+      .filter((s) => UNPATTERNED.includes(s.category) || patternFor(s))
+      .map((s) => ({ ...s, corrects: s.corrects.filter((c) => points.includes(c) && CORRECTORS[c].includes(s.category)) })),
+  }));
   for (const level of [1, 2, 3]) {
     if (looks.some((l) => l.difficulty === level)) continue;
     const bySteps = [...looks].sort((a, b) => a.steps.length - b.steps.length);
@@ -121,5 +128,5 @@ export async function planLooks(req: LooksRequest): Promise<Look[]> {
     input.push({ role: "assistant", content: JSON.stringify(plan) }, { role: "user", content: `Fix these problems and return the full plan again:\n- ${problems.join("\n- ")}` });
   }
   if (!plan) throw new Error("OpenAI returned no plan");
-  return repair(plan).looks.map((l, i) => ({ ...l, id: `look-${i + 1}`, difficulty: l.difficulty as Difficulty }));
+  return repair(plan, req).looks.map((l, i) => ({ ...l, id: `look-${i + 1}`, difficulty: l.difficulty as Difficulty }));
 }

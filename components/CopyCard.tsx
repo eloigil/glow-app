@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageAdd02Icon } from "@hugeicons/core-free-icons";
 import { Icon } from "@/components/Icon";
 import { MakeupLoader } from "@/components/MakeupLoader";
@@ -9,6 +9,9 @@ import { resizePhoto } from "@/lib/image";
 import { postJson } from "@/lib/postJson";
 import { useSession } from "@/lib/session";
 import type { CopyResponse, LooksRequest } from "@/lib/types";
+
+// One copy at a time per photo, even if she leaves Looks mid-copy and comes back (it costs YouCam units).
+let pending: { fileId: string; preview: string; done: Promise<unknown> } | undefined;
 
 type State = { kind: "idle" } | { kind: "copying"; preview: string } | { kind: "error"; message: string };
 
@@ -27,16 +30,35 @@ const toDataUrl = (blob: Blob) =>
 export function CopyCard({ onCopied }: { onCopied: (lookId: string) => void }) {
   const { session, setSession } = useSession();
   const [picking, setPicking] = useState(false);
-  const [state, setState] = useState<State>({ kind: "idle" });
+  const [state, setState] = useState<State>(() =>
+    pending && pending.fileId === session.analysis?.fileId ? { kind: "copying", preview: pending.preview } : { kind: "idle" },
+  );
+  useEffect(() => {
+    if (state.kind !== "copying" || !pending) return;
+    let live = true;
+    // Back on Looks while an earlier copy runs: wait for it, the copied look arrives through the session.
+    pending.done.finally(() => live && setState({ kind: "idle" }));
+    return () => {
+      live = false;
+    };
+  }, [state.kind]);
 
   async function copy(file: File) {
     const { photo, analysis, tone } = session;
-    if (!photo || !analysis) return;
+    if (!photo || !analysis || pending) return;
+    let inspiration: Blob, her: Blob, preview: string;
     try {
       // Makeup Transfer takes images up to 1024px on the long side.
-      const [inspiration, her] = await Promise.all([resizePhoto(file, 1024), fetch(photo).then((r) => r.blob()).then((b) => resizePhoto(b, 1024))]);
-      const preview = await toDataUrl(inspiration);
-      setState({ kind: "copying", preview });
+      [inspiration, her] = await Promise.all([resizePhoto(file, 1024), fetch(photo).then((r) => r.blob()).then((b) => resizePhoto(b, 1024))]);
+      preview = await toDataUrl(inspiration);
+    } catch {
+      setState({ kind: "error", message: "This photo didn't work. Try another." });
+      return;
+    }
+    setState({ kind: "copying", preview });
+    let finish = () => {};
+    pending = { fileId: analysis.fileId, preview, done: new Promise((r) => (finish = () => r(undefined))) };
+    try {
       const form = new FormData();
       form.append("photo", her, "photo.jpg");
       form.append("inspiration", inspiration, "inspiration.jpg");
@@ -51,6 +73,9 @@ export function CopyCard({ onCopied }: { onCopied: (lookId: string) => void }) {
       onCopied(body.look.id);
     } catch (e) {
       setState({ kind: "error", message: (e as Error).message || "This photo didn't work. Try another." });
+    } finally {
+      pending = undefined;
+      finish();
     }
   }
 

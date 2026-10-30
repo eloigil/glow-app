@@ -1,13 +1,17 @@
 import sharp from "sharp";
 import { copyLook } from "@/lib/openai/copy";
 import { replayable, ReplayMiss } from "@/lib/replay";
+import { YouCamError } from "@/lib/youcam/client";
 import { toApiError } from "@/lib/youcam/errors";
 import { runTask, toDataUrl, uploadImage } from "@/lib/youcam/tasks";
 import type { CopyResponse, LooksRequest } from "@/lib/types";
 
-// Copy a look: YouCam Makeup Transfer paints her inspiration photo's makeup on her face (2 units, the goal image),
+// Copy a look: YouCam Makeup Transfer paints her inspiration photo's makeup on her face (2 units),
 // then OpenAI vision breaks that makeup into steps she can follow. Replay serves the one recorded copy.
-export const maxDuration = 120;
+// Transfer (up to 60s), its download, then two vision passes: more than the other routes need.
+export const maxDuration = 180;
+
+const COPY_FAILED = "We couldn't copy this look. Try another photo.";
 
 const dataUrl = (bytes: ArrayBuffer, type: string) => `data:${type};base64,${Buffer.from(bytes).toString("base64")}`;
 
@@ -33,11 +37,19 @@ export async function POST(req: Request) {
       return { look, goal };
     });
 
+    if (!result.look.steps.length) {
+      return Response.json({ error: { kind: "photo", code: "no_steps", message: COPY_FAILED } }, { status: 422 });
+    }
     // Fresh id per copy: several copies (or the same replayed one twice) can sit in the grid together.
     return Response.json({ ...result, look: { ...result.look, id: `copy-${Date.now().toString(36)}` } } satisfies CopyResponse);
   } catch (err) {
     if (err instanceof ReplayMiss) {
       return Response.json({ error: { kind: "unknown", code: "replay_miss", message: err.message } }, { status: 503 });
+    }
+    if (!(err instanceof YouCamError)) {
+      // OpenAI or image errors: not a credits problem, so don't say so.
+      console.error(err);
+      return Response.json({ error: { kind: "unknown", code: "copy_failed", message: COPY_FAILED } }, { status: 502 });
     }
     const { status, body } = toApiError(err);
     return Response.json(body, { status });

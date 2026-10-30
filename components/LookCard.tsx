@@ -22,8 +22,13 @@ export function LookCard({ look, preview, grown, onGrow, onStart }: {
   useEffect(() => {
     if (grown) heading.current?.focus();
   }, [grown]);
+  // The face keeps its 3:4 shape in both states, so its own layout tween scales evenly instead of stretching.
   const face = (
-    <div className="relative aspect-[3/4] overflow-hidden rounded-[10px] face-placeholder">
+    <motion.div
+      layoutId={`face-${look.id}`}
+      transition={{ type: "spring", stiffness: 200, damping: 28 }}
+      className="relative aspect-[3/4] overflow-hidden rounded-[10px] face-placeholder"
+    >
       {preview.image ? (
         // eslint-disable-next-line @next/next/no-img-element -- data URL render
         <img src={preview.image} alt={`Preview of ${look.name}`} className="absolute inset-0 size-full object-cover" />
@@ -46,7 +51,7 @@ export function LookCard({ look, preview, grown, onGrow, onStart }: {
       {preview.standIn && (
         <span className="absolute top-2 right-2 rounded-full bg-ink/70 px-2 py-0.5 text-[10px] text-canvas">replay</span>
       )}
-    </div>
+    </motion.div>
   );
 
   return (
@@ -60,13 +65,13 @@ export function LookCard({ look, preview, grown, onGrow, onStart }: {
         <>
           <div className="grid grid-cols-2 gap-3">
             <div>{face}</div>
-            <div className="pt-1">
+            <motion.div className="pt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.12 }}>
               <h2 ref={heading} tabIndex={-1} className="font-display text-[15px] leading-tight font-bold tracking-[-0.02em] outline-none">{look.name}</h2>
               <p className="mt-1.5 text-[13px] leading-snug text-ink-muted">{look.description}</p>
               <div className="mt-3">
                 <SignalBars level={look.difficulty} label />
               </div>
-            </div>
+            </motion.div>
           </div>
           <Button className="mt-3 w-full" onClick={onStart}>
             Start makeup <Icon icon={BlushBrush01Icon} size={28} />

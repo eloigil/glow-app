@@ -3,7 +3,18 @@
 import { useRef, useState } from "react";
 
 /** PRD stretch: drag (or arrow keys) to compare her original photo with the finished look. */
-export function BeforeAfter({ before, after, alt }: { before: string; after: string; alt: string }) {
+export function BeforeAfter({
+  before,
+  after,
+  alt,
+  beforeLabel = "Before",
+}: {
+  before: string;
+  after: string;
+  alt: string;
+  /** What the left image is: her bare photo ("Before") or, for a copied look, the goal. */
+  beforeLabel?: string;
+}) {
   const [pos, setPos] = useState(50);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -23,7 +34,7 @@ export function BeforeAfter({ before, after, alt }: { before: string; after: str
       onPointerMove={(e) => e.buttons && move(e.clientX)}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- data/object URL */}
-      <img src={before} alt="Your photo before makeup" draggable={false} className="absolute inset-0 size-full object-cover" />
+      <img src={before} alt={beforeLabel === "Before" ? "Your photo before makeup" : `${beforeLabel} image`} draggable={false} className="absolute inset-0 size-full object-cover" />
       {/* eslint-disable-next-line @next/next/no-img-element -- data/object URL */}
       <img
         src={after}
@@ -32,17 +43,17 @@ export function BeforeAfter({ before, after, alt }: { before: string; after: str
         className="absolute inset-0 size-full object-cover"
         style={{ clipPath: `inset(0 0 0 ${pos}%)` }}
       />
-      <span className="glass absolute bottom-6 left-3 rounded-full px-2.5 py-0.5 text-xs font-medium text-ink">Before</span>
+      <span className="glass absolute bottom-6 left-3 rounded-full px-2.5 py-0.5 text-xs font-medium text-ink">{beforeLabel}</span>
       <span className="glass absolute right-3 bottom-6 rounded-full px-2.5 py-0.5 text-xs font-medium text-ink">After</span>
       <div className="pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white/90 shadow-[0_0_8px_rgb(23_20_26/0.3)]" style={{ left: `${pos}%` }} />
       <div
         role="slider"
         tabIndex={0}
-        aria-label="Compare before and after"
+        aria-label={`Compare ${beforeLabel.toLowerCase()} and after`}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={pos}
-        aria-valuetext={pos === 0 ? "Before" : pos === 100 ? "After" : `${pos}% after`}
+        aria-valuetext={pos === 0 ? beforeLabel : pos === 100 ? "After" : `${pos}% after`}
         onKeyDown={(e) => {
           const step = { ArrowLeft: -5, ArrowDown: -5, ArrowRight: 5, ArrowUp: 5 }[e.key];
           if (step !== undefined || e.key === "Home" || e.key === "End") {

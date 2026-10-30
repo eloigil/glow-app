@@ -7,6 +7,7 @@ import { LayoutGroup } from "motion/react";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import { CopyCard } from "@/components/CopyCard";
 import { LookCard } from "@/components/LookCard";
 import { postJson } from "@/lib/postJson";
 import { useSession } from "@/lib/session";
@@ -43,7 +44,7 @@ export default function Looks() {
           resetRenders(fileId);
           setSession((s) =>
             s.analysis?.fileId === fileId
-              ? { ...s, looks: body.looks, looksFor: fileId, lookId: undefined, stepImages: {}, stepPlaceholders: {}, stepErrors: {} }
+              ? { ...s, looks: body.looks, looksFor: fileId, lookId: undefined, stepImages: {}, stepPlaceholders: {}, stepErrors: {}, copies: {} }
               : s,
           );
         })
@@ -90,6 +91,7 @@ export default function Looks() {
                   key={look.id}
                   look={look}
                   preview={preview}
+                  inspiration={session.copies?.[look.id]?.inspiration}
                   grown={look.id === grownId}
                   onGrow={() => setGrownId(look.id)}
                   onStart={() => {
@@ -103,6 +105,7 @@ export default function Looks() {
                   {!error && <div className="shimmer absolute inset-0" />}
                 </div>
               ))}
+          {!!looks?.length && <CopyCard onCopied={setGrownId} />}
         </div>
       </LayoutGroup>
     </div>

@@ -11,8 +11,10 @@ import type { Look } from "@/lib/types";
 import type { Preview } from "@/lib/useStepRenders";
 
 /** A look in the grid. Tapped, it grows in place across both columns with its description and Start makeup. */
-export function LookCard({ look, preview, grown, onGrow, onStart }: {
+export function LookCard({ look, preview, inspiration, grown, onGrow, onStart }: {
   look: Look;
+  /** Copied looks: the photo she copied it from, shown as a small round inset. */
+  inspiration?: string;
   preview: Preview;
   grown: boolean;
   onGrow: () => void;
@@ -48,6 +50,14 @@ export function LookCard({ look, preview, grown, onGrow, onStart }: {
         <span className="absolute bottom-3 left-3">
           <SignalBars level={look.difficulty} onPhoto />
         </span>
+      )}
+      {inspiration && (
+        // eslint-disable-next-line @next/next/no-img-element -- local data URL
+        <img
+          src={inspiration}
+          alt="Copied from your inspiration photo"
+          className="absolute top-2 left-2 size-10 rounded-full border-2 border-white object-cover shadow-[0_2px_6px_rgb(23_20_26/.25)]"
+        />
       )}
       {preview.standIn && (
         <span className="absolute top-2 right-2 rounded-full bg-ink/70 px-2 py-0.5 text-[10px] text-canvas">replay</span>

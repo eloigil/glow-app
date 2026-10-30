@@ -7,7 +7,7 @@ type Current = {
   /** Schema version; a record with another version is ignored. */
   v: 1;
   photo: Blob;
-  session: Pick<Session, "analysis" | "tone" | "looks" | "looksFor" | "stepImages" | "stepPlaceholders" | "productLinks">;
+  session: Pick<Session, "analysis" | "tone" | "looks" | "looksFor" | "stepImages" | "stepPlaceholders" | "productLinks" | "copies">;
 };
 
 const KEY = "glow.current";
@@ -17,8 +17,8 @@ const VERSION = 1;
 export async function saveCurrent(s: Session) {
   if (s.savedId || !s.photo || !s.analysis) return;
   const photo = await (await fetch(s.photo)).blob(); // data: and blob: URLs fetch locally
-  const { analysis, tone, looks, looksFor, stepImages, stepPlaceholders, productLinks } = s;
-  const record: Current = { v: VERSION, photo, session: { analysis, tone, looks, looksFor, stepImages, stepPlaceholders, productLinks } };
+  const { analysis, tone, looks, looksFor, stepImages, stepPlaceholders, productLinks, copies } = s;
+  const record: Current = { v: VERSION, photo, session: { analysis, tone, looks, looksFor, stepImages, stepPlaceholders, productLinks, copies } };
   await set(KEY, record);
 }
 

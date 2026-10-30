@@ -26,6 +26,7 @@ export function FinishView({
   onRetry,
   onBack,
   concerns,
+  goal,
   onFinish,
 }: {
   look: Look;
@@ -40,9 +41,12 @@ export function FinishView({
   /** Back to the last step (clears the finished state). */
   onBack: () => void;
   concerns: Concern[];
+  /** Copied looks: the inspiration on her face (YouCam Makeup Transfer), to compare her result with. */
+  goal?: string;
   onFinish: () => void;
 }) {
   const [state, setState] = useState<State>("idle");
+  const [compare, setCompare] = useState<"before" | "goal">(goal ? "goal" : "before");
   const { session } = useSession();
   const complete = look.steps.every((_, i) => images[i]);
   const failed = look.steps.map((_, i) => i).filter((i) => errors[i] && !images[i]);
@@ -71,7 +75,29 @@ export function FinishView({
     <div className="relative flex-1 overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-[64%]">
         {images[look.steps.length - 1] ? (
-          <BeforeAfter before={photo} after={finished} alt={`Your face with the full ${look.name} look`} />
+          <>
+            <BeforeAfter
+              before={compare === "goal" && goal ? goal : photo}
+              beforeLabel={compare === "goal" && goal ? "Goal" : "Before"}
+              after={finished}
+              alt={`Your face with the full ${look.name} look`}
+            />
+            {goal && (
+              <div className="glass absolute top-3 left-1/2 flex -translate-x-1/2 rounded-full p-1 text-xs font-medium" role="group" aria-label="Compare with">
+                {(["goal", "before"] as const).map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    aria-pressed={compare === c}
+                    onClick={() => setCompare(c)}
+                    className={`rounded-full px-3 py-1 ${compare === c ? "bg-rose text-[#17141a]" : "text-ink"}`}
+                  >
+                    {c === "goal" ? "Goal" : "Before"}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           // eslint-disable-next-line @next/next/no-img-element -- data/object URL
           <img src={finished} alt="Your face so far" className="absolute inset-0 size-full object-cover" />

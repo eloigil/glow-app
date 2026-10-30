@@ -3,6 +3,7 @@ import { ArrowLeft01Icon, ShoppingBag01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/Button";
 import { CONCERN_LOOK } from "@/components/concernLook";
 import { GlassSheet } from "@/components/GlassSheet";
+import { ProductPreview } from "@/components/ProductArt";
 import { ProductSheet } from "@/components/ProductSheet";
 import { Icon } from "@/components/Icon";
 import { useSession } from "@/lib/session";
@@ -59,9 +60,9 @@ export function TipsSheet({
               type="button"
               onClick={() => setShopping(true)}
               aria-label={`Shop ${step.product.brand} ${step.product.name}${link ? ` at ${link.store}` : ""}`}
-              className="grid size-10 shrink-0 place-items-center rounded-full bg-wash text-rose transition-transform duration-200 active:scale-95 motion-reduce:transition-none"
+              className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-[8px] border border-line bg-[#f6f0f2] transition-transform duration-200 active:scale-95 motion-reduce:transition-none"
             >
-              <Icon icon={ShoppingBag01Icon} />
+              <ProductPreview step={step} size={36} />
             </button>
           ) : (
             // Looks saved before products existed: a plain Amazon search.

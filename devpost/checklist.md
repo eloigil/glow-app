@@ -73,7 +73,7 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
 - [x] Tutorial layer loading uses a makeup-themed animation (brush and pot) instead of the shimmer
 - [x] Six looks instead of five (two of each difficulty), with fixtures re-recorded
 - [x] Amazon links: each step and the Finish view link to an Amazon search for the step's shade and product type
-- [ ] Products found upfront: each step names a real product, shown as a carousel on the grown card with a product sheet and Amazon link
+- [x] Products found upfront: each step names a real product, shown as a carousel on the grown card with a product sheet and Amazon link
 - [x] Final review complete — feedback resolved and learner confirms ready to ship
 
 Final review outcome: learner tried the full journey and asked for no changes ("Tried it all, nothing to change. Ready to ship."). Agent-side final review (code-review skill on slices 3-5) fixes landed in a06ae7f, 8e0cef6, a145f8c and 8897a6d; fresh clone with no keys replays the full journey with 31/31 real renders.

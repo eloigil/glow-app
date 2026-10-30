@@ -21,7 +21,7 @@ export default function AddPhoto() {
   const router = useRouter();
   const { session, setSession } = useSession();
   const [state, setState] = useState<State>({ kind: "idle" });
-  // Today's photo, already analyzed: reusing it costs nothing. Null when the device has none, undefined while reading.
+  // Her latest photo, already analyzed: reusing it costs nothing. Null when the device has none, undefined while reading.
   const live = session.photo && session.analysis && !session.savedId ? session : undefined;
   const [stored, setStored] = useState<Session | null>();
   const current = live ?? stored;
@@ -95,7 +95,7 @@ export default function AddPhoto() {
 
       {state.kind === "idle" ? (
         <>
-          <h1 className="mt-6 font-display text-[26px] leading-tight font-bold tracking-[-0.02em]">Show us your face today</h1>
+          <h1 className="mt-6 font-display text-[26px] leading-tight font-bold tracking-[-0.02em]">Show us your face</h1>
           <p className="mt-2 text-ink-muted">Hold the camera close so your face fills the frame, in soft even light. No makeup works best.</p>
           {current?.photo ? (
             <div className="relative mt-8 aspect-[3/4] w-full overflow-hidden rounded-[10px] bg-wash">

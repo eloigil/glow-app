@@ -7,7 +7,7 @@ export type SavedLook = {
   v: 1;
   id: string;
   look: Look;
-  /** Today's concerns, for the "For your ... today" chips. */
+  /** Her concerns when the look was made, for the "For your ..." chips. */
   concerns: Concern[];
   savedAt: string;
   original: Blob;

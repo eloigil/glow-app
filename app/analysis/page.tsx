@@ -38,7 +38,7 @@ export default function SkinAnalysis() {
 
       <GlassSheet className="flex max-h-[50%] flex-col">
         <div className="flex items-center justify-between gap-3">
-          <h1 className="font-display text-lg font-bold tracking-[-0.02em]">Your skin today</h1>
+          <h1 className="font-display text-lg font-bold tracking-[-0.02em]">Your skin</h1>
           {tone && (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-wash py-1 pr-3 pl-1.5 text-xs font-medium">
               <span className="size-4 rounded-full border border-white/70" style={{ background: tone.skinHex }} />
@@ -52,7 +52,7 @@ export default function SkinAnalysis() {
 
         {points.length > 0 ? (
           <div className="min-h-0 overflow-y-auto">
-            <p className="mt-4 mb-2 text-sm text-ink-muted">Today&apos;s focus</p>
+            <p className="mt-4 mb-2 text-sm text-ink-muted">What we&apos;ll work on</p>
             <div className="grid gap-2">
               {points.map((c) => (
                 <ConcernCard
@@ -67,7 +67,7 @@ export default function SkinAnalysis() {
             </div>
           </div>
         ) : (
-          <p className="mt-4 text-ink-muted">Your skin looks great today. Let&apos;s find a look for it.</p>
+          <p className="mt-4 text-ink-muted">Your skin looks great. Let&apos;s find a look for it.</p>
         )}
 
         <Button

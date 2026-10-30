@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, type Dispatch, type Rea
 import { saveCurrent } from "@/lib/current";
 import type { AnalyzeResponse, Look, ProductLink, Tone } from "@/lib/types";
 
-// In-memory session (spec.md > Session Store). A reload sends her back to Welcome, but today's photo and its
+// In-memory session (spec.md > Session Store). A reload sends her back to Welcome, but her latest photo and its
 // results are also kept on the device (lib/current.ts) so the photo screen can offer them again.
 export type Session = {
   /** Object URL or data URL of the photo being shown. */

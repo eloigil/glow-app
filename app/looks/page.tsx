@@ -63,7 +63,7 @@ export default function Looks() {
         <Link href="/analysis" aria-label="Back" className="grid size-10 place-items-center rounded-full bg-surface text-ink">
           <Icon icon={ArrowLeft01Icon} size={24} />
         </Link>
-        <h1 className="font-display text-lg font-bold tracking-[-0.02em]">Six looks for today</h1>
+        <h1 className="font-display text-lg font-bold tracking-[-0.02em]">Six looks for you</h1>
       </div>
       {!looks?.length && (
         <div className="mt-3 px-1 text-sm text-ink-muted" aria-live="polite">
@@ -76,7 +76,7 @@ export default function Looks() {
             </div>
           ) : (
             <>
-              <p className="font-medium text-ink">Designing six looks for your skin today</p>
+              <p className="font-medium text-ink">Designing six looks for your skin</p>
               <p className="mt-0.5">This can take up to a minute while every shade is matched to your skin.</p>
             </>
           )}

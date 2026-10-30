@@ -26,10 +26,10 @@ export const StepSchema = z.object({
   colors: z.array(hex).min(1).max(3).describe("One hex color per color slot of the pattern"),
   intensity: z.number().int().min(10).max(90),
   finish: z.enum(FINISHES),
-  tip: z.string().describe("Two or three sentences of practical technique for her face today, second person"),
+  tip: z.string().describe("Two or three sentences of practical technique for her face, second person"),
   product: ProductSchema,
   corrects: z.array(z.enum(CONCERN_KEYS)).max(3)
-    .describe("Today's points this step fixes; empty for color steps"),
+    .describe("Her points this step fixes; empty for color steps"),
 });
 
 export const LookSchema = z.object({

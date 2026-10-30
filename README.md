@@ -1,6 +1,6 @@
 # GlowApp
 
-GlowApp reads your skin today, designs six makeup looks for it, and teaches the one you pick step by step, on your own face. Each step shows your photo with only the layers applied so far, plus a tip written for your skin today.
+GlowApp reads your skin, designs six makeup looks for it, and teaches the one you pick step by step, on your own face. Each step shows your photo with only the layers applied so far, plus a tip written for your skin.
 
 Built for the [YouCam API Skin AI & eCommerce VTO Hackathon](https://youcam-api-skin-ai-ecommerce.devpost.com/) (Skin AI track).
 
@@ -15,7 +15,7 @@ npm run dev
 
 1. Open http://localhost:3000. Use your browser's phone view (DevTools, device toolbar), because GlowApp is mobile-first.
 2. Tap **Start**, then upload any photo. Replay always shows the recorded demo face so the skin masks line up.
-3. Tap a card on **Your skin today** to see that area glow on the face, then **Continue**.
+3. Tap a card on **Your skin** to see that area glow on the face, then **Continue**.
 4. Pick one of the six looks, tap **Start makeup**, and walk the layers. Swipe, use Next, tap the step bar, or press the arrow keys.
 5. Each step links to an Amazon search for its product and shade (for example "soft sand concealer"). On **Finish**, compare before and after, open **Shop this look on Amazon**, then **Save look**. Reopen it later from the bookmark icon on the welcome screen. Saved looks replay offline.
 
@@ -47,11 +47,11 @@ Live tips:
 
 | YouCam API | Used for |
 |---|---|
-| [AI Skin Analysis](https://docs.perfectcorp.com/reference/description/ai_skin_analysis.md) | Today's skin read: blemishes, redness, dark circles, spots, shine and puffy eyes, with a mask per concern that GlowApp lights up on your face |
+| [AI Skin Analysis](https://docs.perfectcorp.com/reference/description/ai_skin_analysis.md) | The skin read: blemishes, redness, dark circles, spots, shine and puffy eyes, with a mask per concern that GlowApp lights up on your face |
 | [AI Facial Color Tones](https://docs.perfectcorp.com/reference/description/ai_face_tone_analyzer.md) | Your exact skin, lip and brow colors, which the look planner matches shades to |
 | [AI Makeup Virtual Try-On](https://docs.perfectcorp.com/reference/description/ai_makeup_vto.md) | Every look preview, and every tutorial step: steps 1 to N painted cumulatively on your photo |
 
-OpenAI turns the skin read into six looks as strict JSON, naming a real product for every step. OpenAI web search then finds each product's exact page (Sephora, Ulta, Target, Walmart or the brand's store) while you browse, next to an Amazon search link. Each look has a difficulty (low, medium, high), ordered steps with YouCam pattern names and colors, and a tip for every step. A validator makes sure every concern found today gets a step that actually fixes it, for example concealer for dark circles and never eyebrows.
+OpenAI turns the skin read into six looks as strict JSON, naming a real product for every step. OpenAI web search then finds each product's exact page (Sephora, Ulta, Target, Walmart or the brand's store) while you browse, next to an Amazon search link. Each look has a difficulty (low, medium, high), ordered steps with YouCam pattern names and colors, and a tip for every step. A validator makes sure every concern found gets a step that actually fixes it, for example concealer for dark circles and never eyebrows.
 
 ## How it's built
 

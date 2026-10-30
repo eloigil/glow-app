@@ -9,7 +9,7 @@ const unbounded = Unbounded({ variable: "--font-unbounded", subsets: ["latin"], 
 
 export const metadata: Metadata = {
   title: "GlowApp",
-  description: "Makeup made for today's skin, taught step by step on your own face.",
+  description: "Makeup made for your skin, taught step by step on your own face.",
 };
 
 export const viewport: Viewport = {

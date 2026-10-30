@@ -1,7 +1,7 @@
 import { get, set } from "idb-keyval";
 import type { Session } from "@/lib/session";
 
-// Today's photo and everything already paid for (analysis, looks, renders, product pages), kept on the device
+// Her latest photo and everything already paid for (analysis, looks, renders, product pages), kept on the device
 // so coming back to the photo screen can reuse them instead of spending YouCam units and OpenAI tokens again.
 type Current = {
   /** Schema version; a record with another version is ignored. */
@@ -13,7 +13,7 @@ type Current = {
 const KEY = "glow.current";
 const VERSION = 1;
 
-/** Stores the session's photo and results. A saved look being replayed is not today's photo, so it is skipped. */
+/** Stores the session's photo and results. A saved look being replayed is not her latest photo, so it is skipped. */
 export async function saveCurrent(s: Session) {
   if (s.savedId || !s.photo || !s.analysis) return;
   const photo = await (await fetch(s.photo)).blob(); // data: and blob: URLs fetch locally

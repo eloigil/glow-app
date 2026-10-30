@@ -12,6 +12,6 @@ export const CONCERNS: Record<ConcernKey, string> = {
 
 export const DST_ACTIONS = [...Object.keys(CONCERNS), "skin_type"];
 
-/** ui_score is 1-100, higher is healthier. Below this it becomes one of today's points.
+/** ui_score is 1-100, higher is healthier. Below this it becomes one of her points.
  * Tuned on the first real run: visible freckles and under-eye shadows scored 79-81, clean areas 96-99. */
 export const POINT_THRESHOLD = 85;

@@ -10,7 +10,7 @@ export type Concern = {
   label: string;
   /** YouCam ui_score, 1-100, higher is healthier. */
   uiScore: number;
-  /** True when the score is low enough to count as one of today's points. */
+  /** True when the score is low enough to count as one of her points. */
   isPoint: boolean;
   /** Mask image as a data URL, ready for an <img> or CSS mask-image. */
   mask?: string;

@@ -11,7 +11,7 @@ import { amazonUrl, shopQuery } from "@/lib/shop";
 import { linkFor } from "@/lib/useProductLinks";
 import type { Concern, Step } from "@/lib/types";
 
-/** Glass sheet under the face: what this step applies, why today, how to do it. */
+/** Glass sheet under the face: what this step applies, why for her skin, how to do it. */
 export function TipsSheet({
   step,
   index,
@@ -42,7 +42,7 @@ export function TipsSheet({
           <span className="text-rose">
             <Icon icon={CONCERN_LOOK[concerns[0].key].icon} />
           </span>
-          For your {new Intl.ListFormat("en", { type: "conjunction" }).format(concerns.map((c) => c.label.toLowerCase()))} today
+          For your {new Intl.ListFormat("en", { type: "conjunction" }).format(concerns.map((c) => c.label.toLowerCase()))}
         </span>
       )}
       <div className="min-h-0 overflow-y-auto">

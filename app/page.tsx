@@ -29,7 +29,7 @@ export default function Welcome() {
       </Link>
       <div className="relative mt-auto px-6 pb-[max(32px,env(safe-area-inset-bottom))]">
         <h1 className="font-display text-[34px] leading-[1.08] font-bold tracking-[-0.03em] text-[#17141a]">
-          Makeup made for today&apos;s skin
+          Makeup made for your skin
         </h1>
         <Link href="/photo" className={buttonClass("ink", "mt-7 w-full")}>
           Start

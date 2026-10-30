@@ -31,7 +31,7 @@ const catalog = Object.entries(PATTERNS)
   .map(([cat, list]) => `${cat}: ${list!.map((p) => `${p.id} (${p.colors} color${p.colors > 1 ? "s" : ""}: ${p.look})`).join("; ")}`)
   .join("\n");
 
-const SYSTEM = `You are GlowApp's makeup artist. You design six makeup looks for one woman for TODAY, from her skin read,
+const SYSTEM = `You are GlowApp's makeup artist. You design six makeup looks for one woman, made for her skin from her skin read,
 and break each look into the ordered steps she will follow on her own face. Each step becomes one rendered layer.
 
 Rules:
@@ -40,10 +40,10 @@ Rules:
 - Every look is a real look, not just a base: after the correcting steps it must have at least one cheek step (blush, bronzer,
   contour or highlighter) and end with lip_color. Medium and difficult looks also work the eyes (eye_shadow, eye_liner, eyelashes, eyebrows).
   Vary the six looks: different blush shapes, lip colors and finishes.
-- Every look must correct each of today's points: some step's "corrects" array includes it.
+- Every look must correct each of her points: some step's "corrects" array includes it.
   Only these categories may correct a point: ${Object.entries(CORRECTORS).map(([k, v]) => `${k} -> ${v.join(" or ")}`).join("; ")}.
   Keep it to at most two correcting steps right after (or as) the base: one step may fix several points
-  (e.g. one under-eye concealer for dark_circle_v2 and eye_bag). Only use today's points listed below. Those steps' tips must name each point in plain words
+  (e.g. one under-eye concealer for dark_circle_v2 and eye_bag). Only use her points listed below. Those steps' tips must name each point in plain words
   (spots, dark circles, puffy eyes...). Every other step has corrects [].
 - Shades must suit her skin tone: foundation and concealer close to her skin hex (concealer slightly lighter for under-eyes).
 - Every step must be visible in its own rendered layer. Intensity: foundation 40-55, concealer 50-70,
@@ -51,8 +51,8 @@ Rules:
 - Use only these categories and pattern ids. foundation, concealer and lip_color take pattern null.
   Give exactly as many colors as the pattern has color slots.
 ${catalog}
-- Tips: warm, concrete, second person, 2-3 sentences, about technique for her face today (where, how much, which tool).
-- Product: for every step pick one real product she could buy today (brand, product line, closest real shade) whose color
+- Tips: warm, concrete, second person, 2-3 sentences, about technique for her face (where, how much, which tool).
+- Product: for every step pick one real product she could buy now (brand, product line, closest real shade) whose color
   matches the step's colors. Prefer widely sold brands (drugstore to Sephora); never invent brands or product lines.
 - Names and descriptions: no em dashes.`;
 
@@ -64,7 +64,7 @@ function describe(req: LooksRequest) {
   return [
     `Skin tone: ${req.tone ? `${req.tone.label}, skin ${req.tone.skinHex}, lips ${req.tone.lipHex}, brows ${req.tone.browHex}` : "unknown"}.`,
     `Skin type: ${req.skinType ?? "unknown"}.`,
-    `Today's points (concern key, score 1-100 where lower is more visible): ${points.length ? points.map((c) => `${c.key} ${c.uiScore}`).join(", ") : "none, her skin looks great today"}.`,
+    `Her points (concern key, score 1-100 where lower is more visible): ${points.length ? points.map((c) => `${c.key} ${c.uiScore}`).join(", ") : "none, her skin looks great"}.`,
   ].join("\n");
 }
 
@@ -80,7 +80,7 @@ export function validate(plan: LookPlan, req: LooksRequest): string[] {
     }
     for (const s of look.steps) {
       for (const c of s.corrects) {
-        if (!points.includes(c)) problems.push(`Look ${i + 1}: ${c} is not one of today's points; only use ${points.join(", ") || "none"}.`);
+        if (!points.includes(c)) problems.push(`Look ${i + 1}: ${c} is not one of her points; only use ${points.join(", ") || "none"}.`);
         if (!CORRECTORS[c].includes(s.category)) {
           problems.push(`Look ${i + 1}: a ${s.category} step can't correct ${c}; use ${CORRECTORS[c].join(" or ")}.`);
         }

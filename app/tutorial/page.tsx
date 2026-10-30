@@ -57,14 +57,18 @@ export default function Tutorial() {
   if (shown && layers.at(-1) !== shown) setLayers(layers.length ? [layers.at(-1)!, shown] : [shown]);
 
   const before = current === 0 ? session.photo : images[current - 1];
+  const isBase = look?.steps[current]?.category === "foundation";
   useEffect(() => {
     if (!focus || !ready || !before) return;
     let live = true;
-    diffMask(before, ready).then((src) => live && setMask({ for: ready, src }));
+    // Foundation goes on all of her skin; every other step is traced from what its layer changed.
+    const skinHex = session.tone?.skinHex;
+    const kind = isBase && skinHex ? ({ kind: "skin", skinHex } as const) : ({ kind: "diff" } as const);
+    diffMask(before, ready, kind).then((src) => live && setMask({ for: ready, src }));
     return () => {
       live = false;
     };
-  }, [focus, ready, before]);
+  }, [focus, ready, before, isBase, session.tone?.skinHex]);
   const focusMask = focus && ready && mask?.for === ready ? mask : undefined;
 
   if (!look || !session.photo) return null;

@@ -75,5 +75,6 @@ devpost/    planning documents (scope, PRD, spec, build checklist)
 
 - **Demo face:** photo from [Unsplash](https://unsplash.com/photos/womans-face-EGVccebWodM), free under the Unsplash License.
 - **Welcome image:** [blush bubbles](https://unsplash.com/photos/water-droplets-on-red-surface-jbHZ6S8AcaA) from Unsplash, free under the Unsplash License.
+- **Product photos:** [Open Beauty Facts](https://world.openbeautyfacts.org), images under CC BY-SA. Products without a photo there are drawn as a tinted product shape.
 - **Icons:** [Hugeicons](https://hugeicons.com) free set (MIT).
 - **Fonts:** Unbounded and Geist (SIL Open Font License), via `next/font`.

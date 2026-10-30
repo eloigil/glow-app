@@ -5,7 +5,8 @@ import { OPENAI_MODEL } from "./model";
 import { LookPlanSchema, type LookPlan } from "./schema";
 import { PATTERNS, UNPATTERNED, patternFor } from "@/lib/youcam/effects";
 import { POINT_THRESHOLD } from "@/lib/youcam/concerns";
-import type { ConcernKey, Difficulty, Look, LooksRequest, MakeupCategory } from "@/lib/types";
+import { findProductImage } from "@/lib/productImages";
+import type { ConcernKey, Difficulty, Look, LooksRequest, MakeupCategory, Product } from "@/lib/types";
 
 /** Words a step's product name must contain, to catch wrong-type or shifted product suggestions. */
 const PRODUCT_KIND: Record<MakeupCategory, RegExp> = {
@@ -142,5 +143,11 @@ export async function planLooks(req: LooksRequest): Promise<Look[]> {
     input.push({ role: "assistant", content: JSON.stringify(plan) }, { role: "user", content: `Fix these problems and return the full plan again:\n- ${problems.join("\n- ")}` });
   }
   if (!plan) throw new Error("OpenAI returned no plan");
-  return repair(plan, req).looks.map((l, i) => ({ ...l, id: `look-${i + 1}`, difficulty: l.difficulty as Difficulty }));
+  const looks = repair(plan, req).looks.map((l, i) => ({ ...l, id: `look-${i + 1}`, difficulty: l.difficulty as Difficulty }));
+  // Product photos are found upfront too; lookups are cached per product and failures just leave no image.
+  await Promise.all(looks.flatMap((l) => l.steps.map(async (s) => {
+    const image = await findProductImage(s.product);
+    if (image) (s.product as Product).image = image;
+  })));
+  return looks;
 }

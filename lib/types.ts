@@ -40,7 +40,8 @@ export type MakeupCategory = (typeof CATEGORIES)[number];
 export type Finish = (typeof FINISHES)[number];
 /** title, category, pattern (catalog id or null), colors (one hex per pattern slot), intensity 10-90, finish, tip, corrects. */
 export type Step = z.infer<typeof StepSchema>;
-export type Product = z.infer<typeof ProductSchema>;
+/** `image`: an Open Beauty Facts product photo, added after planning when one matches. */
+export type Product = z.infer<typeof ProductSchema> & { image?: string };
 
 export type Difficulty = 1 | 2 | 3;
 

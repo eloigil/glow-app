@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ProductPreview } from "@/components/ProductArt";
 import { ProductSheet } from "@/components/ProductSheet";
 import type { Step } from "@/lib/types";
 
@@ -30,10 +31,15 @@ export function ProductCarousel({ steps }: { steps: Step[] }) {
               type="button"
               onClick={() => setOpen(index)}
               aria-label={`${step.product.brand} ${step.product.name}, ${step.product.shade}`}
-              className="flex w-[76px] flex-col items-start gap-1.5 rounded-[8px] border border-line bg-surface p-2 text-left"
+              className="flex w-[84px] flex-col items-start gap-1.5 rounded-[8px] border border-line bg-surface p-1.5 text-left"
             >
-              <Swatch colors={step.colors} size={28} />
-              <span className="w-full truncate text-[11px] leading-tight font-medium">{step.title.split(",")[0]}</span>
+              <span className="grid aspect-square w-full place-items-center overflow-hidden rounded-[8px] bg-white">
+                <ProductPreview step={step} size={52} />
+              </span>
+              <span className="flex w-full items-center gap-1">
+                <Swatch colors={step.colors} size={10} />
+                <span className="min-w-0 truncate text-[11px] leading-tight font-medium">{step.title.split(",")[0]}</span>
+              </span>
               <span className="w-full truncate text-[10px] leading-tight text-ink-muted">{step.product.brand}</span>
             </button>
           </li>

@@ -11,19 +11,24 @@ const inflight = new Set<string>();
 
 /** Finds exact product pages for every look's products in the background; silent on failure. */
 export function useProductLinks(looks: Look[] | undefined, fileId: string | undefined) {
-  const { setSession } = useSession();
+  const { session, setSession } = useSession();
   useEffect(() => {
     if (!looks?.length || !fileId) return;
     const key = `${fileId}:${looks.map((l) => l.name).join("|")}`;
     if (inflight.has(key)) return;
     inflight.add(key);
-    // Older saved looks have no product.
-    const products = looks.flatMap((l) => l.steps.map((s) => s.product as Step["product"] | undefined)).filter((p) => !!p);
+    // Older saved looks have no product. Pages already found (e.g. restored from the device) are not searched again.
+    const products = looks
+      .flatMap((l) => l.steps.map((s) => s.product as Step["product"] | undefined))
+      .filter((p) => !!p && session.productLinks?.[productKey(p)] === undefined);
+    if (!products.length) return;
     setSession((s) => ({ ...s, productLinksPending: true }));
     postJson<ProductsResponse>("/api/products", { products })
       .then((body) => setSession((s) => ({ ...s, productLinks: { ...s.productLinks, ...body.links } })))
       .catch(() => undefined)
       .finally(() => setSession((s) => ({ ...s, productLinksPending: false })));
+    // Run once per set of looks; known links are only read to skip them.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [looks, fileId, setSession]);
 }
 

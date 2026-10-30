@@ -7,9 +7,11 @@ import { ArrowLeft01Icon, Camera01Icon, ImageUploadIcon } from "@hugeicons/core-
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { ScanSweep } from "@/components/ScanSweep";
+import { Sheet } from "@/components/Sheet";
+import { loadCurrent } from "@/lib/current";
 import { resizePhoto } from "@/lib/image";
 import { postJson } from "@/lib/postJson";
-import { useSession } from "@/lib/session";
+import { useSession, type Session } from "@/lib/session";
 import { readTone, writeTone } from "@/lib/toneCache";
 import type { AnalyzeResponse } from "@/lib/types";
 
@@ -17,13 +19,40 @@ type State = { kind: "idle" } | { kind: "analyzing"; preview: string } | { kind:
 
 export default function AddPhoto() {
   const router = useRouter();
-  const { setSession } = useSession();
+  const { session, setSession } = useSession();
   const [state, setState] = useState<State>({ kind: "idle" });
+  // Today's photo, already analyzed: reusing it costs nothing. Undefined while the device copy is read.
+  const live = session.photo && session.analysis && !session.savedId ? session : undefined;
+  const [stored, setStored] = useState<Session | null>();
+  const current = live ?? stored;
+  const [picking, setPicking] = useState(false);
   const cameraInput = useRef<HTMLInputElement>(null);
   const uploadInput = useRef<HTMLInputElement>(null);
   const previewUrl = useRef<string | null>(null);
 
   useEffect(() => () => { if (previewUrl.current) URL.revokeObjectURL(previewUrl.current); }, []);
+  useEffect(() => {
+    if (live) return;
+    let cancelled = false;
+    loadCurrent()
+      .catch(() => undefined)
+      .then((c) => !cancelled && setStored(c ?? null));
+    return () => {
+      cancelled = true;
+    };
+  }, [live]);
+
+  function reuse() {
+    if (!current) return;
+    if (current !== live) setSession(current);
+    router.push("/analysis");
+  }
+
+  // Open the picker inside the tap itself (browsers require it), then let the menu slide away.
+  function pick(input: HTMLInputElement | null, dismiss: () => void) {
+    input?.click();
+    dismiss();
+  }
 
   async function analyze(file: File) {
     if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
@@ -65,14 +94,30 @@ export default function AddPhoto() {
         <>
           <h1 className="mt-6 font-display text-[26px] leading-tight font-bold tracking-[-0.02em]">Show us your face today</h1>
           <p className="mt-2 text-ink-muted">Hold the camera close so your face fills the frame, in soft even light. No makeup works best.</p>
-          <div className="face-placeholder mt-8 aspect-[3/4] w-full rounded-[10px]" aria-hidden />
+          {current?.photo ? (
+            <div className="relative mt-8 aspect-[3/4] w-full overflow-hidden rounded-[10px] bg-wash">
+              {/* eslint-disable-next-line @next/next/no-img-element -- local object/data URL */}
+              <img src={current.photo} alt="Your current photo" className="absolute inset-0 size-full object-cover" />
+              <span className="glass absolute top-3 left-3 rounded-full px-3 py-1 text-xs font-medium">
+                {current.looks?.length ? `Current photo · ${current.looks.length} looks ready` : "Current photo"}
+              </span>
+            </div>
+          ) : (
+            <div className="face-placeholder mt-8 aspect-[3/4] w-full rounded-[10px]" aria-hidden />
+          )}
           <div className="mt-auto grid gap-3 pt-8">
-            <Button onClick={() => cameraInput.current?.click()}>
-              <Icon icon={Camera01Icon} size={28} /> Take a photo
-            </Button>
-            <Button variant="quiet" onClick={() => uploadInput.current?.click()} className="border-line bg-surface">
-              <Icon icon={ImageUploadIcon} size={28} /> Upload a picture
-            </Button>
+            {current ? (
+              <>
+                <Button onClick={reuse}>Use this photo</Button>
+                <Button variant="quiet" onClick={() => setPicking(true)} className="border-line bg-surface">
+                  <Icon icon={Camera01Icon} size={28} /> Take another photo
+                </Button>
+              </>
+            ) : (
+              <Button onClick={() => setPicking(true)} disabled={current === undefined}>
+                <Icon icon={Camera01Icon} size={28} /> Take a photo
+              </Button>
+            )}
           </div>
         </>
       ) : (
@@ -95,6 +140,29 @@ export default function AddPhoto() {
             </div>
           )}
         </>
+      )}
+
+      {picking && (
+        <Sheet labelledBy="pick-title" onClose={() => setPicking(false)}>
+          {(dismiss) => (
+            <>
+              <h2 id="pick-title" className="font-semibold">
+                Add a photo
+              </h2>
+              <div className="mt-4 grid gap-2">
+                <Button onClick={() => pick(cameraInput.current, dismiss)}>
+                  <Icon icon={Camera01Icon} size={28} /> Use camera
+                </Button>
+                <Button variant="quiet" onClick={() => pick(uploadInput.current, dismiss)} className="border-line bg-surface">
+                  <Icon icon={ImageUploadIcon} size={28} /> Upload photo
+                </Button>
+                <Button variant="quiet" onClick={dismiss}>
+                  Cancel
+                </Button>
+              </div>
+            </>
+          )}
+        </Sheet>
       )}
 
       <input ref={cameraInput} type="file" accept="image/*" capture="user" hidden onChange={onPick} />

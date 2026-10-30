@@ -1,9 +1,11 @@
 "use client";
 
-import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { createContext, useContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { saveCurrent } from "@/lib/current";
 import type { AnalyzeResponse, Look, ProductLink, Tone } from "@/lib/types";
 
-// In-memory session (spec.md > Session Store). A reload sends her back to Welcome.
+// In-memory session (spec.md > Session Store). A reload sends her back to Welcome, but today's photo and its
+// results are also kept on the device (lib/current.ts) so the photo screen can offer them again.
 export type Session = {
   /** Object URL or data URL of the photo being shown. */
   photo?: string;
@@ -34,6 +36,11 @@ const Ctx = createContext<SessionContext | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session>({});
+  useEffect(() => {
+    // Renders arrive one by one; write once they settle rather than on every image.
+    const t = setTimeout(() => void saveCurrent(session).catch(() => undefined), 800);
+    return () => clearTimeout(t);
+  }, [session]);
   return <Ctx.Provider value={{ session, setSession }}>{children}</Ctx.Provider>;
 }
 

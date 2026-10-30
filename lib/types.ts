@@ -60,7 +60,7 @@ export type RenderResponse = {
 };
 
 /** An exact product page found by web search (Amazon isn't searchable, so this is Sephora, Ulta, Target or the brand). */
-export type ProductLink = { url: string; store: string };
+export type ProductLink = { url: string; store: string; /** og:image of that page, when readable */ image?: string };
 
 /** POST /api/products — body: { products }. `links` is keyed by `productKey()` from lib/shop.ts; null = nothing verified. */
 export type ProductsRequest = { products: Product[] };

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "@/lib/session";
+import { linkFor } from "@/lib/useProductLinks";
 import type { Product, Step } from "@/lib/types";
 
 /** A simple tinted drawing of the product type, for products without a photo. It always sits on a white tile (like the photos),
@@ -96,19 +98,29 @@ export function ProductArt({ step, size = 48, className = "" }: { step: Step; si
   );
 }
 
-/** The product photo when there is one, otherwise (or if it fails to load) the tinted drawing. */
-export function ProductPreview({ step, size, onPhoto }: { step: Step; size: number; onPhoto?: (shown: boolean) => void }) {
-  const [failed, setFailed] = useState(false);
-  const image = (step.product as Product | undefined)?.image;
-  if (image && !failed) {
+/** The product photo when there is one, otherwise (or if it fails to load) the tinted drawing.
+ * Prefers the photo of the exact store page found by web search, then Open Beauty Facts. */
+export function ProductPreview({ step, size, onPhoto }: { step: Step; size: number; onPhoto?: (source: string | null) => void }) {
+  const { session } = useSession();
+  const link = linkFor(session, step);
+  const [failed, setFailed] = useState<string[]>([]);
+  const candidates = [
+    link?.image ? { src: link.image, source: link.store } : null,
+    (step.product as Product | undefined)?.image ? { src: (step.product as Product).image!, source: "Open Beauty Facts" } : null,
+  ].filter((c): c is { src: string; source: string } => !!c && !failed.includes(c.src));
+  const photo = candidates[0];
+  const image = photo?.src;
+  if (image) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- external product photo
       <img
+        key={image}
         src={image}
         alt={`${step.product.brand} ${step.product.name}`}
         loading="lazy"
-        onLoad={() => onPhoto?.(true)}
-        onError={() => (setFailed(true), onPhoto?.(false))}
+        referrerPolicy="no-referrer"
+        onLoad={() => onPhoto?.(photo.source)}
+        onError={() => (setFailed((f) => [...f, image]), onPhoto?.(null))}
         className="size-full object-contain p-1.5"
       />
     );

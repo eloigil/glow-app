@@ -18,7 +18,7 @@ export function ProductSheet({ step, index, onClose }: { step: Step; index: numb
     ref.current?.showModal();
   }, []);
   const { brand, name, shade } = step.product;
-  const [photo, setPhoto] = useState(false);
+  const [photo, setPhoto] = useState<string | null>(null);
   const { session } = useSession();
   const link = linkFor(session, step);
   const amazon = (
@@ -40,7 +40,7 @@ export function ProductSheet({ step, index, onClose }: { step: Step; index: numb
         <div className="mx-auto grid h-[140px] w-[140px] place-items-center overflow-hidden rounded-[10px] border border-line bg-white">
           <ProductPreview step={step} size={96} onPhoto={setPhoto} />
         </div>
-        {photo && <p className="mt-1 text-center text-[10px] text-ink-muted">Photo: Open Beauty Facts</p>}
+        {photo && <p className="mt-1 text-center text-[10px] text-ink-muted">Photo: {photo}</p>}
         <div className="mt-4 min-w-0">
           <p className="text-sm text-ink-muted">{brand}</p>
           <h2 id="product-name" className="font-semibold leading-snug">{name}</h2>

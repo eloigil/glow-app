@@ -18,17 +18,23 @@ function storeOf(url: URL, brand: string): string {
   return STORES.find(([re]) => re.test(url.hostname))?.[1] ?? brand;
 }
 
-/** The URL must load (redirects followed). 403 counts as alive: big retailers block bots but the page exists. */
-async function loads(url: string): Promise<boolean> {
+/** The page must load (redirects followed); 403 counts as alive since big retailers block bots but the page exists.
+ * When the HTML is readable, its og:image is the product photo. */
+async function inspect(url: string): Promise<{ alive: boolean; image?: string }> {
   try {
     const res = await fetch(url, {
       redirect: "follow",
-      headers: { "User-Agent": "Mozilla/5.0 (Macintosh) GlowApp link check", Accept: "text/html" },
+      headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15", Accept: "text/html" },
       signal: AbortSignal.timeout(6000),
     });
-    return res.ok || res.status === 403;
+    if (!res.ok) return { alive: res.status === 403 };
+    const html = (await res.text()).slice(0, 400_000);
+    const meta = html.match(/<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url)?|twitter:image)["'][^>]*>/i)?.[0];
+    const content = meta?.match(/content=["']([^"']+)["']/i)?.[1]?.replace(/&amp;/g, "&");
+    const image = content ? new URL(content, res.url).href : undefined;
+    return { alive: true, image: image?.startsWith("https://") ? image : undefined };
   } catch {
-    return false;
+    return { alive: false };
   }
 }
 
@@ -39,7 +45,8 @@ export async function findProductPage(p: Product): Promise<ProductLink | null> {
     tool_choice: "required",
     input: `Search the web for the product page of "${p.brand} ${p.name}" in shade "${p.shade}". ` +
       "List up to 3 product page URLs you actually found in the search results, best match first (Sephora, Ulta, Target, " +
-      "Walmart or the brand's own store), one per line, nothing else.",
+      "Walmart or the brand's own store). Prefer the URL that opens that exact shade (a shade or variant URL, or its " +
+      "skuId=/variant=/color= parameter) when the store has one. One URL per line, nothing else.",
   });
   const candidates = [...res.output_text.matchAll(/https?:\/\/[^\s)>\]"']+/g)].map((m) => m[0]);
   for (const raw of candidates) {
@@ -50,7 +57,8 @@ export async function findProductPage(p: Product): Promise<ProductLink | null> {
       continue;
     }
     if (/amazon\./.test(url.hostname)) continue;
-    if (await loads(url.href)) return { url: url.href, store: storeOf(url, p.brand) };
+    const page = await inspect(url.href);
+    if (page.alive) return { url: url.href, store: storeOf(url, p.brand), image: page.image };
   }
   return null;
 }

@@ -70,11 +70,13 @@ export async function findProductPage(p: Product): Promise<ProductLink | null> {
     tools: [{ type: "web_search" }],
     tool_choice: "required",
     input: `Search the web for the product page of "${p.brand} ${p.name}" in shade "${p.shade}". ` +
-      "List up to 3 product page URLs you actually found in the search results, best match first (Sephora, Ulta, Target, " +
-      "Walmart or the brand's own store). Prefer the URL that opens that exact shade (a shade or variant URL, or its " +
-      "skuId=/variant=/color= parameter) when the store has one. One URL per line, nothing else.",
+      "List up to 4 product page URLs you actually found in the search results, best match first. Strongly prefer " +
+      "Sephora (a URL with skuId= for that shade) or Ulta (a URL with sku= for that shade); otherwise Target, Walmart or " +
+      "the brand's own store, preferring a URL that opens that exact shade. One URL per line, nothing else.",
   });
   const candidates = [...res.output_text.matchAll(/https?:\/\/[^\s)>\]"']+/g)].map((m) => m[0]);
+  // Take the first live page whose shade photo we can show; otherwise the first live page at all.
+  let fallback: ProductLink | null = null;
   for (const raw of candidates) {
     let url: URL;
     try {
@@ -87,7 +89,9 @@ export async function findProductPage(p: Product): Promise<ProductLink | null> {
     if (!page.alive) continue;
     const sku = skuImage(url);
     const image = sku && (await isImage(sku)) ? sku : page.image;
-    return { url: url.href, store: storeOf(url, p.brand), image };
+    const link = { url: url.href, store: storeOf(url, p.brand), image };
+    if (image) return link;
+    fallback ??= link;
   }
-  return null;
+  return fallback;
 }

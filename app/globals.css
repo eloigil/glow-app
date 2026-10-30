@@ -104,3 +104,18 @@ body {
     animation: none;
   }
 }
+
+/* Product sheet: slides up from the bottom, slides back down on dismiss, backdrop fades. */
+@keyframes sheet-up { from { transform: translateY(100%); } }
+@keyframes sheet-down { to { transform: translateY(100%); } }
+@keyframes backdrop-in { from { opacity: 0; } }
+@keyframes backdrop-out { to { opacity: 0; } }
+
+.sheet-dialog[open] { animation: sheet-up 0.38s cubic-bezier(0.16, 1, 0.3, 1); }
+.sheet-dialog[open]::backdrop { animation: backdrop-in 0.3s ease; }
+.sheet-dialog[data-closing] { animation: sheet-down 0.24s cubic-bezier(0.4, 0, 1, 1) forwards; }
+.sheet-dialog[data-closing]::backdrop { animation: backdrop-out 0.24s ease forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-dialog[open], .sheet-dialog[open]::backdrop { animation: none; }
+}

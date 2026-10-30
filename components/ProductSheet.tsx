@@ -17,6 +17,20 @@ export function ProductSheet({ step, index, onClose }: { step: Step; index: numb
   useEffect(() => {
     ref.current?.showModal();
   }, []);
+  // Slide back down before closing; without motion (or animations) the close is immediate.
+  const dismiss = () => {
+    const d = ref.current;
+    if (!d || d.dataset.closing) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return d.close();
+    d.dataset.closing = "true";
+    const done = (e: AnimationEvent) => {
+      if (e.target !== d) return; // ignore animations bubbling up from inside the sheet
+      d.removeEventListener("animationend", done);
+      delete d.dataset.closing;
+      d.close();
+    };
+    d.addEventListener("animationend", done);
+  };
   const { brand, name, shade } = step.product;
   const [photo, setPhoto] = useState<string | null>(null);
   const { session } = useSession();
@@ -32,9 +46,10 @@ export function ProductSheet({ step, index, onClose }: { step: Step; index: numb
       ref={ref}
       aria-labelledby="product-name"
       onClose={onClose}
+      onCancel={(e) => (e.preventDefault(), dismiss())}
       // A click on the dialog itself (not its content) is a backdrop tap.
-      onClick={(e) => e.target === ref.current && ref.current.close()}
-      className="fixed inset-x-0 top-auto bottom-0 mx-auto mb-0 w-full max-w-[430px] rounded-t-[14px] bg-surface p-0 text-ink backdrop:bg-[#17141a]/40"
+      onClick={(e) => e.target === ref.current && dismiss()}
+      className="sheet-dialog fixed inset-x-0 top-auto bottom-0 mx-auto mb-0 w-full max-w-[430px] rounded-t-[14px] bg-surface p-0 text-ink backdrop:bg-[#17141a]/40"
     >
       <div className="px-5 pt-5 pb-[max(20px,env(safe-area-inset-bottom))]">
         <div className="mx-auto grid h-[140px] w-[140px] place-items-center overflow-hidden rounded-[10px] border border-line bg-white">
@@ -65,7 +80,7 @@ export function ProductSheet({ step, index, onClose }: { step: Step; index: numb
             )
           )}
           {amazon}
-          <Button variant="quiet" onClick={() => ref.current?.close()}>
+          <Button variant="quiet" onClick={dismiss}>
             Close
           </Button>
         </div>

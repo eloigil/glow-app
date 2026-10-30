@@ -11,8 +11,11 @@ const PRODUCT: Record<Step["category"], string> = {
   eyelashes: "mascara", lip_color: "lipstick",
 };
 
-/** "Concealer, soft sand" -> "soft sand concealer" */
+/** The step's suggested product ("Maybelline Fit Me Concealer 20 Sand"), else "soft sand concealer". */
 export function shopQuery(step: Step): string {
+  // Looks saved before products existed have no `product`.
+  const p = step.product as Step["product"] | undefined;
+  if (p) return `${p.brand} ${p.name} ${p.shade}`;
   const shade = step.title.split(/,\s*/)[1];
   return `${shade ? `${shade} ` : ""}${PRODUCT[step.category]}`.toLowerCase();
 }

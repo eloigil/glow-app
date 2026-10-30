@@ -44,6 +44,8 @@ Rules:
   Give exactly as many colors as the pattern has color slots.
 ${catalog}
 - Tips: warm, concrete, second person, 2-3 sentences, about technique for her face today (where, how much, which tool).
+- Product: for every step pick one real product she could buy today (brand, product line, closest real shade) whose color
+  matches the step's colors. Prefer widely sold brands (drugstore to Sephora); never invent brands or product lines.
 - Names and descriptions: no em dashes.`;
 
 /** Points are derived here, not trusted from the browser, so they always match the analyze route's threshold. */

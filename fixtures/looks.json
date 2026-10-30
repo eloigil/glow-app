@@ -17,7 +17,12 @@
         "tip": "Press a thin layer from the center of your face outward with a damp sponge. Keep it light on the jaw so your natural skin still shows through.",
         "corrects": [
           "age_spot"
-        ]
+        ],
+        "product": {
+          "brand": "Maybelline",
+          "name": "Fit Me Matte + Poreless Foundation",
+          "shade": "228 Soft Tan"
+        }
       },
       {
         "title": "Concealer, light neutral",
@@ -33,7 +38,12 @@
           "dark_circle_v2",
           "eye_bag",
           "age_spot"
-        ]
+        ],
+        "product": {
+          "brand": "NARS",
+          "name": "Radiant Creamy Concealer",
+          "shade": "Custard"
+        }
       },
       {
         "title": "Blush, soft round pink",
@@ -45,7 +55,12 @@
         "intensity": 52,
         "finish": "satin",
         "tip": "Place the color on the apples of your cheeks and blend slightly upward. Keep the shape round and soft so it looks fresh, not sculpted.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Milani",
+          "name": "Baked Blush",
+          "shade": "Romantic Rose"
+        }
       },
       {
         "title": "Highlighter, soft glow",
@@ -57,7 +72,12 @@
         "intensity": 50,
         "finish": "shimmer",
         "tip": "Sweep a small amount across the tops of your cheekbones and a touch on the brow bone. Use your fingertip so the glow stays smooth on normal skin.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "e.l.f.",
+          "name": "Baked Highlighter",
+          "shade": "Moonlight Pearls"
+        }
       },
       {
         "title": "Lip color, muted rose",
@@ -69,7 +89,12 @@
         "intensity": 64,
         "finish": "satin",
         "tip": "Blur the color onto the center of your lips first, then fill outward for a soft, natural edge. If you want extra polish, pat once with a finger to keep it even.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "MAC",
+          "name": "Powder Kiss Lipstick",
+          "shade": "Devoted to Chili"
+        }
       }
     ],
     "id": "look-1"
@@ -92,7 +117,12 @@
         "tip": "Sheer the foundation across the T-zone first, then bounce it out over the cheeks. This keeps shine controlled without flattening your normal skin.",
         "corrects": [
           "age_spot"
-        ]
+        ],
+        "product": {
+          "brand": "Maybelline",
+          "name": "Fit Me Matte + Poreless Foundation",
+          "shade": "228 Soft Tan"
+        }
       },
       {
         "title": "Concealer, beige sand",
@@ -107,7 +137,12 @@
         "corrects": [
           "dark_circle_v2",
           "eye_bag"
-        ]
+        ],
+        "product": {
+          "brand": "NARS",
+          "name": "Radiant Creamy Concealer",
+          "shade": "Cannelle"
+        }
       },
       {
         "title": "Bronzer, soft golden",
@@ -119,7 +154,12 @@
         "intensity": 54,
         "finish": "satin",
         "tip": "Dust bronzer along the tops of your cheeks, temples, and a little along the jaw. Keep the pressure light so the warmth reads as healthy, not muddy.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "NYX",
+          "name": "Sweet Cheeks Matte Blush",
+          "shade": "Day Dream"
+        }
       },
       {
         "title": "Blush, lifted peach",
@@ -131,7 +171,12 @@
         "intensity": 55,
         "finish": "sheer",
         "tip": "Sweep the blush diagonally from the outer cheek toward the temple. This lifted placement gives your face an instant brighter angle.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Milani",
+          "name": "Color Statement Lipstick",
+          "shade": "42 Nude Creme"
+        }
       },
       {
         "title": "Lip color, peach nude",
@@ -143,7 +188,12 @@
         "intensity": 66,
         "finish": "gloss",
         "tip": "Trace your natural lip line first, then fill the center with a soft peach nude. Leave a little extra sheen on the center of the lower lip for fullness.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "NYX",
+          "name": "Butter Gloss",
+          "shade": "Tiramisu"
+        }
       }
     ],
     "id": "look-2"
@@ -166,7 +216,12 @@
         "tip": "Buff the base in thin layers until redness and spots are evened out. Stop before it looks heavy so your skin still has dimension.",
         "corrects": [
           "age_spot"
-        ]
+        ],
+        "product": {
+          "brand": "Maybelline",
+          "name": "Fit Me Matte + Poreless Foundation",
+          "shade": "228 Soft Tan"
+        }
       },
       {
         "title": "Concealer, light beige",
@@ -181,7 +236,12 @@
         "corrects": [
           "dark_circle_v2",
           "eye_bag"
-        ]
+        ],
+        "product": {
+          "brand": "NARS",
+          "name": "Radiant Creamy Concealer",
+          "shade": "Cannelle"
+        }
       },
       {
         "title": "Contour, soft oval",
@@ -193,7 +253,12 @@
         "intensity": 55,
         "finish": "matte",
         "tip": "Fit the contour just under the cheekbones and blend upward with a small brush. Keep it soft so it adds shape without looking harsh on medium skin.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Fenty Beauty",
+          "name": "Match Stix Matte Skinstick",
+          "shade": "Mocha"
+        }
       },
       {
         "title": "Blush, rosy diagonal",
@@ -205,7 +270,12 @@
         "intensity": 60,
         "finish": "satin",
         "tip": "Start just above the cheek hollow and sweep toward the ear. This longer diagonal blush shape adds lift and balances the contour.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Milani",
+          "name": "Baked Blush",
+          "shade": "Tea Rose"
+        }
       },
       {
         "title": "Eyebrows, soft arch",
@@ -217,7 +287,12 @@
         "intensity": 68,
         "finish": "matte",
         "tip": "Fill sparse areas with short hairlike strokes, then brush the brow upward and outward. Keep the front lighter so the brows stay soft and believable.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Anastasia Beverly Hills",
+          "name": "Brow Wiz",
+          "shade": "Soft Brown"
+        }
       },
       {
         "title": "Lip color, rosewood",
@@ -229,7 +304,12 @@
         "intensity": 70,
         "finish": "satin",
         "tip": "Apply from the center of the mouth outward, then soften the edges with a fingertip. The rosewood tone will echo your natural lip color while still looking polished.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "MAC",
+          "name": "Powder Kiss Lipstick",
+          "shade": "Mull It Over"
+        }
       }
     ],
     "id": "look-3"
@@ -252,7 +332,12 @@
         "tip": "Layer the foundation where spots show first, then sheer it across the rest of the face. This gives coverage while keeping the texture smooth and even.",
         "corrects": [
           "age_spot"
-        ]
+        ],
+        "product": {
+          "brand": "Maybelline",
+          "name": "Fit Me Matte + Poreless Foundation",
+          "shade": "228 Soft Tan"
+        }
       },
       {
         "title": "Concealer, warm beige",
@@ -267,7 +352,12 @@
         "corrects": [
           "dark_circle_v2",
           "eye_bag"
-        ]
+        ],
+        "product": {
+          "brand": "NARS",
+          "name": "Radiant Creamy Concealer",
+          "shade": "Macadamia"
+        }
       },
       {
         "title": "Eye shadow, warm taupe",
@@ -279,7 +369,12 @@
         "intensity": 62,
         "finish": "matte",
         "tip": "Smudge the shadow over the whole lid and slightly above the crease for a smoky shape. Keep the center a touch lighter so the eye does not close in.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "ColourPop",
+          "name": "Going Coconuts Shadow Palette",
+          "shade": "Shell Yeah"
+        }
       },
       {
         "title": "Eye liner, brown define",
@@ -291,7 +386,12 @@
         "intensity": 65,
         "finish": "matte",
         "tip": "Draw a thin line as close to the lash roots as possible, then make the outer third a little thicker. Let the wing stay short so the smoke remains soft, not sharp.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "NYX",
+          "name": "Epic Ink Liner",
+          "shade": "Brown"
+        }
       },
       {
         "title": "Eyelashes, fluttery lift",
@@ -303,7 +403,12 @@
         "intensity": 70,
         "finish": "matte",
         "tip": "Place the lashes slightly higher at the outer corners to open the eye shape. Press them into the liner once the glue gets tacky so they stay secure.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Ardell",
+          "name": "Demi Wispies",
+          "shade": "Black"
+        }
       },
       {
         "title": "Blush, peach flush",
@@ -315,7 +420,12 @@
         "intensity": 58,
         "finish": "satin",
         "tip": "Apply the blush in a soft heart shape centered on the apples of the cheeks. Diffuse the top edges so it reads warm and romantic, not cartoonish.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Milani",
+          "name": "Baked Blush",
+          "shade": "Luminoso"
+        }
       },
       {
         "title": "Lip color, muted berry",
@@ -327,7 +437,12 @@
         "intensity": 74,
         "finish": "satin",
         "tip": "Fill the lips from the center outward, then blur the outline with a brush for a softer finish. The berry tone will balance the smoked eyes without overpowering the face.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Maybelline",
+          "name": "Color Sensational Creamy Matte Lipstick",
+          "shade": "Touch of Spice"
+        }
       }
     ],
     "id": "look-4"
@@ -350,7 +465,12 @@
         "tip": "Press foundation on in thin layers until the skin looks even and the age spots are softened. Build only where needed so the face keeps a natural medium depth.",
         "corrects": [
           "age_spot"
-        ]
+        ],
+        "product": {
+          "brand": "Maybelline",
+          "name": "Fit Me Matte + Poreless Foundation",
+          "shade": "228 Soft Tan"
+        }
       },
       {
         "title": "Concealer, bright sand",
@@ -365,7 +485,12 @@
         "corrects": [
           "dark_circle_v2",
           "eye_bag"
-        ]
+        ],
+        "product": {
+          "brand": "NARS",
+          "name": "Radiant Creamy Concealer",
+          "shade": "Custard"
+        }
       },
       {
         "title": "Highlighter, lifted glow",
@@ -377,7 +502,12 @@
         "intensity": 68,
         "finish": "shimmer",
         "tip": "Run the highlight in a vertical line down the center of the face and a touch across the cheek tops. This helps pull attention upward and makes the under-eye area look brighter.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Benefit Cosmetics",
+          "name": "Hoola Matte Bronzer",
+          "shade": "Hoola"
+        }
       },
       {
         "title": "Contour, soft cheek carve",
@@ -389,7 +519,12 @@
         "intensity": 63,
         "finish": "matte",
         "tip": "Hollow just under the cheekbones and blend back toward the hairline. Keep the placement clean so the cheek structure stays visible under the stronger eye makeup.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Anastasia Beverly Hills",
+          "name": "Brow Wiz",
+          "shade": "Medium Brown"
+        }
       },
       {
         "title": "Eyebrows, defined arch",
@@ -401,7 +536,12 @@
         "intensity": 74,
         "finish": "matte",
         "tip": "Build the arch a little higher than your natural brow, then soften the front with a spoolie. Keep the tail crisp so the dramatic eye look feels intentional.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Urban Decay",
+          "name": "22/42 Shadow Palette",
+          "shade": "Spill"
+        }
       },
       {
         "title": "Eye shadow, bronze sparkle",
@@ -414,7 +554,12 @@
         "intensity": 78,
         "finish": "shimmer",
         "tip": "Pack the lighter shade on the lid and place the deeper shade into the crease. Blend upward with a fluffy brush so the cut shape stays sharp at the lash line but soft above.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "NYX",
+          "name": "Epic Ink Liner",
+          "shade": "Black"
+        }
       },
       {
         "title": "Eye liner, bold wing",
@@ -426,7 +571,12 @@
         "intensity": 80,
         "finish": "matte",
         "tip": "Start the wing at the outer third of the eye and extend it upward toward the tail of the brow. Keep the inner line thin so the wing looks lifted instead of heavy.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Ardell",
+          "name": "Demi Wispies",
+          "shade": "Black"
+        }
       },
       {
         "title": "Eyelashes, dense upper",
@@ -438,7 +588,12 @@
         "intensity": 82,
         "finish": "matte",
         "tip": "Set the densest part of the lash strip slightly past the center so the outer eye looks lifted. Pinch the base after it dries to blend the strip into your liner.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Fenty Beauty",
+          "name": "Gloss Bomb Universal Lip Luminizer",
+          "shade": "Fu$$y"
+        }
       }
     ],
     "id": "look-5"
@@ -461,7 +616,12 @@
         "tip": "Apply a thin, even layer to smooth the complexion and tone down age spots. Concentrate the product where you need it most, then feather the rest outward.",
         "corrects": [
           "age_spot"
-        ]
+        ],
+        "product": {
+          "brand": "Maybelline",
+          "name": "Fit Me Matte + Poreless Foundation",
+          "shade": "228 Soft Tan"
+        }
       },
       {
         "title": "Concealer, light warm beige",
@@ -476,7 +636,12 @@
         "corrects": [
           "dark_circle_v2",
           "eye_bag"
-        ]
+        ],
+        "product": {
+          "brand": "NARS",
+          "name": "Radiant Creamy Concealer",
+          "shade": "Cannelle"
+        }
       },
       {
         "title": "Bronzer, sunlit warmth",
@@ -488,7 +653,12 @@
         "intensity": 66,
         "finish": "satin",
         "tip": "Sweep bronzer over the tops of the cheeks, temples, and a light touch over the nose bridge. This should look like warmth from sun, not a stripe.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Benefit Cosmetics",
+          "name": "Hoola Matte Bronzer",
+          "shade": "Hoola"
+        }
       },
       {
         "title": "Blush, two-tone peach",
@@ -501,7 +671,12 @@
         "intensity": 70,
         "finish": "sheer",
         "tip": "Place the deeper shade on the outer cheek and the lighter shade closer to the apples. Blend the two together so the blush looks dimensional and lifted.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Milani",
+          "name": "Baked Blush",
+          "shade": "Bellissimo Bronze"
+        }
       },
       {
         "title": "Eyebrows, natural shape",
@@ -513,7 +688,12 @@
         "intensity": 70,
         "finish": "matte",
         "tip": "Follow your own brow shape and fill only the thinner sections. Brush through after filling so the brows stay full but not blocky.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Anastasia Beverly Hills",
+          "name": "Brow Wiz",
+          "shade": "Soft Brown"
+        }
       },
       {
         "title": "Eye shadow, copper wash",
@@ -525,7 +705,12 @@
         "intensity": 74,
         "finish": "shimmer",
         "tip": "Sweep the copper color over the lid and slightly above the crease for a warm glow. Keep the lower edge soft so the shimmer catches light without looking messy.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Stila",
+          "name": "Eyes Are the Window Shadow Palette",
+          "shade": "Spirit"
+        }
       },
       {
         "title": "Eyelashes, lifted wisps",
@@ -537,7 +722,12 @@
         "intensity": 76,
         "finish": "matte",
         "tip": "Angle the outer lash clusters slightly upward to create a lifted cat-eye effect. Press the inner lashes flatter so the strip blends into your natural lash line.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Ardell",
+          "name": "Demi Wispies",
+          "shade": "Black"
+        }
       },
       {
         "title": "Lip color, nude caramel",
@@ -549,7 +739,12 @@
         "intensity": 72,
         "finish": "gloss",
         "tip": "Apply the nude caramel in a thin coat, then add a little more to the center of the lips for dimension. The gloss finish will tie the warm cheek and eye tones together.",
-        "corrects": []
+        "corrects": [],
+        "product": {
+          "brand": "Charlotte Tilbury",
+          "name": "Hyglam Gloss",
+          "shade": "Pillow Talk"
+        }
       }
     ],
     "id": "look-6"

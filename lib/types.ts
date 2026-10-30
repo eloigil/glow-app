@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { CATEGORIES, CONCERN_KEYS, FINISHES, LookSchema, StepSchema } from "@/lib/openai/schema";
+import type { CATEGORIES, CONCERN_KEYS, FINISHES, LookSchema, ProductSchema, StepSchema } from "@/lib/openai/schema";
 
 // Shared contract between the screens and the server routes (spec.md > Data Model).
 
@@ -40,6 +40,7 @@ export type MakeupCategory = (typeof CATEGORIES)[number];
 export type Finish = (typeof FINISHES)[number];
 /** title, category, pattern (catalog id or null), colors (one hex per pattern slot), intensity 10-90, finish, tip, corrects. */
 export type Step = z.infer<typeof StepSchema>;
+export type Product = z.infer<typeof ProductSchema>;
 
 export type Difficulty = 1 | 2 | 3;
 

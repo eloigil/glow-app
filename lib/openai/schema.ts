@@ -12,6 +12,13 @@ export const CATEGORIES = [
 export const FINISHES = ["matte", "satin", "shimmer", "gloss", "sheer"] as const;
 export const CONCERN_KEYS = ["acne", "redness", "dark_circle_v2", "age_spot", "oiliness", "eye_bag"] as const;
 
+// A real, widely sold product that matches the step's shade. YouCam has no catalog, so the model proposes one.
+export const ProductSchema = z.object({
+  brand: z.string().describe("Real, widely available brand, e.g. Maybelline, NYX, e.l.f., Fenty Beauty, Rare Beauty"),
+  name: z.string().describe("The brand's actual product line name, e.g. Fit Me Matte + Poreless Foundation"),
+  shade: z.string().describe("The closest real shade name or number in that line"),
+});
+
 export const StepSchema = z.object({
   title: z.string().describe('Short step name with product type and shade, e.g. "Concealer, warm beige"'),
   category: z.enum(CATEGORIES),
@@ -20,6 +27,7 @@ export const StepSchema = z.object({
   intensity: z.number().int().min(10).max(90),
   finish: z.enum(FINISHES),
   tip: z.string().describe("Two or three sentences of practical technique for her face today, second person"),
+  product: ProductSchema,
   corrects: z.array(z.enum(CONCERN_KEYS)).max(3)
     .describe("Today's points this step fixes; empty for color steps"),
 });

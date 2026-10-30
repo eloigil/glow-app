@@ -1,7 +1,7 @@
 import "server-only";
 import { fetchBytes, fetchOrTimeout, youcam, YouCamError } from "./client";
 
-export type TaskKind = "skin-analysis" | "skin-tone-analysis" | "makeup-vto";
+export type TaskKind = "skin-analysis" | "skin-tone-analysis" | "makeup-vto" | "mu-transfer";
 
 const POLL_MS = 2000;
 const TIMEOUT_MS = 60_000;

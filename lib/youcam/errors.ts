@@ -3,6 +3,9 @@ import { YouCamError } from "./client";
 
 // spec.md > Important Failure Modes. Codes: https://docs.perfectcorp.com/develop/error_codes.md
 const PHOTO: [RegExp, string][] = [
+  // Makeup Transfer: "ref" is the inspiration photo, "src" is hers.
+  [/^error_ref_|^error_inappropriate_ref/, "Try an inspiration photo with one front-facing face, eyes open, nothing covering the eyes or lips."],
+  [/^error_src_/, "Your photo doesn't work for copying a look. Try a front-facing photo with eyes open."],
   [/^error_no_face$/, "We couldn't find a face. Try a front-facing photo."],
   [/^error_multiple_people$/, "Only one face, please."],
   [/too_small$/, "Move closer so your face fills the frame."],

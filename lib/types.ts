@@ -65,3 +65,10 @@ export type ProductLink = { url: string; store: string; /** og:image of that pag
 /** POST /api/products — body: { products }. `links` is keyed by `productKey()` from lib/shop.ts; null = nothing verified. */
 export type ProductsRequest = { products: Product[] };
 export type ProductsResponse = { links: Record<string, ProductLink | null> };
+
+/** POST /api/copy — multipart: `photo` (hers, long side ≤1024), `inspiration` (≤1024), `req` (JSON LooksRequest). */
+export type CopyResponse = {
+  look: Look;
+  /** YouCam Makeup Transfer: the inspiration look on her face, the goal the tutorial works toward. */
+  goal: string;
+};

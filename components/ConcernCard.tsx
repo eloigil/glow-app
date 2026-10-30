@@ -24,6 +24,8 @@ export function ConcernCard({
       onClick={onClick}
       aria-pressed={active}
       className={`glass relative flex w-full items-center gap-3 rounded-[10px] px-3.5 py-3 text-left transition-colors ${active ? "ring-2 ring-rose" : ""}`}
+      // A short shadow: the list scrolls, and a scroll area cuts off glass's tall default shadow at its edges.
+      style={{ boxShadow: "inset 0 1px 0 var(--glass-edge), 0 2px 8px rgb(120 50 80 / 0.08)" }}
     >
       {active && !reduce && (
         // One-shot ring pulse when the card becomes active.

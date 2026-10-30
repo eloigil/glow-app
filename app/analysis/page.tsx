@@ -51,7 +51,7 @@ export default function SkinAnalysis() {
         </div>
 
         {points.length > 0 ? (
-          <div className="min-h-0 overflow-y-auto">
+          <div className="-mx-3 min-h-0 overflow-y-auto px-3 pb-3">
             <p className="mt-4 mb-2 text-sm text-ink-muted">What we&apos;ll work on</p>
             <div className="grid gap-2">
               {points.map((c) => (

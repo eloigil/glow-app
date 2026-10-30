@@ -26,8 +26,8 @@ export type Session = {
   savedId?: string;
   /** Exact product pages keyed by productKey(); a missing key is still unresolved, null means none found. */
   productLinks?: Record<string, ProductLink | null>;
-  /** Copied looks (by look id): the inspiration photo she uploaded and YouCam's transfer of it onto her face. */
-  copies?: Record<string, { goal: string; inspiration: string }>;
+  /** Copied looks (by look id): the inspiration photo she uploaded. */
+  copies?: Record<string, { inspiration: string }>;
   /** True while /api/products is running for the current looks. */
   productLinksPending?: boolean;
 };

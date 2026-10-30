@@ -17,7 +17,7 @@ npm run dev
 2. Tap **Start**, then upload any photo. Replay always shows the recorded demo face so the skin masks line up.
 3. Tap a card on **Your skin** to see that area glow on the face, then **Continue**.
 4. Pick one of the six looks, tap **Start makeup**, and walk the layers. Swipe, use Next, tap the step bar, or press the arrow keys.
-5. Or tap **Copy a look** (the last card) and upload a photo of a makeup you love. Replay always returns the recorded copy, "Neon Halo". It joins the grid with its own tutorial, and **Finish** compares your result with the goal.
+5. Or tap **Copy a look** (the last card) and upload a photo of a makeup you love. Replay always returns the recorded copy, "Neon Halo". It joins the grid with its own tutorial.
 6. Each step links to an Amazon search for its product and shade (for example "soft sand concealer"). On **Finish**, compare before and after, open **Shop this look on Amazon**, then **Save look**. Reopen it later from the bookmark icon on the welcome screen. Saved looks replay offline.
 
 If port 3000 is busy, run `npm run dev -- -p 3100`.
@@ -51,7 +51,7 @@ Live tips:
 | [AI Skin Analysis](https://docs.perfectcorp.com/reference/description/ai_skin_analysis.md) | The skin read: blemishes, redness, dark circles, spots, shine and puffy eyes, with a mask per concern that GlowApp lights up on your face |
 | [AI Facial Color Tones](https://docs.perfectcorp.com/reference/description/ai_face_tone_analyzer.md) | Your exact skin, lip and brow colors, which the look planner matches shades to |
 | [AI Makeup Virtual Try-On](https://docs.perfectcorp.com/reference/description/ai_makeup_vto.md) | Every look preview, and every tutorial step: steps 1 to N painted cumulatively on your photo |
-| [AI Makeup Transfer](https://docs.perfectcorp.com/reference/ai_makeup_transfer) | **Copy a look**: the makeup from an inspiration photo painted on your face, the goal your copied tutorial works toward (2 units) |
+| [AI Makeup Transfer](https://docs.perfectcorp.com/reference/ai_makeup_transfer) | **Copy a look**: the makeup from an inspiration photo painted on your face, so the step planner sees how its colors sit on your skin (2 units) |
 
 OpenAI turns the skin read into six looks as strict JSON (and, for Copy a look, reads the inspiration photo with vision), naming a real product for every step. OpenAI web search then finds each product's exact page (Sephora, Ulta, Target, Walmart or the brand's store) while you browse, next to an Amazon search link. Each look has a difficulty (low, medium, high), ordered steps with YouCam pattern names and colors, and a tip for every step. A validator makes sure every concern found gets a step that actually fixes it, for example concealer for dark circles and never eyebrows.
 

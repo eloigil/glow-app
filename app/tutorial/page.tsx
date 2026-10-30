@@ -116,7 +116,6 @@ export default function Tutorial() {
         onRetry={retry}
         onBack={() => setFinished(false)}
         concerns={session.analysis?.concerns ?? []}
-        goal={session.copies?.[look.id]?.goal}
         onFinish={() => router.push(session.savedId ? "/saved" : "/")}
       />
     );

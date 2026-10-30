@@ -21,8 +21,8 @@ const toDataUrl = (blob: Blob) =>
   });
 
 /**
- * The last card on Looks: she uploads a makeup look she loves; YouCam paints it on her face (the goal) and the
- * copied look joins the grid like any other, with its own tutorial.
+ * The last card on Looks: she uploads a makeup look she loves and the copied look joins the grid like any other,
+ * with its own tutorial.
  */
 export function CopyCard({ onCopied }: { onCopied: (lookId: string) => void }) {
   const { session, setSession } = useSession();
@@ -44,7 +44,7 @@ export function CopyCard({ onCopied }: { onCopied: (lookId: string) => void }) {
       const body = await postJson<CopyResponse>("/api/copy", form);
       setSession((s) =>
         s.analysis?.fileId === analysis.fileId
-          ? { ...s, looks: [...(s.looks ?? []), body.look], copies: { ...s.copies, [body.look.id]: { goal: body.goal, inspiration: preview } } }
+          ? { ...s, looks: [...(s.looks ?? []), body.look], copies: { ...s.copies, [body.look.id]: { inspiration: preview } } }
           : s,
       );
       setState({ kind: "idle" });

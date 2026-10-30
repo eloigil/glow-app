@@ -8,7 +8,9 @@ import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
 import { SignalBars } from "@/components/SignalBars";
 import { isSaved, saveLook } from "@/lib/saved";
-import { amazonUrl } from "@/lib/shop";
+import { useSession } from "@/lib/session";
+import { amazonUrl, productKey } from "@/lib/shop";
+import { linkFor } from "@/lib/useProductLinks";
 import type { Concern, Look } from "@/lib/types";
 
 type State = "idle" | "saving" | "saved" | "error";
@@ -41,6 +43,7 @@ export function FinishView({
   onFinish: () => void;
 }) {
   const [state, setState] = useState<State>("idle");
+  const { session } = useSession();
   const complete = look.steps.every((_, i) => images[i]);
   const failed = look.steps.map((_, i) => i).filter((i) => errors[i] && !images[i]);
   const standIn = look.steps.some((_, i) => placeholders[i]);
@@ -53,7 +56,11 @@ export function FinishView({
   async function save() {
     setState("saving");
     try {
-      await saveLook(saveId, look, concerns, photo, images as string[]);
+      // Keep the exact product pages with the look so a replay links to them offline.
+      const links = Object.fromEntries(
+        look.steps.flatMap((st) => (st.product ? [[productKey(st.product), session.productLinks?.[productKey(st.product)] ?? null]] : [])),
+      );
+      await saveLook(saveId, look, concerns, photo, images as string[], links);
       setState("saved");
     } catch {
       setState("error");
@@ -97,16 +104,28 @@ export function FinishView({
             <span className="text-rose">
               <Icon icon={ShoppingBag01Icon} />
             </span>
-            Shop this look on Amazon
+            Shop this look
           </summary>
           <ul className="mt-2 grid gap-1.5 pb-1 text-sm">
-            {look.steps.map((step, i) => (
-              <li key={i}>
-                <a href={amazonUrl(step)} target="_blank" rel="noopener noreferrer" className="underline decoration-rose underline-offset-4">
-                  {step.product ? `${step.product.brand} ${step.product.name}, ${step.product.shade}` : step.title}
-                </a>
-              </li>
-            ))}
+            {look.steps.map((step, i) => {
+              const link = linkFor(session, step);
+              const label = step.product ? `${step.product.brand} ${step.product.name}, ${step.product.shade}` : step.title;
+              return (
+                <li key={i}>
+                  <a href={link?.url ?? amazonUrl(step)} target="_blank" rel="noopener noreferrer" className="underline decoration-rose underline-offset-4">
+                    {link ? `${label} at ${link.store}` : label}
+                  </a>
+                  {link && (
+                    <>
+                      {" "}
+                      <a href={amazonUrl(step)} target="_blank" rel="noopener noreferrer" className="text-xs text-ink-muted underline underline-offset-4">
+                        Amazon
+                      </a>
+                    </>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </details>
         <div className="mt-5 grid gap-2">

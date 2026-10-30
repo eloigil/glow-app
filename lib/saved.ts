@@ -1,5 +1,5 @@
 import { get, getMany, keys, set } from "idb-keyval";
-import type { Concern, Look } from "@/lib/types";
+import type { Concern, Look, ProductLink } from "@/lib/types";
 
 // spec.md > Data Model (SavedLook): the real images live on the device, so a saved look replays offline.
 export type SavedLook = {
@@ -13,6 +13,8 @@ export type SavedLook = {
   original: Blob;
   /** Index i = her face with steps 0..i applied. */
   steps: Blob[];
+  /** Exact product pages found at save time, keyed by productKey(). Absent on looks saved before this existed. */
+  links?: Record<string, ProductLink | null>;
 };
 
 const PREFIX = "glow.saved.";
@@ -21,9 +23,11 @@ const VERSION = 1;
 /** data: and blob: URLs both fetch locally, no network. */
 const toBlob = async (url: string) => (await fetch(url)).blob();
 
-export async function saveLook(id: string, look: Look, concerns: Concern[], photo: string, images: string[]) {
+export async function saveLook(
+  id: string, look: Look, concerns: Concern[], photo: string, images: string[], links?: Record<string, ProductLink | null>,
+) {
   const [original, ...steps] = await Promise.all([photo, ...images].map(toBlob));
-  const saved: SavedLook = { v: VERSION, id, look, concerns, savedAt: new Date().toISOString(), original, steps };
+  const saved: SavedLook = { v: VERSION, id, look, concerns, savedAt: new Date().toISOString(), original, steps, links };
   await set(PREFIX + id, saved);
 }
 

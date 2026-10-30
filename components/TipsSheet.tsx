@@ -3,7 +3,9 @@ import { Button } from "@/components/Button";
 import { CONCERN_LOOK } from "@/components/concernLook";
 import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
+import { useSession } from "@/lib/session";
 import { amazonUrl, shopQuery } from "@/lib/shop";
+import { linkFor } from "@/lib/useProductLinks";
 import type { Concern, Step } from "@/lib/types";
 
 /** Glass sheet under the face: what this step applies, why today, how to do it. */
@@ -27,6 +29,8 @@ export function TipsSheet({
   onNext: () => void;
 }) {
   const last = index === total - 1;
+  const { session } = useSession();
+  const link = linkFor(session, step);
   return (
     <GlassSheet className="flex max-h-[46%] flex-col">
       <div className="flex shrink-0 items-center justify-between gap-3">
@@ -47,17 +51,36 @@ export function TipsSheet({
       <div className="mt-3 min-h-0 overflow-y-auto">
         <h1 className="text-lg font-semibold tracking-[-0.01em]">{step.title}</h1>
         <p className="mt-1.5 leading-relaxed text-ink-muted">{step.tip}</p>
-        <a
-          href={amazonUrl(step)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-rose underline-offset-4"
-        >
-          <span className="text-rose">
-            <Icon icon={ShoppingBag01Icon} />
-          </span>
-          {step.product ? `Shop ${step.product.brand} ${step.product.name}` : `Find ${shopQuery(step)} on Amazon`}
-        </a>
+        {link ? (
+          <p className="mt-2 text-sm">
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-medium underline decoration-rose underline-offset-4"
+            >
+              <span className="text-rose">
+                <Icon icon={ShoppingBag01Icon} />
+              </span>
+              View {step.product.brand} {step.product.name} at {link.store}
+            </a>{" "}
+            <a href={amazonUrl(step)} target="_blank" rel="noopener noreferrer" className="text-xs text-ink-muted underline underline-offset-4">
+              or Amazon
+            </a>
+          </p>
+        ) : (
+          <a
+            href={amazonUrl(step)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-rose underline-offset-4"
+          >
+            <span className="text-rose">
+              <Icon icon={ShoppingBag01Icon} />
+            </span>
+            {step.product ? `Shop ${step.product.brand} ${step.product.name}` : `Find ${shopQuery(step)} on Amazon`}
+          </a>
+        )}
         {error && (
           <div className="mt-3 flex items-center justify-between gap-3 rounded-[8px] bg-wash px-3 py-2 text-sm" role="alert">
             <span>{error}</span>

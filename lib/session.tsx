@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import type { AnalyzeResponse, Look, Tone } from "@/lib/types";
+import type { AnalyzeResponse, Look, ProductLink, Tone } from "@/lib/types";
 
 // In-memory session (spec.md > Session Store). A reload sends her back to Welcome.
 export type Session = {
@@ -22,6 +22,10 @@ export type Session = {
   stepErrors?: Record<string, string>;
   /** Set when the tutorial is replaying a look saved on the device: every image is local, nothing is fetched. */
   savedId?: string;
+  /** Exact product pages keyed by productKey(); a missing key is still unresolved, null means none found. */
+  productLinks?: Record<string, ProductLink | null>;
+  /** True while /api/products is running for the current looks. */
+  productLinksPending?: boolean;
 };
 
 type SessionContext = { session: Session; setSession: Dispatch<SetStateAction<Session>> };

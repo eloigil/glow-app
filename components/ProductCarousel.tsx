@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { ProductPreview } from "@/components/ProductArt";
 import { ProductSheet } from "@/components/ProductSheet";
+import { useSession } from "@/lib/session";
+import { linkFor } from "@/lib/useProductLinks";
 import type { Step } from "@/lib/types";
 
 /** The suggested products a look needs, one tile per distinct product, in step order. */
 export function ProductCarousel({ steps }: { steps: Step[] }) {
   const [open, setOpen] = useState<number>();
+  const { session } = useSession();
   const seen = new Set<string>();
   const items = steps
     .map((step, index) => ({ step, index }))
@@ -41,6 +44,7 @@ export function ProductCarousel({ steps }: { steps: Step[] }) {
                 <span className="min-w-0 truncate text-[11px] leading-tight font-medium">{step.title.split(",")[0]}</span>
               </span>
               <span className="w-full truncate text-[10px] leading-tight text-ink-muted">{step.product.brand}</span>
+              <StoreHint store={linkFor(session, step)?.store} />
             </button>
           </li>
         ))}
@@ -60,4 +64,8 @@ export function Swatch({ colors, size }: { colors: string[]; size: number }) {
       style={{ width: size, height: size, background: b ? `linear-gradient(90deg, ${a} 50%, ${b} 50%)` : a }}
     />
   );
+}
+
+function StoreHint({ store }: { store?: string }) {
+  return store ? <span className="-mt-1 w-full truncate text-[10px] leading-tight text-ink-muted">at {store}</span> : null;
 }

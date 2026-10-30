@@ -11,6 +11,7 @@ import { LookCard } from "@/components/LookCard";
 import { postJson } from "@/lib/postJson";
 import { useSession } from "@/lib/session";
 import type { LooksResponse } from "@/lib/types";
+import { useProductLinks } from "@/lib/useProductLinks";
 import { resetRenders, useLookPreviews } from "@/lib/useStepRenders";
 
 // Survives leaving /looks: one request per photo even if she goes Back and Continues mid-generation.
@@ -22,6 +23,7 @@ export default function Looks() {
   const { session, setSession } = useSession();
   const { looks, analysis, tone } = session;
   const previews = useLookPreviews(looks, analysis?.fileId);
+  useProductLinks(looks, analysis?.fileId);
   const [grownId, setGrownId] = useState<string>();
   const [error, setError] = useState<string>();
   const [attempt, setAttempt] = useState(0);

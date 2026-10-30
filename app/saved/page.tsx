@@ -46,6 +46,7 @@ export default function SavedLooks() {
       lookId: s.look.id,
       stepImages: { [s.look.id]: s.steps.map(toUrl) },
       savedId: s.id,
+      productLinks: s.links,
     });
     router.push("/tutorial");
   }

@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ContrastIcon } from "@hugeicons/core-free-icons";
 import { FinishView } from "@/components/FinishView";
+import { Icon } from "@/components/Icon";
 import { MakeupLoader } from "@/components/MakeupLoader";
 import { StepWizard } from "@/components/StepWizard";
 import { TipsSheet } from "@/components/TipsSheet";
+import { diffMask } from "@/lib/diffMask";
 import { useSession } from "@/lib/session";
 import { useStepRenders } from "@/lib/useStepRenders";
 
@@ -19,6 +22,9 @@ export default function Tutorial() {
   const { images, placeholders, errors, retry } = useStepRenders(look, session.analysis?.fileId);
   const [current, setCurrent] = useState(0);
   const [finished, setFinished] = useState(false);
+  // Focus mode: her face in grayscale except where this step's product goes.
+  const [focus, setFocus] = useState(false);
+  const [mask, setMask] = useState<{ for: string; src: string | null }>();
 
   useEffect(() => {
     if (!look || !session.photo) router.replace("/");
@@ -50,6 +56,17 @@ export default function Tutorial() {
   const [layers, setLayers] = useState<string[]>([]);
   if (shown && layers.at(-1) !== shown) setLayers(layers.length ? [layers.at(-1)!, shown] : [shown]);
 
+  const before = current === 0 ? session.photo : images[current - 1];
+  useEffect(() => {
+    if (!focus || !ready || !before) return;
+    let live = true;
+    diffMask(before, ready).then((src) => live && setMask({ for: ready, src }));
+    return () => {
+      live = false;
+    };
+  }, [focus, ready, before]);
+  const focusMask = focus && ready && mask?.for === ready ? mask : undefined;
+
   if (!look || !session.photo) return null;
   const step = look.steps[current];
   const fixes = session.analysis?.concerns.filter((c) => step.corrects.includes(c.key)) ?? [];
@@ -74,6 +91,17 @@ export default function Tutorial() {
   return (
     <div className="relative flex-1 overflow-hidden">
       <StepWizard steps={look.steps} current={current} ready={look.steps.map((_, i) => !!images[i])} onSelect={go} />
+      <button
+        type="button"
+        onClick={() => setFocus((f) => !f)}
+        aria-pressed={focus}
+        aria-label="Highlight where to apply this step"
+        className={`absolute top-9 right-3 z-20 grid size-10 place-items-center rounded-full transition-colors ${
+          focus ? "bg-rose text-[#17141a]" : "glass text-ink"
+        }`}
+      >
+        <Icon icon={ContrastIcon} />
+      </button>
 
       <motion.div
         className="absolute inset-x-0 top-0 h-[60%] touch-pan-y"
@@ -97,13 +125,49 @@ export default function Tutorial() {
             transition={{ duration: reduce ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
           />
         ))}
+        <AnimatePresence>
+          {focusMask?.src && (
+            <motion.div
+              key="focus"
+              className="pointer-events-none absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduce ? 0 : 0.35 }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- data URL render */}
+              <img src={ready} alt="" className="absolute inset-0 size-full object-cover grayscale" />
+              {/* eslint-disable-next-line @next/next/no-img-element -- data URL render */}
+              <img
+                src={ready}
+                alt={`Where to apply: ${step.title}`}
+                className="absolute inset-0 size-full object-cover"
+                style={{
+                  maskImage: `url("${focusMask.src}")`,
+                  WebkitMaskImage: `url("${focusMask.src}")`,
+                  maskSize: "cover",
+                  WebkitMaskSize: "cover",
+                  maskPosition: "center",
+                  WebkitMaskPosition: "center",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {focusMask && !focusMask.src && (
+          <span className="glass absolute bottom-[44%] left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-medium">
+            This layer is very subtle
+          </span>
+        )}
         {!ready && !errors[current] && (
           <div className="absolute inset-0 grid place-items-end justify-center bg-ink/10 pb-16">
             <MakeupLoader label="Painting this step" />
           </div>
         )}
         {standIn && (
-          <span className="absolute top-16 right-3 rounded-full bg-ink/70 px-2 py-0.5 text-[10px] text-canvas">replay</span>
+          <span className="absolute top-24 right-3 rounded-full bg-ink/70 px-2 py-0.5 text-[10px] text-canvas">replay</span>
         )}
       </motion.div>
 

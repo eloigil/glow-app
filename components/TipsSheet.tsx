@@ -37,22 +37,15 @@ export function TipsSheet({
   const [shopping, setShopping] = useState(false);
   return (
     <GlassSheet className="flex max-h-[52%] flex-col">
-      <div className="flex shrink-0 items-center justify-between gap-3">
-        {concerns.length ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-wash py-1 pr-3 pl-1.5 text-xs font-medium">
-            <span className="text-rose">
-              <Icon icon={CONCERN_LOOK[concerns[0].key].icon} />
-            </span>
-            For your {new Intl.ListFormat("en", { type: "conjunction" }).format(concerns.map((c) => c.label.toLowerCase()))} today
+      {concerns.length > 0 && (
+        <span className="mb-3 inline-flex shrink-0 items-center gap-1.5 self-start rounded-full bg-wash py-1 pr-3 pl-1.5 text-xs font-medium">
+          <span className="text-rose">
+            <Icon icon={CONCERN_LOOK[concerns[0].key].icon} />
           </span>
-        ) : (
-          <span />
-        )}
-        <span className="text-xs text-ink-muted">
-          Step {index + 1} of {total}
+          For your {new Intl.ListFormat("en", { type: "conjunction" }).format(concerns.map((c) => c.label.toLowerCase()))} today
         </span>
-      </div>
-      <div className="mt-3 min-h-0 overflow-y-auto">
+      )}
+      <div className="min-h-0 overflow-y-auto">
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-lg font-semibold tracking-[-0.01em]">{step.title}</h1>
           {step.product ? (

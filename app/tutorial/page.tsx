@@ -73,7 +73,7 @@ export default function Tutorial() {
 
   return (
     <div className="relative flex-1 overflow-hidden">
-      <StepWizard steps={look.steps} current={current} onSelect={go} />
+      <StepWizard steps={look.steps} current={current} ready={look.steps.map((_, i) => !!images[i])} onSelect={go} />
 
       <motion.div
         className="absolute inset-x-0 top-0 h-[60%] touch-pan-y"

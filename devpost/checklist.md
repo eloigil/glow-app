@@ -71,8 +71,9 @@ Workflow (learner's loop): coding subagents where useful (Sonnet for non-critica
 - [x] Look cards grow in place in the grid instead of moving to the top
 - [x] Looks generation says it takes a while
 - [x] Tutorial layer loading uses a makeup-themed animation (brush and pot) instead of the shimmer
-- [ ] Six looks instead of five (two of each difficulty), with fixtures re-recorded
+- [x] Six looks instead of five (two of each difficulty), with fixtures re-recorded
 - [x] Amazon links: each step and the Finish view link to an Amazon search for the step's shade and product type
+- [ ] Products found upfront: each step names a real product, shown as a carousel on the grown card with a product sheet and Amazon link
 - [x] Final review complete — feedback resolved and learner confirms ready to ship
 
 Final review outcome: learner tried the full journey and asked for no changes ("Tried it all, nothing to change. Ready to ship."). Agent-side final review (code-review skill on slices 3-5) fixes landed in a06ae7f, 8e0cef6, a145f8c and 8897a6d; fresh clone with no keys replays the full journey with 31/31 real renders.
@@ -108,3 +109,4 @@ Activity mode: recap.
 - Unusable-photo handling is verified against the real API (a no-face photo returns `error_no_face`, mapped to its message, 0 units) plus a mapping check of every error class, instead of a committed bad-photo replay fixture — replay serves one fixed analysis for any upload, so a second analyze fixture could not be selected.
 - Final review: the learner asked for six looks instead of five (two easy, two medium, two difficult); scope, PRD, spec and README updated, and the replay fixtures re-recorded for the new plan. Cards now grow in place (`grid-flow-row-dense`) instead of moving to the top, superseding the earlier revision.
 - Final review: the learner asked to implement the deferred Amazon links. Built as Amazon search links (shade + store product name per category, e.g. "soft sand concealer", "lifted wisps mascara") on each tutorial step and in a "Shop this look" list on Finish, with an optional Associates tag via `NEXT_PUBLIC_AMAZON_TAG` — exact product links still need a product catalog YouCam doesn't provide.
+- Final review: the learner asked for products found upfront with a carousel on the preview card (the original PRD design). The look plan now names a real product (brand, line, shade) per step; the recorded plan was enriched in place by one OpenAI pass so its render fixtures stay valid. Links remain Amazon searches for that product, since there is still no verified catalog.

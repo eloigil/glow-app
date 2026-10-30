@@ -15,7 +15,7 @@ Source: `scope.md > The Core Loop`, `scope.md > What "Working" Looks Like`.
 2. She taps Start and either **takes a photo** or **uploads one**.
 3. GlowApp analyzes the photo and shows the **Skin Analysis**: her skin tone summary and a card for each point found (e.g. pimples, freckles, wrinkles). Tapping a card highlights that spot on her photo.
 4. She continues to **Your Looks**: six previews of her own face wearing each look, each labeled with its difficulty (two easy, two medium, two difficult).
-5. She taps a look. The card grows in place inside the grid into a detail card: the preview and a description. *(Products carousel deferred, see Deferred From the POC.)*
+5. She taps a look. The card grows in place inside the grid into a detail card: the preview, a description, and a carousel of the products it uses. Tapping a product opens a sheet with brand, product, shade and a "Shop on Amazon" link.
 6. She taps **Start makeup** and enters the **Tutorial**: a step wizard on top, her face showing only the layers applied so far, and technique tips below. Every look includes steps that correct the points found today.
 7. She moves through the steps by swiping (phone) or with Next / tapping the wizard (desktop).
 8. On the **Finish** screen she can **Save** the look or tap **Finish**. *(Stretch: a before/after slider comparing her original photo with the finished look.)*
@@ -30,7 +30,7 @@ Mobile-first; also usable in a desktop browser.
 2. **Add Photo**: two actions, *Take a photo* and *Upload a picture*.
 3. **Skin Analysis**: her photo, a skin tone summary, and cards for each detected point. Tapping a card highlights that point on the photo.
 4. **Your Looks**: a two-column grid of six look previews, each with a difficulty signal.
-5. **Look Detail** (not a separate screen): the tapped card grows in place to span both columns of the grid. Inside it: the preview with its description beside it, and **Start makeup** below. The other looks stay in the grid below it; tapping another card swaps which one is grown.
+5. **Look Detail** (not a separate screen): the tapped card grows in place to span both columns of the grid. Inside it: the preview with its description beside it, a product carousel below, and **Start makeup**. The other looks stay in the grid below it; tapping another card swaps which one is grown.
 6. **Tutorial**: step wizard across the top; her face filling at least half the screen; tips below.
 7. **Finish**: **Save** and **Finish** buttons (+ stretch before/after slider).
 8. **Saved Looks**: list of saved looks, opened from the Welcome icon.
@@ -144,7 +144,7 @@ Welcome → photo capture → skin analysis with tappable highlights → six loo
 
 ## Deferred From the POC
 - **Accounts and cloud sync**: saved looks live on one device; no sign-in needed to prove the kernel.
-- **Products** (carousel, product modal, exact product links): YouCam has no product data; adding them later means a small hand-made catalog matched by category and shade hex. Deferred in `4-spec`. *Partly built at the final review:* each tutorial step and the Finish view link to an Amazon search for that step's shade and product type (optional Associates tag via `NEXT_PUBLIC_AMAZON_TAG`).
+- **Exact product links** (a verified catalog with stock product pages): YouCam has no product data. *Products themselves were restored at the final review:* the look plan names a real product (brand, line, shade) for every step, the grown card shows them as a carousel with a product sheet, and every link is an Amazon search for that product (optional Associates tag via `NEXT_PUBLIC_AMAZON_TAG`).
 - **"Use what I own"** (`scope.md > Later`): product inventory and looks built from owned products. Keep the product data shaped so this is a small change later.
 
 ## Possible Later Enhancements

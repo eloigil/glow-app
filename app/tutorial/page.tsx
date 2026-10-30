@@ -3,13 +3,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ContrastIcon } from "@hugeicons/core-free-icons";
+import { ContrastIcon, PaintBrush01Icon } from "@hugeicons/core-free-icons";
+import { ApplyAnimation } from "@/components/ApplyAnimation";
 import { FinishView } from "@/components/FinishView";
 import { Icon } from "@/components/Icon";
 import { MakeupLoader } from "@/components/MakeupLoader";
 import { StepWizard } from "@/components/StepWizard";
 import { TipsSheet } from "@/components/TipsSheet";
 import { diffMask } from "@/lib/diffMask";
+import { faceLandmarks, type Landmarks } from "@/lib/landmarks";
 import { useSession } from "@/lib/session";
 import { useStepRenders } from "@/lib/useStepRenders";
 
@@ -29,6 +31,17 @@ export default function Tutorial() {
   useEffect(() => {
     if (!look || !session.photo) router.replace("/");
   }, [look, session.photo, router]);
+
+  // "How to apply": her landmarks (once per photo) place a brush stroke for each step.
+  const [landmarks, setLandmarks] = useState<Landmarks | null>(null);
+  useEffect(() => {
+    if (!session.photo) return;
+    let live = true;
+    faceLandmarks(session.photo).then((l) => live && setLandmarks(l));
+    return () => {
+      live = false;
+    };
+  }, [session.photo]);
 
   const total = look?.steps.length ?? 0;
   const go = useCallback(
@@ -69,7 +82,17 @@ export default function Tutorial() {
       live = false;
     };
   }, [focus, ready, before, isBase, session.tone?.skinHex]);
-  const focusMask = focus && ready && mask?.for === ready ? mask : undefined;
+  // Each step shows its brush strokes once, the first time its layer is ready; the brush button replays them.
+  const stepId = look ? `${look.id}:${current}` : "";
+  const canShow = !!(ready && before && landmarks && !reduce);
+  const [demoed, setDemoed] = useState<string[]>([]);
+  const [playing, setPlaying] = useState<string>();
+  if (canShow && !demoed.includes(stepId)) {
+    setDemoed([...demoed, stepId]);
+    setPlaying(stepId);
+  }
+  const howTo = canShow && playing === stepId;
+  const focusMask = focus && ready && !howTo && mask?.for === ready ? mask : undefined;
 
   if (!look || !session.photo) return null;
   const step = look.steps[current];
@@ -106,6 +129,17 @@ export default function Tutorial() {
       >
         <Icon icon={ContrastIcon} />
       </button>
+      {landmarks && !reduce && (
+        <button
+          type="button"
+          onClick={() => setPlaying(stepId)}
+          disabled={!ready || !before || howTo}
+          aria-label="Show how to apply this step"
+          className="glass absolute top-[84px] right-3 z-20 grid size-10 place-items-center rounded-full text-ink disabled:opacity-50"
+        >
+          <Icon icon={PaintBrush01Icon} />
+        </button>
+      )}
 
       <motion.div
         className="absolute inset-x-0 top-0 h-[60%] touch-pan-y"
@@ -160,13 +194,24 @@ export default function Tutorial() {
             </motion.div>
           )}
         </AnimatePresence>
+        {howTo && (
+          <ApplyAnimation
+            key={stepId}
+            before={before!}
+            after={ready!}
+            landmarks={landmarks!}
+            category={step.category}
+            color={step.colors[0]}
+            onDone={() => setPlaying(undefined)}
+          />
+        )}
         {!ready && !errors[current] && (
           <div className="absolute inset-0 grid place-items-end justify-center bg-ink/10 pb-16">
             <MakeupLoader label="Painting this step" />
           </div>
         )}
         {standIn && (
-          <span className="absolute top-24 right-3 rounded-full bg-ink/70 px-2 py-0.5 text-[10px] text-canvas">replay</span>
+          <span className="absolute top-36 right-3 rounded-full bg-ink/70 px-2 py-0.5 text-[10px] text-canvas">replay</span>
         )}
       </motion.div>
 

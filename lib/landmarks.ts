@@ -26,10 +26,21 @@ function load() {
 
 async function detect(src: string): Promise<Landmarks | null> {
   const img = new Image();
-  img.src = src;
-  await img.decode();
-  const face = (await load()).detect(img).faceLandmarks[0];
-  return face ? face.map(({ x, y }) => ({ x, y })) : null;
+  // onload rather than decode(): decode() can wait for a paint that a background tab never does.
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = src;
+  });
+  // MediaPipe prints its startup "INFO:" lines through console.error, which Next's dev overlay reports as errors.
+  const error = console.error;
+  console.error = (...args: unknown[]) => void (String(args[0]).startsWith("INFO:") || error(...args));
+  try {
+    const face = (await load()).detect(img).faceLandmarks[0];
+    return face ? face.map(({ x, y }) => ({ x, y })) : null;
+  } finally {
+    console.error = error;
+  }
 }
 
 /** Her face's landmarks, or null when no face is found or MediaPipe can't load (e.g. offline). */

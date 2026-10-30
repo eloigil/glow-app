@@ -119,3 +119,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .sheet-dialog[open], .sheet-dialog[open]::backdrop { animation: none; }
 }
+
+/* "How to apply" guides: the dotted path creeps along the stroke direction. */
+@keyframes guide {
+  to {
+    stroke-dashoffset: -40;
+  }
+}

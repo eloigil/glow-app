@@ -3,12 +3,23 @@ import Link from "next/link";
 import { Bookmark02Icon } from "@hugeicons/core-free-icons";
 import { buttonClass } from "@/components/Button";
 import { Icon } from "@/components/Icon";
-import welcome from "@/public/welcome-bubbles.jpg";
+import poster from "@/public/welcome-poster.jpg";
 
 export default function Welcome() {
   return (
     <div className="relative flex min-h-dvh flex-1 flex-col overflow-hidden">
-      <Image src={welcome} alt="" fill priority sizes="430px" className="object-cover object-[40%_center]" placeholder="blur" />
+      {/* The video's first look as a still: paints instantly, and stays as the background with reduced motion. */}
+      <Image src={poster} alt="" fill priority sizes="430px" className="object-cover saturate-[1.35]" placeholder="blur" />
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden
+        className="absolute inset-0 size-full object-cover saturate-[1.35] motion-reduce:hidden"
+      >
+        <source src="/welcome.mp4" type="video/mp4" />
+      </video>
       <Link
         href="/saved"
         aria-label="Saved looks"

@@ -228,7 +228,7 @@ GlowApp/
 │   ├── saved.ts              # idb-keyval save/list/load
 │   └── image.ts              # resize to 1600px JPEG
 ├── fixtures/                 # recorded API responses + images (committed)
-├── public/welcome-bubbles.jpg
+├── public/welcome.mp4 + welcome-poster.jpg
 ├── .env.example
 ├── README.md                 # run in replay, APIs used, credits
 └── devpost/                  # planning docs

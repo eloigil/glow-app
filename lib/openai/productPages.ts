@@ -45,6 +45,25 @@ async function inspect(url: string): Promise<{ alive: boolean; image?: string }>
   }
 }
 
+/** Sephora and Ulta serve the shade's own photo at a fixed address built from the SKU in the link,
+ * so the photo matches the exact shade even when the page itself blocks bots. */
+export function skuImage(url: URL): string | undefined {
+  const sku = url.searchParams.get("skuId") ?? url.searchParams.get("SKUID") ?? url.searchParams.get("sku");
+  if (!sku || !/^\d+$/.test(sku)) return undefined;
+  if (/sephora\./.test(url.hostname)) return `https://www.sephora.com/productimages/sku/s${sku}-main-zoom.jpg`;
+  if (/ulta\./.test(url.hostname)) return `https://media.ulta.com/i/ulta/${sku}?w=600`;
+  return undefined;
+}
+
+export async function isImage(url: string): Promise<boolean> {
+  try {
+    const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(6000) });
+    return res.ok && (res.headers.get("content-type") ?? "").startsWith("image/");
+  } catch {
+    return false;
+  }
+}
+
 export async function findProductPage(p: Product): Promise<ProductLink | null> {
   const res = await new OpenAI().responses.create({
     model: OPENAI_MODEL,
@@ -65,7 +84,10 @@ export async function findProductPage(p: Product): Promise<ProductLink | null> {
     }
     if (/amazon\./.test(url.hostname)) continue;
     const page = await inspect(url.href);
-    if (page.alive) return { url: url.href, store: storeOf(url, p.brand), image: page.image };
+    if (!page.alive) continue;
+    const sku = skuImage(url);
+    const image = sku && (await isImage(sku)) ? sku : page.image;
+    return { url: url.href, store: storeOf(url, p.brand), image };
   }
   return null;
 }

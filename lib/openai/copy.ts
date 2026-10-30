@@ -17,6 +17,8 @@ Rules:
 - Copy what you see: for each visible area (base, cheeks, eyes, brows, lips) pick the category, the pattern that matches its
   placement and shape, the colors as they appear in the photo, the finish and an intensity that matches how strong it looks.
   Skip areas with no visible makeup, except the base and lips.
+- Eye shadow: match how far the color reaches. If it goes above the crease toward the brow, wings past the outer corner
+  or wraps under the eye, pick a pattern that reaches that far (wide, winged, halo or editorial), never a lid-only one.
 - Foundation and concealer follow her skin, not the model's: shades close to her skin hex.
 - Order steps the way a makeup artist applies them (base first, lips last), 4-8 steps, ending with lip_color.
 - Difficulty from the work involved: 1 for a light, quick look, 2 for a defined look, 3 for detailed eyes or several techniques.

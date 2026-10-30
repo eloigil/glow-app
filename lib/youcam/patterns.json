@@ -25,11 +25,17 @@
     { "id": "Original2", "colors": 1, "look": "follows her own brow shape" }
   ],
   "eye_shadow": [
-    { "id": "1color4", "colors": 1, "look": "single wash on the lid" },
+    { "id": "1color4", "colors": 1, "look": "soft single wash on the lid, a touch under the lower lashes" },
     { "id": "1color9", "colors": 1, "look": "one-shade smoky whole eye" },
-    { "id": "2colors1", "colors": 2, "look": "fan shape on the upper lid, lid shade + crease shade" },
-    { "id": "2colors4", "colors": 2, "look": "smoky upper lid, light inner + dark outer" },
-    { "id": "2colors167", "colors": 2, "look": "cut crease, lid shade + crease shade" }
+    { "id": "2colors1", "colors": 2, "look": "light inner lid + deeper outer lid, close to the lashes" },
+    { "id": "2colors4", "colors": 2, "look": "one shade on the upper lid + one along the outer lower lashes" },
+    { "id": "2colors167", "colors": 2, "look": "wide wash from the lid up to the brow bone + lower lash line" },
+    { "id": "3colors12", "colors": 3, "look": "rich lid, deeper shade flicked out into a wing, light inner lower lashes" },
+    { "id": "3colors13", "colors": 3, "look": "editorial: inner corner, lid, color extended out past the outer corner and beneath it" },
+    { "id": "3colors467", "colors": 3, "look": "wide crease wash extended up toward the brow, deep outer sweep, color under the lower lashes" },
+    { "id": "4colors3", "colors": 4, "look": "halo: light inner corner, lid shade, wide outer ring above and beneath the eye" },
+    { "id": "4colors113", "colors": 4, "look": "oversized editorial wash from the lid up to the brow bone and out to the temple, lower lashes" },
+    { "id": "5colors4", "colors": 5, "look": "full-frame editorial: inner corner, lid, crease, outer wing and lower lash line" }
   ],
   "eye_liner": [
     { "id": "HalfRim4", "colors": 1, "look": "thin line on the outer half of the lash line" },

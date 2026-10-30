@@ -23,7 +23,7 @@ export const StepSchema = z.object({
   title: z.string().describe('Short step name with product type and shade, e.g. "Concealer, warm beige"'),
   category: z.enum(CATEGORIES),
   pattern: z.string().nullable().describe("Pattern id from the allowed list for this category; null for foundation, concealer, lip_color"),
-  colors: z.array(hex).min(1).max(3).describe("One hex color per color slot of the pattern"),
+  colors: z.array(hex).min(1).max(5).describe("One hex color per color slot of the pattern"),
   intensity: z.number().int().min(10).max(90),
   finish: z.enum(FINISHES),
   tip: z.string().describe("Two or three sentences of practical technique for her face, second person"),

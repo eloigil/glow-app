@@ -39,8 +39,10 @@
   ],
   "eye_liner": [
     { "id": "HalfRim4", "colors": 1, "look": "thin line on the outer half of the lash line" },
-    { "id": "Double4", "colors": 1, "look": "classic upper line" },
-    { "id": "Drama8", "colors": 1, "look": "bold winged liner" },
+    { "id": "Upper4", "colors": 1, "look": "thin upper line with a small flick" },
+    { "id": "Drama4", "colors": 1, "look": "classic bold winged liner (cat eye)" },
+    { "id": "Double4", "colors": 1, "look": "upper line plus a soft floating line above the crease" },
+    { "id": "Drama8", "colors": 1, "look": "graphic editorial: long upper wing plus a lower line swept far out toward the cheek" },
     { "id": "FullRim7", "colors": 1, "look": "full rim, upper and lower" }
   ],
   "eyelashes": [

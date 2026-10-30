@@ -23,12 +23,17 @@ export function ProductSheet({ step, index, onClose }: { step: Step; index: numb
     if (!d || d.dataset.closing) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return d.close();
     d.dataset.closing = "true";
-    const done = (e: AnimationEvent) => {
-      if (e.target !== d) return; // ignore animations bubbling up from inside the sheet
+    const finish = () => {
       d.removeEventListener("animationend", done);
+      clearTimeout(fallback);
       delete d.dataset.closing;
       d.close();
     };
+    const done = (e: AnimationEvent) => {
+      if (e.target === d) finish(); // ignore animations bubbling up from inside the sheet
+    };
+    // Never let closing depend on the animation actually running (e.g. stale CSS): close after it would have ended.
+    const fallback = setTimeout(finish, 320);
     d.addEventListener("animationend", done);
   };
   const { brand, name, shade } = step.product;

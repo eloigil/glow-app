@@ -3,7 +3,7 @@ import { replayable, ReplayMiss } from "@/lib/replay";
 import { toApiError } from "@/lib/youcam/errors";
 import type { LooksRequest, LooksResponse } from "@/lib/types";
 
-// spec.md > Looks Route: five looks as strict JSON from OpenAI, validated in lib/openai/plan.ts.
+// spec.md > Looks Route: six looks as strict JSON from OpenAI, validated in lib/openai/plan.ts.
 export const maxDuration = 120;
 
 export async function POST(req: Request) {

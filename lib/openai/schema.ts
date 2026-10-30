@@ -32,6 +32,6 @@ export const LookSchema = z.object({
   steps: z.array(StepSchema).min(3).max(8),
 });
 
-export const LookPlanSchema = z.object({ looks: z.array(LookSchema).length(5) });
+export const LookPlanSchema = z.object({ looks: z.array(LookSchema).length(6) });
 
 export type LookPlan = z.infer<typeof LookPlanSchema>;

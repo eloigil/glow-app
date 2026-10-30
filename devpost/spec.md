@@ -11,7 +11,7 @@ GlowApp is one Next.js web app with two halves living in the same project:
 - **The screens** (what she sees on her phone): Welcome, Add Photo, Skin Analysis, Your Looks, Tutorial, Finish, Saved Looks. They hold the current session in memory while she moves between them.
 - **Three small server routes** (code that runs on your machine, never on her phone): they hold the YouCam and OpenAI keys and do the talking.
   1. **Analyze**: uploads her photo to YouCam once, asks YouCam's Skin Analysis what it sees today (acne, redness, dark circles...) and, if we don't already know it, asks Facial Color Tones for her exact skin color.
-  2. **Looks**: hands that skin read to OpenAI, which writes five looks as strict JSON: name, description, difficulty 1 to 3, and the ordered makeup steps with colors, YouCam effect names and tips. Steps that fix today's points say which point they fix.
+  2. **Looks**: hands that skin read to OpenAI, which writes six looks as strict JSON: name, description, difficulty 1 to 3, and the ordered makeup steps with colors, YouCam effect names and tips. Steps that fix today's points say which point they fix.
   3. **Render**: asks YouCam's Makeup try-on to paint a list of effects onto her photo and sends back the finished image. A preview is "all steps at once". A tutorial step is "steps 1 to N". Each render costs 1 unit.
 
 Her skin color is remembered in the browser (localStorage), so the 20-unit tone call happens once, not every session. Saved looks keep their actual images on the device (IndexedDB), because YouCam's image links expire after 2 hours.
@@ -28,8 +28,8 @@ PRD ref: `prd.md > The Core Journey`.
 3. **Analyze route** → uploads to YouCam (`file_id`) → starts Skin Analysis (SD, 6 concerns, 12 units) → if the browser sent no saved tone, also starts Facial Color Tones (20 units) → polls both until done → returns `{ fileId, concerns[], masks, skinType, tone }`. The browser saves `tone` to localStorage.
    - Unusable photo → YouCam returns an error code → route maps it to a plain message → Add Photo shows it with Retry. Failed tasks cost 0 units.
 4. **Skin Analysis screen** → shows tone and one card per concern whose score is low enough to count as a point today. Tapping a card overlays that concern's mask on her photo.
-5. She continues → `POST /api/looks` with concerns, skin type and tone → OpenAI returns five looks (validated: exactly five, at least one of each difficulty, every point fixed by at least one step).
-6. **Your Looks** → the browser fires five `POST /api/render` calls (full effect list each, 5 units). Each card shows a skeleton until its image arrives.
+5. She continues → `POST /api/looks` with concerns, skin type and tone → OpenAI returns six looks (validated: exactly six, at least one of each difficulty, every point fixed by at least one step).
+6. **Your Looks** → the browser fires six `POST /api/render` calls (full effect list each, 6 units). Each card shows a skeleton until its image arrives.
 7. She taps a look → the card grows in place (description, difficulty, Start makeup).
 8. **Start makeup** → the browser requests one render per step (steps 1..N cumulative, about 6 units), step 1 first so she can begin while the rest finish.
 9. **Tutorial** → each step shows its render, the step name ("Concealer, warm beige") and the LLM tip. Swipe / Next / tap the wizard.
@@ -102,7 +102,7 @@ Receives the photo (multipart) and optional `hasTone` flag. Uploads once to YouC
 PRD ref: `prd.md > Skin Analysis`, `prd.md > States and Boundaries`.
 
 #### Looks Route (`app/api/looks/route.ts`)
-Builds the prompt from concerns + skin type + tone, calls OpenAI with the `LookPlan` zod schema, then validates: 5 looks, difficulty mix, every point covered by a `corrects` step, every `pattern` name exists in the allowed YouCam pattern list. One automatic retry on validation failure, with the problems listed.
+Builds the prompt from concerns + skin type + tone, calls OpenAI with the `LookPlan` zod schema, then validates: 6 looks, difficulty mix, every point covered by a `corrects` step, every `pattern` name exists in the allowed YouCam pattern list. One automatic retry on validation failure, with the problems listed.
 PRD ref: `prd.md > Look Proposals`, `prd.md > Step-by-Step Tutorial`.
 
 #### Render Route (`app/api/render/route.ts`)

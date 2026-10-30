@@ -5,7 +5,7 @@ status: approved
 
 # GlowApp — Product Requirements
 
-A mobile-first makeup tutor for women who want makeup adapted to their skin without learning technique: it reads her skin today, proposes five looks, and walks her through the chosen one step by step on her own face.
+A mobile-first makeup tutor for women who want makeup adapted to their skin without learning technique: it reads her skin today, proposes six looks, and walks her through the chosen one step by step on her own face.
 Source: `scope.md > The Unique Kernel`, `scope.md > The Core Loop`.
 
 ## The Core Journey
@@ -14,7 +14,7 @@ Source: `scope.md > The Core Loop`, `scope.md > What "Working" Looks Like`.
 1. She opens GlowApp and sees the **Welcome** screen: a soft, glassy hero visual and a single **Start** button.
 2. She taps Start and either **takes a photo** or **uploads one**.
 3. GlowApp analyzes the photo and shows the **Skin Analysis**: her skin tone summary and a card for each point found (e.g. pimples, freckles, wrinkles). Tapping a card highlights that spot on her photo.
-4. She continues to **Your Looks**: five previews of her own face wearing each look, each labeled with its difficulty (at least one easy, one medium, one difficult).
+4. She continues to **Your Looks**: six previews of her own face wearing each look, each labeled with its difficulty (two easy, two medium, two difficult).
 5. She taps a look. The card grows in place inside the grid into a detail card: the preview and a description. *(Products carousel deferred, see Deferred From the POC.)*
 6. She taps **Start makeup** and enters the **Tutorial**: a step wizard on top, her face showing only the layers applied so far, and technique tips below. Every look includes steps that correct the points found today.
 7. She moves through the steps by swiping (phone) or with Next / tapping the wizard (desktop).
@@ -29,7 +29,7 @@ Mobile-first; also usable in a desktop browser.
 1. **Welcome**: hero visual (a close-up half-face with a soft glass filter, or a makeup brush) and a **Start** button. A small, unobtrusive Saved Looks icon in the top-right corner.
 2. **Add Photo**: two actions, *Take a photo* and *Upload a picture*.
 3. **Skin Analysis**: her photo, a skin tone summary, and cards for each detected point. Tapping a card highlights that point on the photo.
-4. **Your Looks**: a two-column grid of five look previews, each with a difficulty signal.
+4. **Your Looks**: a two-column grid of six look previews, each with a difficulty signal.
 5. **Look Detail** (not a separate screen): the tapped card grows in place to span both columns of the grid. Inside it: the preview with its description beside it, and **Start makeup** below. The other looks stay in the grid below it; tapping another card swaps which one is grown.
 6. **Tutorial**: step wizard across the top; her face filling at least half the screen; tips below.
 7. **Finish**: **Save** and **Finish** buttons (+ stretch before/after slider).
@@ -90,9 +90,9 @@ Source: `scope.md > The POC Boundary` (analysis with concerns highlighted).
   - [ ] Tapping a card visibly highlights that point's location on her photo.
 
 ### Look Proposals
-Source: `scope.md > The POC Boundary` (five looks, difficulty tiers).
-- She gets five looks personalized to her skin tone and today's points.
-  - [ ] Exactly five looks appear, each a preview of *her* face wearing the look.
+Source: `scope.md > The POC Boundary` (six looks, difficulty tiers; five at scope time, raised to six during the build).
+- She gets six looks personalized to her skin tone and today's points.
+  - [ ] Exactly six looks appear, each a preview of *her* face wearing the look.
   - [ ] Each look shows its difficulty as signal bars, like phone coverage: 1 bar low, 2 medium, 3 high. At least one of each appears.
   - [ ] Tapping a look grows that card in place within the grid (no new screen), showing description and Start makeup.
 
@@ -117,7 +117,7 @@ Source: `scope.md > The Core Loop` (save and replay).
 ## States and Boundaries
 - **First use**: Welcome with Start; Saved Looks is empty.
 - **Unusable photo** (no face, blurry, too dark): show the reason, using what YouCam's API reports, plus a **Retry** button back to Add Photo.
-- **No points found**: no correction steps; she still gets five looks for her skin tone. Defects are not required.
+- **No points found**: no correction steps; she still gets six looks for her skin tone. Defects are not required.
 - **YouCam failure or credits exhausted**: a message that the demo has run out of credits and to try later.
 - **Saved looks persist** on the device between sessions; there are no accounts.
 
@@ -140,7 +140,7 @@ Source: `scope.md > The Core Loop` (save and replay).
 - Each Saved Looks entry shows the look's preview, name, and the date it was saved.
 
 ## What We're Building
-Welcome → photo capture → skin analysis with tappable highlights → five looks with difficulty tiers → look detail growing in the grid → layer-by-layer tutorial with correction steps and tips → Finish with Save → Saved Looks replay. Plus the four states above. Stretch: before/after slider.
+Welcome → photo capture → skin analysis with tappable highlights → six looks with difficulty tiers → look detail growing in the grid → layer-by-layer tutorial with correction steps and tips → Finish with Save → Saved Looks replay. Plus the four states above. Stretch: before/after slider.
 
 ## Deferred From the POC
 - **Accounts and cloud sync**: saved looks live on one device; no sign-in needed to prove the kernel.
@@ -159,5 +159,5 @@ Welcome → photo capture → skin analysis with tappable highlights → five lo
 
 ## Open Questions
 - **Name for the "points" cards** (the learner wants something fancier than "defects"). Can wait; decide during build.
-- ~~Preview cost~~ Answered in `spec.md`: a render costs 1 unit, so five previews cost 5 units per session.
+- ~~Preview cost~~ Answered in `spec.md`: a render costs 1 unit, so six previews cost 6 units per session.
 - ~~Unusable-photo errors~~ Answered in `spec.md > Important Failure Modes`.

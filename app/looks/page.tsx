@@ -16,7 +16,7 @@ import { resetRenders, useLookPreviews } from "@/lib/useStepRenders";
 // Survives leaving /looks: one request per photo even if she goes Back and Continues mid-generation.
 const inflight = new Map<string, Promise<void>>();
 
-// spec.md > Your Looks: five previews of her face; the tapped one grows in place.
+// spec.md > Your Looks: six previews of her face; the tapped one grows in place.
 export default function Looks() {
   const router = useRouter();
   const { session, setSession } = useSession();
@@ -61,7 +61,7 @@ export default function Looks() {
         <Link href="/analysis" aria-label="Back" className="grid size-10 place-items-center rounded-full bg-surface text-ink">
           <Icon icon={ArrowLeft01Icon} size={24} />
         </Link>
-        <h1 className="font-display text-lg font-bold tracking-[-0.02em]">Five looks for today</h1>
+        <h1 className="font-display text-lg font-bold tracking-[-0.02em]">Six looks for today</h1>
       </div>
       {!looks?.length && (
         <div className="mt-3 px-1 text-sm text-ink-muted" aria-live="polite">
@@ -74,7 +74,7 @@ export default function Looks() {
             </div>
           ) : (
             <>
-              <p className="font-medium text-ink">Designing five looks for your skin today</p>
+              <p className="font-medium text-ink">Designing six looks for your skin today</p>
               <p className="mt-0.5">This can take up to a minute while every shade is matched to your skin.</p>
             </>
           )}
@@ -96,7 +96,7 @@ export default function Looks() {
                   }}
                 />
               ))
-            : Array.from({ length: 5 }, (_, i) => (
+            : Array.from({ length: 6 }, (_, i) => (
                 <div key={i} className="face-placeholder relative aspect-[3/4] overflow-hidden rounded-[10px]" aria-hidden>
                   {!error && <div className="shimmer absolute inset-0" />}
                 </div>

@@ -14,8 +14,13 @@ const STORES: [RegExp, string][] = [
   [/cultbeauty\./, "Cult Beauty"],
 ];
 
+/** Known retailers by name; the brand's own site by brand; any other shop by its domain, e.g. "lovelyskin.com". */
 function storeOf(url: URL, brand: string): string {
-  return STORES.find(([re]) => re.test(url.hostname))?.[1] ?? brand;
+  const known = STORES.find(([re]) => re.test(url.hostname))?.[1];
+  if (known) return known;
+  const host = url.hostname.replace(/^www\./, "");
+  const brandWord = brand.toLowerCase().split(/[^a-z0-9]+/).find((w) => w.length > 2);
+  return brandWord && host.includes(brandWord) ? brand : host;
 }
 
 /** The page must load (redirects followed); 403 counts as alive since big retailers block bots but the page exists.
@@ -32,7 +37,9 @@ async function inspect(url: string): Promise<{ alive: boolean; image?: string }>
     const meta = html.match(/<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url)?|twitter:image)["'][^>]*>/i)?.[0];
     const content = meta?.match(/content=["']([^"']+)["']/i)?.[1]?.replace(/&amp;/g, "&");
     const image = content ? new URL(content, res.url).href : undefined;
-    return { alive: true, image: image?.startsWith("https://") ? image : undefined };
+    // Some brand sites share one site-wide logo as og:image; that's not a product photo.
+    const usable = image?.startsWith("https://") && !/logo|seo-image|placeholder|default/i.test(image);
+    return { alive: true, image: usable ? image : undefined };
   } catch {
     return { alive: false };
   }

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { FinishView } from "@/components/FinishView";
+import { MakeupLoader } from "@/components/MakeupLoader";
 import { StepWizard } from "@/components/StepWizard";
 import { TipsSheet } from "@/components/TipsSheet";
 import { useSession } from "@/lib/session";
@@ -97,8 +98,8 @@ export default function Tutorial() {
           />
         ))}
         {!ready && !errors[current] && (
-          <div className="shimmer absolute inset-0 grid place-items-end justify-center pb-16" role="status">
-            <span className="glass rounded-full px-3 py-1 text-xs font-medium">Painting this step</span>
+          <div className="absolute inset-0 grid place-items-end justify-center bg-ink/10 pb-16">
+            <MakeupLoader label="Painting this step" />
           </div>
         )}
         {standIn && (

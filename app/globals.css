@@ -87,3 +87,20 @@ body {
     animation: none;
   }
 }
+
+/* Makeup loader: brush dips into the pot, lifts, sweeps, repeats. */
+@keyframes brush-dip {
+  0%, 100% { transform: translate(-30%, -6px) rotate(-20deg); }
+  30% { transform: translate(-45%, 6px) rotate(-35deg); }
+  45% { transform: translate(-45%, 4px) rotate(-30deg); }
+  70% { transform: translate(-5%, -8px) rotate(5deg); }
+}
+
+@utility brush-dip {
+  transform-origin: 80% 80%;
+  transform: translate(-30%, -6px) rotate(-20deg);
+  animation: brush-dip 1.8s cubic-bezier(.45, 0, .25, 1) infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}

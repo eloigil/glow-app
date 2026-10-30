@@ -52,8 +52,8 @@ export default function Looks() {
   }, [analysis, looks, tone, attempt, router, setSession]);
   if (!analysis) return null;
 
-  // The grown card moves to the top so it spans the full first row.
-  const order = (looks ?? []).map((l, i) => ({ look: l, preview: previews[i] })).sort((a, b) => Number(b.look.id === grownId) - Number(a.look.id === grownId));
+  // Cards keep their order; the grown card spans both columns where it is and `grid-flow-row-dense` backfills the gap.
+  const order = (looks ?? []).map((l, i) => ({ look: l, preview: previews[i] }));
 
   return (
     <div className="flex-1 px-3 pt-5 pb-8">
@@ -73,12 +73,15 @@ export default function Looks() {
               </Button>
             </div>
           ) : (
-            <p>Designing five looks for your skin today</p>
+            <>
+              <p className="font-medium text-ink">Designing five looks for your skin today</p>
+              <p className="mt-0.5">This can take up to a minute while every shade is matched to your skin.</p>
+            </>
           )}
         </div>
       )}
       <LayoutGroup>
-        <div className="mt-4 grid grid-cols-2 gap-2.5">
+        <div className="mt-4 grid grid-flow-row-dense grid-cols-2 gap-2.5">
           {looks?.length
             ? order.map(({ look, preview }) => (
                 <LookCard

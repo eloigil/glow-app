@@ -76,7 +76,7 @@ devpost/    planning documents (scope, PRD, spec, build checklist)
 ## Credits
 
 - **Demo face:** photo from [Unsplash](https://unsplash.com/photos/womans-face-EGVccebWodM), free under the Unsplash License.
-- **Copy a look demo:** inspiration photo by [Amir Seilsepour](https://unsplash.com/photos/woman-with-blue-eyes-and-black-hair-VLJV46hPLSM) on Unsplash, free under the Unsplash License.
+- **Copy a look demo:** inspiration photo (`demo/copy-a-look-inspiration.jpg`, upload it to try the feature) by [Amir Seilsepour](https://unsplash.com/photos/woman-with-blue-eyes-and-black-hair-VLJV46hPLSM) on Unsplash, free under the Unsplash License.
 - **Welcome video:** [abstract pink background](https://www.pexels.com/video/abstract-pink-background-7640247/) by Eva on Pexels, free under the Pexels License.
 - **Product photos:** [Open Beauty Facts](https://world.openbeautyfacts.org), images under CC BY-SA. Products without a photo there are drawn as a tinted product shape.
 - **Icons:** [Hugeicons](https://hugeicons.com) free set (MIT).

@@ -87,6 +87,12 @@ export default function Tutorial() {
   const canShow = !!(ready && before && landmarks && !reduce);
   const [demoed, setDemoed] = useState<string[]>([]);
   const [playing, setPlaying] = useState<string>();
+  // Leaving a step mid-stroke stops it, so coming back doesn't replay it.
+  const [playingStep, setPlayingStep] = useState(stepId);
+  if (playingStep !== stepId) {
+    setPlayingStep(stepId);
+    setPlaying(undefined);
+  }
   if (canShow && !demoed.includes(stepId)) {
     setDemoed([...demoed, stepId]);
     setPlaying(stepId);
@@ -202,7 +208,7 @@ export default function Tutorial() {
             landmarks={landmarks!}
             category={step.category}
             color={step.colors[0]}
-            onDone={() => setPlaying(undefined)}
+            onDone={() => setPlaying((p) => (p === stepId ? undefined : p))}
           />
         )}
         {!ready && !errors[current] && (

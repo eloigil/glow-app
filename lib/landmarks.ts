@@ -13,6 +13,12 @@ let landmarker: Promise<import("@mediapipe/tasks-vision").FaceLandmarker> | unde
 const cache = new Map<string, Promise<Landmarks | null>>();
 
 function load() {
+  // MediaPipe prints startup "INFO:" lines through console.error, which Next's dev overlay reports as errors.
+  // Filtered for good rather than around each call: overlapping calls would restore the wrong console.error.
+  if (!landmarker) {
+    const error = console.error;
+    console.error = (...args: unknown[]) => void (String(args[0]).startsWith("INFO:") || error(...args));
+  }
   landmarker ??= import("@mediapipe/tasks-vision").then(async ({ FaceLandmarker, FilesetResolver }) =>
     FaceLandmarker.createFromOptions(await FilesetResolver.forVisionTasks(WASM), {
       baseOptions: { modelAssetPath: MODEL, delegate: "CPU" },
@@ -32,19 +38,15 @@ async function detect(src: string): Promise<Landmarks | null> {
     img.onerror = reject;
     img.src = src;
   });
-  // MediaPipe prints its startup "INFO:" lines through console.error, which Next's dev overlay reports as errors.
-  const error = console.error;
-  console.error = (...args: unknown[]) => void (String(args[0]).startsWith("INFO:") || error(...args));
-  try {
-    const face = (await load()).detect(img).faceLandmarks[0];
-    return face ? face.map(({ x, y }) => ({ x, y })) : null;
-  } finally {
-    console.error = error;
-  }
+  const face = (await load()).detect(img).faceLandmarks[0];
+  return face ? face.map(({ x, y }) => ({ x, y })) : null;
 }
 
 /** Her face's landmarks, or null when no face is found or MediaPipe can't load (e.g. offline). */
 export function faceLandmarks(src: string): Promise<Landmarks | null> {
-  if (!cache.has(src)) cache.set(src, detect(src).catch(() => null));
+  if (!cache.has(src)) {
+    // Only "no face" is remembered; a failed download is tried again next time.
+    cache.set(src, detect(src).catch(() => (cache.delete(src), null)));
+  }
   return cache.get(src)!;
 }

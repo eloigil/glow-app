@@ -39,10 +39,14 @@ export function ApplyAnimation({
   });
 
   useEffect(() => {
+    let live = true;
     const img = new Image();
-    img.onload = () => setSize({ w: img.naturalWidth, h: img.naturalHeight });
-    img.onerror = () => done.current();
+    img.onload = () => live && setSize({ w: img.naturalWidth, h: img.naturalHeight });
+    img.onerror = () => live && done.current();
     img.src = after;
+    return () => {
+      live = false;
+    };
   }, [after]);
 
   const strokes = useMemo(() => size && strokesFor(category, landmarks, size.w, size.h), [size, category, landmarks]);
@@ -95,7 +99,7 @@ export function ApplyAnimation({
     <div className="pointer-events-none absolute inset-0">
       <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full" aria-hidden>
         <defs>
-          <filter id={`${id}-soft`} x="-10%" y="-10%" width="120%" height="120%">
+          <filter id={`${id}-soft`} filterUnits="userSpaceOnUse" x="0" y="0" width={w} height={h}>
             <feGaussianBlur stdDeviation={w * 0.008} />
           </filter>
           <filter id={`${id}-shadow`} x="-50%" y="-50%" width="200%" height="200%">
@@ -137,6 +141,7 @@ export function ApplyAnimation({
               strokeDasharray={`${w * 0.006} ${w * 0.01}`}
               strokeLinecap="round"
               className="motion-safe:animate-[guide_1.2s_linear_infinite]"
+              style={{ "--dash": `${w * 0.016}px` } as React.CSSProperties}
             />
           ))}
         </g>

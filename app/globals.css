@@ -123,6 +123,6 @@ body {
 /* "How to apply" guides: the dotted path creeps along the stroke direction. */
 @keyframes guide {
   to {
-    stroke-dashoffset: -40;
+    stroke-dashoffset: calc(var(--dash) * -2); /* whole dash periods, so the loop doesn't jump */
   }
 }

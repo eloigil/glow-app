@@ -160,11 +160,6 @@ export default function Tutorial() {
             </motion.div>
           )}
         </AnimatePresence>
-        {focusMask && !focusMask.src && (
-          <span className="glass absolute bottom-[44%] left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-medium">
-            This layer is very subtle
-          </span>
-        )}
         {!ready && !errors[current] && (
           <div className="absolute inset-0 grid place-items-end justify-center bg-ink/10 pb-16">
             <MakeupLoader label="Painting this step" />

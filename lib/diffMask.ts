@@ -7,7 +7,6 @@
 
 const SAMPLE_WIDTH = 120; // downscaling averages out JPEG noise; the mask is blurred back up so edges stay soft
 const NOISE = 7; // summed RGB difference below this is compression noise, not makeup
-const MIN_COVERAGE = 0.004; // less than this means nothing visibly changed
 
 export type FocusKind = { kind: "diff" } | { kind: "skin"; skinHex: string };
 
@@ -38,9 +37,14 @@ function changeWeights(pa: Uint8ClampedArray, pb: Uint8ClampedArray, n: number):
     diffs[p] = Math.abs(pa[i] - pb[i]) + Math.abs(pa[i + 1] - pb[i + 1]) + Math.abs(pa[i + 2] - pb[i + 2]);
   }
   // Scale to this step's own strongest change, so a soft blush reads as clearly as a bold lip.
-  const strong = [...diffs].sort((x, y) => y - x)[Math.floor(n * 0.01)];
-  if (strong <= NOISE) return null;
-  return diffs.map((d) => Math.max(0, Math.min(1, (d - NOISE) / (strong - NOISE))));
+  const sorted = [...diffs].sort((x, y) => y - x);
+  const strong = sorted[Math.floor(n * 0.01)];
+  if (strong <= 0) return null; // identical images: nothing to show
+  // A very subtle layer can sit inside the noise band; then highlight its strongest few percent instead,
+  // so focus mode always shows where it goes.
+  const floor = strong > NOISE * 1.5 ? NOISE : sorted[Math.floor(n * 0.04)];
+  const top = Math.max(strong, floor + 1);
+  return diffs.map((d) => Math.max(0, Math.min(1, (d - floor) / (top - floor))));
 }
 
 /** Weights of pixels whose color is close to her skin: chroma within a tolerance, any reasonable brightness. */
@@ -142,7 +146,7 @@ async function compute(before: string, after: string, focus: FocusKind): Promise
   }
   if (!weights) return null;
   weights = dilate(weights, w, h);
-  if (weights.filter((x) => x > 0.25).length / n < MIN_COVERAGE) return null;
+
 
   const mask = document.createElement("canvas");
   mask.width = w;
@@ -167,7 +171,7 @@ async function compute(before: string, after: string, focus: FocusKind): Promise
   return soft.toDataURL("image/png");
 }
 
-/** A soft alpha mask (PNG data URL) of where this step goes, or null if nothing visibly changed. */
+/** A soft alpha mask (PNG data URL) of where this step goes, or null only if the two renders are identical. */
 export function diffMask(before: string, after: string, focus: FocusKind = { kind: "diff" }): Promise<string | null> {
   const key = `${focus.kind}:${before.length}:${before.slice(-64)}|${after.length}:${after.slice(-64)}`;
   if (!cache.has(key)) cache.set(key, compute(before, after, focus).catch(() => null));

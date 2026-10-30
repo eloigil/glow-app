@@ -50,15 +50,16 @@ export function LookCard({ look, preview, grown, onGrow, onStart }: {
   );
 
   return (
+    // Only positions animate: a size tween scales the photos inside, so neighbours visibly balloon for a frame.
     <motion.div
-      layout
+      layout="position"
       transition={{ type: "spring", stiffness: 260, damping: 30 }}
       className={grown ? "col-span-2 rounded-[10px] bg-surface p-2 shadow-[0_10px_30px_rgb(120_50_80/.10)]" : ""}
     >
       {grown ? (
         <>
           <div className="grid grid-cols-2 gap-3">
-            <motion.div layout="position">{face}</motion.div>
+            <div>{face}</div>
             <div className="pt-1">
               <h2 ref={heading} tabIndex={-1} className="font-display text-[15px] leading-tight font-bold tracking-[-0.02em] outline-none">{look.name}</h2>
               <p className="mt-1.5 text-[13px] leading-snug text-ink-muted">{look.description}</p>

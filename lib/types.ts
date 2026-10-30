@@ -58,3 +58,10 @@ export type RenderResponse = {
   /** Replay mode only: no recording matched these steps, so this is the unpainted photo. */
   placeholder?: true;
 };
+
+/** An exact product page found by web search (Amazon isn't searchable, so this is Sephora, Ulta, Target or the brand). */
+export type ProductLink = { url: string; store: string };
+
+/** POST /api/products — body: { products }. `links` is keyed by `productKey()` from lib/shop.ts; null = nothing verified. */
+export type ProductsRequest = { products: Product[] };
+export type ProductsResponse = { links: Record<string, ProductLink | null> };

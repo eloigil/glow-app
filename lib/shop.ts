@@ -1,4 +1,4 @@
-import type { Step } from "@/lib/types";
+import type { Product, Step } from "@/lib/types";
 
 // Amazon search links built from the step's product and shade. YouCam has no product catalog, so these
 // find matching products rather than one exact item. An Amazon Associates tag is optional.
@@ -25,4 +25,9 @@ export function amazonUrl(step: Step): string {
   url.searchParams.set("k", shopQuery(step));
   if (TAG) url.searchParams.set("tag", TAG);
   return url.toString();
+}
+
+/** Stable key for a suggested product, shared by the products route and the session. */
+export function productKey(p: Product): string {
+  return `${p.brand}|${p.name}|${p.shade}`.toLowerCase();
 }

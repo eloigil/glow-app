@@ -121,7 +121,7 @@ export function ProductPreview({ step, size, onPhoto }: { step: Step; size: numb
         referrerPolicy="no-referrer"
         onLoad={() => onPhoto?.(photo.source)}
         onError={() => (setFailed((f) => [...f, image]), onPhoto?.(null))}
-        className="size-full object-contain p-1.5"
+        className="size-full object-contain p-2 mix-blend-multiply"
       />
     );
   }

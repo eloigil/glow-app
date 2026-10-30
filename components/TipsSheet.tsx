@@ -1,8 +1,9 @@
-import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { ArrowLeft01Icon, ShoppingBag01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/Button";
 import { CONCERN_LOOK } from "@/components/concernLook";
 import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
+import { amazonUrl, shopQuery } from "@/lib/shop";
 import type { Concern, Step } from "@/lib/types";
 
 /** Glass sheet under the face: what this step applies, why today, how to do it. */
@@ -46,6 +47,17 @@ export function TipsSheet({
       <div className="mt-3 min-h-0 overflow-y-auto">
         <h1 className="text-lg font-semibold tracking-[-0.01em]">{step.title}</h1>
         <p className="mt-1.5 leading-relaxed text-ink-muted">{step.tip}</p>
+        <a
+          href={amazonUrl(step)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-rose underline-offset-4"
+        >
+          <span className="text-rose">
+            <Icon icon={ShoppingBag01Icon} />
+          </span>
+          Find {shopQuery(step)} on Amazon
+        </a>
         {error && (
           <div className="mt-3 flex items-center justify-between gap-3 rounded-[8px] bg-wash px-3 py-2 text-sm" role="alert">
             <span>{error}</span>

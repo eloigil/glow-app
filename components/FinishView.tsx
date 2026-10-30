@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookmarkAdd02Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { BookmarkAdd02Icon, CheckmarkCircle02Icon, ShoppingBag01Icon } from "@hugeicons/core-free-icons";
 import { BeforeAfter } from "@/components/BeforeAfter";
 import { Button } from "@/components/Button";
 import { GlassSheet } from "@/components/GlassSheet";
 import { Icon } from "@/components/Icon";
 import { SignalBars } from "@/components/SignalBars";
 import { isSaved, saveLook } from "@/lib/saved";
+import { amazonUrl } from "@/lib/shop";
 import type { Concern, Look } from "@/lib/types";
 
 type State = "idle" | "saving" | "saved" | "error";
@@ -91,6 +92,23 @@ export function FinishView({
           </div>
         )}
         {complete && standIn && <p className="mt-3 text-sm text-ink-muted">Some layers are replay previews.</p>}
+        <details className="mt-4 rounded-[8px] bg-wash px-3 py-2">
+          <summary className="flex cursor-pointer items-center gap-2 text-sm font-medium">
+            <span className="text-rose">
+              <Icon icon={ShoppingBag01Icon} />
+            </span>
+            Shop this look on Amazon
+          </summary>
+          <ul className="mt-2 grid gap-1.5 pb-1 text-sm">
+            {look.steps.map((step, i) => (
+              <li key={i}>
+                <a href={amazonUrl(step)} target="_blank" rel="noopener noreferrer" className="underline decoration-rose underline-offset-4">
+                  {step.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
         <div className="mt-5 grid gap-2">
           <Button onClick={save} disabled={!complete || state === "saving" || state === "saved"}>
             {state === "saved" ? (

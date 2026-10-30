@@ -17,7 +17,7 @@ npm run dev
 2. Tap **Start**, then upload any photo. Replay always shows the recorded demo face so the skin masks line up.
 3. Tap a card on **Your skin today** to see that area glow on the face, then **Continue**.
 4. Pick one of the six looks, tap **Start makeup**, and walk the layers. Swipe, use Next, tap the step bar, or press the arrow keys.
-5. On **Finish**, compare before and after, then **Save look**. Reopen it later from the bookmark icon on the welcome screen. Saved looks replay offline.
+5. Each step links to an Amazon search for its product and shade (for example "soft sand concealer"). On **Finish**, compare before and after, open **Shop this look on Amazon**, then **Save look**. Reopen it later from the bookmark icon on the welcome screen. Saved looks replay offline.
 
 If port 3000 is busy, run `npm run dev -- -p 3100`.
 
@@ -34,6 +34,7 @@ Fill in `.env`:
 | `API_MODE` | `replay` (default): answers from `fixtures/`, no keys, 0 units. `live`: real calls. `record`: real calls, saved to `fixtures/` |
 | `YOUCAM_API_KEY` | YouCam API key, from the [YouCam API console](https://yce.makeupar.com/api-console/en/api-keys/) |
 | `OPENAI_API_KEY` | OpenAI key for the look planner |
+| `NEXT_PUBLIC_AMAZON_TAG` | Optional Amazon Associates tag added to the "Shop on Amazon" links |
 
 The OpenAI model is set in `lib/openai/model.ts`.
 

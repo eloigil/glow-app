@@ -144,7 +144,7 @@ Welcome → photo capture → skin analysis with tappable highlights → six loo
 
 ## Deferred From the POC
 - **Accounts and cloud sync**: saved looks live on one device; no sign-in needed to prove the kernel.
-- **Products** (carousel, product modal, store links): YouCam has no product data; adding them later means a small hand-made catalog matched by category and shade hex. Deferred in `4-spec` at the learner's direction.
+- **Products** (carousel, product modal, exact product links): YouCam has no product data; adding them later means a small hand-made catalog matched by category and shade hex. Deferred in `4-spec`. *Partly built at the final review:* each tutorial step and the Finish view link to an Amazon search for that step's shade and product type (optional Associates tag via `NEXT_PUBLIC_AMAZON_TAG`).
 - **"Use what I own"** (`scope.md > Later`): product inventory and looks built from owned products. Keep the product data shaped so this is a small change later.
 
 ## Possible Later Enhancements

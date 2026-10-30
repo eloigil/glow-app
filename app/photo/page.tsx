@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft01Icon, Camera01Icon, ImageUploadIcon } from "@hugeicons/core-free-icons";
+import { ArrowLeft01Icon, Camera01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { ScanSweep } from "@/components/ScanSweep";
-import { Sheet } from "@/components/Sheet";
+import { PhotoSource } from "@/components/PhotoSource";
 import { loadCurrent } from "@/lib/current";
 import { resizePhoto } from "@/lib/image";
 import { postJson } from "@/lib/postJson";
@@ -26,8 +26,6 @@ export default function AddPhoto() {
   const [stored, setStored] = useState<Session | null>();
   const current = live ?? stored;
   const [picking, setPicking] = useState(false);
-  const cameraInput = useRef<HTMLInputElement>(null);
-  const uploadInput = useRef<HTMLInputElement>(null);
   const previewUrl = useRef<string | null>(null);
 
   useEffect(() => () => { if (previewUrl.current) URL.revokeObjectURL(previewUrl.current); }, []);
@@ -51,11 +49,6 @@ export default function AddPhoto() {
     router.push("/analysis");
   }
 
-  // Open the picker inside the tap itself (browsers require it), then let the menu slide away.
-  function pick(input: HTMLInputElement | null, dismiss: () => void) {
-    input?.click();
-    dismiss();
-  }
 
   async function analyze(file: File) {
     if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
@@ -79,12 +72,6 @@ export default function AddPhoto() {
     } catch (e) {
       setState({ kind: "error", preview, message: (e as Error).message });
     }
-  }
-
-  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (file) analyze(file);
   }
 
   return (
@@ -145,31 +132,7 @@ export default function AddPhoto() {
         </>
       )}
 
-      {picking && (
-        <Sheet labelledBy="pick-title" onClose={() => setPicking(false)}>
-          {(dismiss) => (
-            <>
-              <h2 id="pick-title" className="font-semibold">
-                Add a photo
-              </h2>
-              <div className="mt-4 grid gap-2">
-                <Button onClick={() => pick(cameraInput.current, dismiss)}>
-                  <Icon icon={Camera01Icon} size={28} /> Use camera
-                </Button>
-                <Button variant="quiet" onClick={() => pick(uploadInput.current, dismiss)} className="border-line bg-surface">
-                  <Icon icon={ImageUploadIcon} size={28} /> Upload photo
-                </Button>
-                <Button variant="quiet" onClick={dismiss}>
-                  Cancel
-                </Button>
-              </div>
-            </>
-          )}
-        </Sheet>
-      )}
-
-      <input ref={cameraInput} type="file" accept="image/*" capture="user" hidden onChange={onPick} />
-      <input ref={uploadInput} type="file" accept="image/*" hidden onChange={onPick} />
+      <PhotoSource open={picking} title="Add a photo" camera="user" onClose={() => setPicking(false)} onFile={analyze} />
     </div>
   );
 }

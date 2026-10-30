@@ -1,5 +1,5 @@
 // Shrink to 1600px on the long side (YouCam VTO wants the long side under 1920px).
-export async function resizePhoto(file: File, maxSide = 1600): Promise<Blob> {
+export async function resizePhoto(file: Blob, maxSide = 1600): Promise<Blob> {
   const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
   const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");

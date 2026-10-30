@@ -21,7 +21,7 @@ export default function AddPhoto() {
   const router = useRouter();
   const { session, setSession } = useSession();
   const [state, setState] = useState<State>({ kind: "idle" });
-  // Today's photo, already analyzed: reusing it costs nothing. Undefined while the device copy is read.
+  // Today's photo, already analyzed: reusing it costs nothing. Null when the device has none, undefined while reading.
   const live = session.photo && session.analysis && !session.savedId ? session : undefined;
   const [stored, setStored] = useState<Session | null>();
   const current = live ?? stored;
@@ -36,7 +36,10 @@ export default function AddPhoto() {
     let cancelled = false;
     loadCurrent()
       .catch(() => undefined)
-      .then((c) => !cancelled && setStored(c ?? null));
+      .then((c) => {
+        if (!cancelled) return setStored(c ?? null);
+        if (c?.photo) URL.revokeObjectURL(c.photo);
+      });
     return () => {
       cancelled = true;
     };
@@ -114,7 +117,7 @@ export default function AddPhoto() {
                 </Button>
               </>
             ) : (
-              <Button onClick={() => setPicking(true)} disabled={current === undefined}>
+              <Button onClick={() => setPicking(true)}>
                 <Icon icon={Camera01Icon} size={28} /> Take a photo
               </Button>
             )}

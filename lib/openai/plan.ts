@@ -7,6 +7,13 @@ import { PATTERNS, UNPATTERNED, patternFor } from "@/lib/youcam/effects";
 import { POINT_THRESHOLD } from "@/lib/youcam/concerns";
 import type { ConcernKey, Difficulty, Look, LooksRequest, MakeupCategory } from "@/lib/types";
 
+/** Words a step's product name must contain, to catch wrong-type or shifted product suggestions. */
+const PRODUCT_KIND: Record<MakeupCategory, RegExp> = {
+  foundation: /foundation|skin tint|tint/i, concealer: /conceal/i, contour: /contour|sculpt|stick/i,
+  bronzer: /bronz/i, blush: /blush|cheek/i, highlighter: /highlight|glow|lumin/i, eyebrows: /brow/i,
+  eye_shadow: /shadow|palette/i, eye_liner: /liner|ink/i, eyelashes: /mascara|lash/i, lip_color: /lip|gloss|rouge/i,
+};
+
 /** Which products can honestly fix which concern. The model gamed "corrects" without this. */
 const CORRECTORS: Record<ConcernKey, MakeupCategory[]> = {
   acne: ["concealer"],
@@ -78,6 +85,11 @@ export function validate(plan: LookPlan, req: LooksRequest): string[] {
         }
       }
     }
+    look.steps.forEach((s, j) => {
+      if (!PRODUCT_KIND[s.category].test(s.product.name)) {
+        problems.push(`Look ${i + 1} step ${j + 1} (${s.category}): "${s.product.name}" isn't a ${s.category.replace("_", " ")} product.`);
+      }
+    });
     if (look.steps.at(-1)?.category !== "lip_color") problems.push(`Look ${i + 1} "${look.name}" must end with lip_color.`);
     look.steps.forEach((s, j) => {
       const where = `Look ${i + 1} step ${j + 1} (${s.category})`;

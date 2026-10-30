@@ -103,7 +103,7 @@ export function FinishView({
             {look.steps.map((step, i) => (
               <li key={i}>
                 <a href={amazonUrl(step)} target="_blank" rel="noopener noreferrer" className="underline decoration-rose underline-offset-4">
-                  {step.title}
+                  {step.product ? `${step.product.brand} ${step.product.name}, ${step.product.shade}` : step.title}
                 </a>
               </li>
             ))}

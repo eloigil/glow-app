@@ -56,7 +56,7 @@ export function TipsSheet({
           <span className="text-rose">
             <Icon icon={ShoppingBag01Icon} />
           </span>
-          Find {shopQuery(step)} on Amazon
+          {step.product ? `Shop ${step.product.brand} ${step.product.name}` : `Find ${shopQuery(step)} on Amazon`}
         </a>
         {error && (
           <div className="mt-3 flex items-center justify-between gap-3 rounded-[8px] bg-wash px-3 py-2 text-sm" role="alert">

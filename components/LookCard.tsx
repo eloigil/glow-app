@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { BlushBrush01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
+import { ProductCarousel } from "@/components/ProductCarousel";
 import { DIFFICULTY_LABELS, SignalBars } from "@/components/SignalBars";
 import type { Look } from "@/lib/types";
 import type { Preview } from "@/lib/useStepRenders";
@@ -73,6 +74,9 @@ export function LookCard({ look, preview, grown, onGrow, onStart }: {
               </div>
             </motion.div>
           </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.18 }}>
+            <ProductCarousel steps={look.steps} />
+          </motion.div>
           <Button className="mt-3 w-full" onClick={onStart}>
             Start makeup <Icon icon={BlushBrush01Icon} size={28} />
           </Button>

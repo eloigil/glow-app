@@ -1,32 +1,26 @@
 @import "tailwindcss";
 
-/* Tokens from devpost/spec.md > Look and Feel. Light default, dark via prefers-color-scheme. */
+/* Tokens from devpost/spec.md > Look and Feel. light-dark() follows the system, unless the theme toggle
+   (components/ThemeToggle.tsx) pins one with data-theme on <html>. */
 :root {
-  --canvas: #f6f3f5;
-  --surface: #fdfcfd;
-  --ink: #17141a;
-  --ink-muted: #5d5662;
-  --line: #ede4ea;
-  --rose: #ec94b0;
-  --wash: #fbe8ee;
-  --glass: rgb(253 252 253 / 0.55);
-  --glass-edge: rgb(255 255 255 / 0.75);
+  color-scheme: light dark;
+  --canvas: light-dark(#f6f3f5, #141116);
+  --surface: light-dark(#fdfcfd, #1d1920);
+  --ink: light-dark(#17141a, #f4eff3);
+  --ink-muted: light-dark(#5d5662, #b4aab3);
+  --line: light-dark(#ede4ea, #2e2830);
+  --rose: light-dark(#ec94b0, #f4b6c9);
+  --wash: light-dark(#fbe8ee, #33222b);
+  --glass: light-dark(rgb(253 252 253 / 0.55), rgb(29 25 32 / 0.5));
+  --glass-edge: light-dark(rgb(255 255 255 / 0.75), rgb(255 255 255 / 0.16));
   --placeholder: radial-gradient(42% 34% at 50% 42%, #fff1f4, transparent 72%),
     radial-gradient(80% 70% at 50% 45%, #f9dce5, #f3cad7 85%);
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --canvas: #141116;
-    --surface: #1d1920;
-    --ink: #f4eff3;
-    --ink-muted: #b4aab3;
-    --line: #2e2830;
-    --rose: #f4b6c9;
-    --wash: #33222b;
-    --glass: rgb(29 25 32 / 0.5);
-    --glass-edge: rgb(255 255 255 / 0.16);
-  }
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 @theme inline {

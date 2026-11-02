@@ -7,6 +7,7 @@ import { ArrowLeft01Icon, Camera01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
 import { ScanSweep } from "@/components/ScanSweep";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { PhotoSource } from "@/components/PhotoSource";
 import { loadCurrent } from "@/lib/current";
 import { resizePhoto } from "@/lib/image";
@@ -76,9 +77,12 @@ export default function AddPhoto() {
 
   return (
     <div className="flex flex-1 flex-col px-6 pt-6 pb-[max(24px,env(safe-area-inset-bottom))]">
-      <Link href="/" aria-label="Back" className="grid size-10 place-items-center rounded-full bg-surface text-ink">
-        <Icon icon={ArrowLeft01Icon} size={24} />
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/" aria-label="Back" className="grid size-10 place-items-center rounded-full bg-surface text-ink">
+          <Icon icon={ArrowLeft01Icon} size={24} />
+        </Link>
+        <ThemeToggle />
+      </div>
 
       {state.kind === "idle" ? (
         <>

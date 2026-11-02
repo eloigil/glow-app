@@ -32,7 +32,7 @@ const SKY: Variants = {
   up: { x: 0, y: 0, rotate: 0, opacity: 1, transition: { duration: 1.1, delay: 0.45, ease: [0.22, 1, 0.36, 1] } },
   set: (tapped: boolean) =>
     tapped
-      ? { x: 12, y: -24, rotate: 30, opacity: 0, transition: { duration: 0.9, ease: [0.55, 0, 0.75, 0.4] } }
+      ? { x: 24, y: -22, rotate: 40, opacity: 0, transition: { duration: 0.9, ease: [0.55, 0, 0.75, 0.4] } }
       : { opacity: 0, transition: { duration: 0 } },
 };
 

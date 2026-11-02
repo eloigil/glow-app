@@ -82,7 +82,7 @@ npm run dev
 6. On **Finish**, compare before and after, open **Shop this look**, then **Save look**. Reopen it from the bookmark on the welcome screen.
 7. Back on **Looks for you**, tap **Copy a look** and upload `demo/copy-a-look-inspiration.jpg`. The recorded copy, "Neon Halo", joins the grid with its own tutorial.
 
-Requires Node.js 20 or newer. If port 3000 is busy, run `npm run dev -- -p 3100`.
+Requires Node.js 20.9 or newer. If port 3000 is busy, run `npm run dev -- -p 3100`.
 
 ## Run it against the real APIs
 

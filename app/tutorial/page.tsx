@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ContrastIcon, PaintBrush01Icon } from "@hugeicons/core-free-icons";
+import { ContrastIcon, PlayIcon } from "@hugeicons/core-free-icons";
 import { ApplyAnimation } from "@/components/ApplyAnimation";
 import { FinishView } from "@/components/FinishView";
 import { Icon } from "@/components/Icon";
@@ -82,20 +82,15 @@ export default function Tutorial() {
       live = false;
     };
   }, [focus, ready, before, isBase, session.tone?.skinHex]);
-  // Each step shows its brush strokes once, the first time its layer is ready; the brush button replays them.
+  // The brush strokes play only when she taps the play button.
   const stepId = look ? `${look.id}:${current}` : "";
   const canShow = !!(ready && before && landmarks && !reduce);
-  const [demoed, setDemoed] = useState<string[]>([]);
   const [playing, setPlaying] = useState<string>();
   // Leaving a step mid-stroke stops it, so coming back doesn't replay it.
   const [playingStep, setPlayingStep] = useState(stepId);
   if (playingStep !== stepId) {
     setPlayingStep(stepId);
     setPlaying(undefined);
-  }
-  if (canShow && !demoed.includes(stepId)) {
-    setDemoed([...demoed, stepId]);
-    setPlaying(stepId);
   }
   const howTo = canShow && playing === stepId;
   const focusMask = focus && ready && !howTo && mask?.for === ready ? mask : undefined;
@@ -143,7 +138,7 @@ export default function Tutorial() {
           aria-label="Show how to apply this step"
           className="glass absolute top-[84px] right-3 z-20 grid size-10 place-items-center rounded-full text-ink disabled:opacity-50"
         >
-          <Icon icon={PaintBrush01Icon} />
+          <Icon icon={PlayIcon} />
         </button>
       )}
 

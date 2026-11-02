@@ -150,3 +150,7 @@ devpost/      planning documents (scope, PRD, spec, build checklist)
 - **Icons:** [Hugeicons](https://hugeicons.com) free set (MIT).
 - **Fonts:** Unbounded and Geist (SIL Open Font License), via `next/font`.
 - Brand and product names belong to their owners. GlowApp suggests products and isn't affiliated with them.
+
+## License
+
+The code is released under the [MIT License](LICENSE). Photos, the welcome video, product images and fonts keep their own licenses, listed under Credits.

@@ -65,7 +65,7 @@ export default function Looks() {
         <Link href="/analysis" aria-label="Back" className="grid size-10 place-items-center rounded-full bg-surface text-ink">
           <Icon icon={ArrowLeft01Icon} size={24} />
         </Link>
-        <h1 className="flex-1 font-display text-lg font-bold tracking-[-0.02em]">Six looks for you</h1>
+        <h1 className="flex-1 font-display text-lg font-bold tracking-[-0.02em]">Looks for you</h1>
         <ThemeToggle />
       </div>
       {!looks?.length && (
